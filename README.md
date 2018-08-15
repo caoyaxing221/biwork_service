@@ -1,4 +1,4 @@
 biwork_service
 ===============
 
-biwork webserver service
+webserver service for biwork wallet
