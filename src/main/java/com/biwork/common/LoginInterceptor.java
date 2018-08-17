@@ -32,6 +32,7 @@ import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
 import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
+import com.biwork.util.JwtUtil;
 import com.biwork.util.PropertiesUtil;
 
 
@@ -87,17 +88,20 @@ public class LoginInterceptor implements HandlerInterceptor{
 //		        } catch (Exception e) {  
 //		            e.printStackTrace();  
 //		        } request=httpRequest;
-//        	if(request.getParameter("uid")!=null){
-//        		//||json.getString("uid")!=null
-//    			
-//    			UserPojo up = new UserPojo();
-//    			
-//    			AESUtil se=new AESUtil();
-//    			up.setUserid(se.AESDncode(PropertiesUtil.getProperty("aeskey"), request.getParameter("uid")));
-//    			
-//    			session.setAttribute("User",up);
-//    			return true;
-//        	}
+        	if(request.getHeader("Authorization")!=null){
+        		//||json.getString("uid")!=null
+        		String token=request.getHeader("Authorization");
+        		if(null!=JwtUtil.verifyToken(token)){
+        			UserPojo up = new UserPojo();
+        			
+        			
+        			up.setUserid(JwtUtil.getAppUID(token).toString());
+        			
+        			session.setAttribute("User",up);
+        			return true;
+        		}
+    			
+        	}
         	
         }
       //URL:login.jsp是公开的;这个demo是除了login.jsp是可以公开访问的，其它的URL都进行拦截控制  
@@ -106,21 +110,21 @@ public class LoginInterceptor implements HandlerInterceptor{
         }else{
         	 
      		
-//        	  RespPojo result = new RespPojo();
-//              result.setRetCode(Constants.SESSION_TIMOUT_CODE);
-//              result.setRetMsg(Constants.SESSION_TIMOUT_MESSAGE);
-//              response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
-//              String str=JSON.toJSONString(result);
-//              try {  
-//                  PrintWriter writer = response.getWriter();  
-//                  writer.write(str);  
-//                  writer.flush();  
-//                  writer.close();  
-//                  return false;
-//              } catch (Exception e) {  
-//                  
-//                  logger.error("会话处理异常{}"+e);
-//              }  
+        	  RespPojo result = new RespPojo();
+              result.setRetCode(Constants.SESSION_TIMOUT_CODE);
+              result.setRetMsg(Constants.SESSION_TIMOUT_MESSAGE);
+              response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
+              String str=JSON.toJSONString(result);
+              try {  
+                  PrintWriter writer = response.getWriter();  
+                  writer.write(str);  
+                  writer.flush();  
+                  writer.close();  
+                  return false;
+              } catch (Exception e) {  
+                  
+                  logger.error("会话处理异常{}"+e);
+              }  
         }
       
         //不符合条件的，跳转到登录界面  

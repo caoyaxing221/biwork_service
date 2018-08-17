@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.biwork.mapper.ProcessMapper">
+  <resultMap id="BaseResultMap" type="com.biwork.entity.Process">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="team_id" jdbcType="INTEGER" property="teamId" />
+    <result column="submitter_id" jdbcType="INTEGER" property="submitterId" />
+    <result column="application_number" jdbcType="VARCHAR" property="applicationNumber" />
+    <result column="currency_id" jdbcType="INTEGER" property="currencyId" />
+    <result column="department_id" jdbcType="INTEGER" property="departmentId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="current_node" jdbcType="INTEGER" property="currentNode" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="inserttime" jdbcType="TIMESTAMP" property="inserttime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="finishtime" jdbcType="TIMESTAMP" property="finishtime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.biwork.entity.ProcessWithBLOBs">
+    <result column="cause" jdbcType="LONGVARCHAR" property="cause" />
+    <result column="receiver_msg" jdbcType="LONGVARCHAR" property="receiverMsg" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    <result column="attach_url" jdbcType="LONGVARCHAR" property="attachUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, team_id, submitter_id, application_number, currency_id, department_id, category_id, 
+    receiver, current_node, state, inserttime, updatetime, finishtime
+  </sql>
+  <sql id="Blob_Column_List">
+    cause, receiver_msg, remark, attach_url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from process
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from process
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.biwork.entity.ProcessWithBLOBs">
+    insert into process (id, team_id, submitter_id, 
+      application_number, currency_id, department_id, 
+      category_id, receiver, current_node, 
+      state, inserttime, updatetime, 
+      finishtime, cause, receiver_msg, 
+      remark, attach_url)
+    values (#{id,jdbcType=INTEGER}, #{teamId,jdbcType=INTEGER}, #{submitterId,jdbcType=INTEGER}, 
+      #{applicationNumber,jdbcType=VARCHAR}, #{currencyId,jdbcType=INTEGER}, #{departmentId,jdbcType=INTEGER}, 
+      #{categoryId,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, #{currentNode,jdbcType=INTEGER}, 
+      #{state,jdbcType=INTEGER}, #{inserttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{finishtime,jdbcType=TIMESTAMP}, #{cause,jdbcType=LONGVARCHAR}, #{receiverMsg,jdbcType=LONGVARCHAR}, 
+      #{remark,jdbcType=LONGVARCHAR}, #{attachUrl,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.biwork.entity.ProcessWithBLOBs">
+    insert into process
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="teamId != null">
+        team_id,
+      </if>
+      <if test="submitterId != null">
+        submitter_id,
+      </if>
+      <if test="applicationNumber != null">
+        application_number,
+      </if>
+      <if test="currencyId != null">
+        currency_id,
+      </if>
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="receiver != null">
+        receiver,
+      </if>
+      <if test="currentNode != null">
+        current_node,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="inserttime != null">
+        inserttime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="finishtime != null">
+        finishtime,
+      </if>
+      <if test="cause != null">
+        cause,
+      </if>
+      <if test="receiverMsg != null">
+        receiver_msg,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="attachUrl != null">
+        attach_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="teamId != null">
+        #{teamId,jdbcType=INTEGER},
+      </if>
+      <if test="submitterId != null">
+        #{submitterId,jdbcType=INTEGER},
+      </if>
+      <if test="applicationNumber != null">
+        #{applicationNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyId != null">
+        #{currencyId,jdbcType=INTEGER},
+      </if>
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="receiver != null">
+        #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="currentNode != null">
+        #{currentNode,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="inserttime != null">
+        #{inserttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishtime != null">
+        #{finishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cause != null">
+        #{cause,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="receiverMsg != null">
+        #{receiverMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="attachUrl != null">
+        #{attachUrl,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.ProcessWithBLOBs">
+    update process
+    <set>
+      <if test="teamId != null">
+        team_id = #{teamId,jdbcType=INTEGER},
+      </if>
+      <if test="submitterId != null">
+        submitter_id = #{submitterId,jdbcType=INTEGER},
+      </if>
+      <if test="applicationNumber != null">
+        application_number = #{applicationNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyId != null">
+        currency_id = #{currencyId,jdbcType=INTEGER},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="receiver != null">
+        receiver = #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="currentNode != null">
+        current_node = #{currentNode,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="inserttime != null">
+        inserttime = #{inserttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishtime != null">
+        finishtime = #{finishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cause != null">
+        cause = #{cause,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="receiverMsg != null">
+        receiver_msg = #{receiverMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="attachUrl != null">
+        attach_url = #{attachUrl,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.biwork.entity.ProcessWithBLOBs">
+    update process
+    set team_id = #{teamId,jdbcType=INTEGER},
+      submitter_id = #{submitterId,jdbcType=INTEGER},
+      application_number = #{applicationNumber,jdbcType=VARCHAR},
+      currency_id = #{currencyId,jdbcType=INTEGER},
+      department_id = #{departmentId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      receiver = #{receiver,jdbcType=VARCHAR},
+      current_node = #{currentNode,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      inserttime = #{inserttime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      finishtime = #{finishtime,jdbcType=TIMESTAMP},
+      cause = #{cause,jdbcType=LONGVARCHAR},
+      receiver_msg = #{receiverMsg,jdbcType=LONGVARCHAR},
+      remark = #{remark,jdbcType=LONGVARCHAR},
+      attach_url = #{attachUrl,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.biwork.entity.Process">
+    update process
+    set team_id = #{teamId,jdbcType=INTEGER},
+      submitter_id = #{submitterId,jdbcType=INTEGER},
+      application_number = #{applicationNumber,jdbcType=VARCHAR},
+      currency_id = #{currencyId,jdbcType=INTEGER},
+      department_id = #{departmentId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      receiver = #{receiver,jdbcType=VARCHAR},
+      current_node = #{currentNode,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      inserttime = #{inserttime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      finishtime = #{finishtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
