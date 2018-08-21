@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +33,13 @@ import com.biwork.service.VerifyCodeService;
 import com.biwork.util.Constants;
 import com.biwork.util.JwtUtil;
 import com.biwork.util.MD5Util;
+import com.biwork.util.UidUtil;
 import com.biwork.util.ValidateUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 
 
@@ -48,6 +55,7 @@ import com.biwork.util.ValidateUtil;
  */
 @Controller
 @RequestMapping("/login")
+@Api(value = "/login", description = "登录相关")
 public class LoginController {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -65,19 +73,29 @@ public class LoginController {
 			
 	@ResponseBody
 	@RequestMapping("/login")
+	@ApiOperation(value = "普通用户登录", notes = "普通用户登录",httpMethod = "POST")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "verifyCode",value = "短信验证码", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form")
+    })
 	public RespPojo doLoginSubmit(HttpServletRequest request){
 		logger.info("---进入登录方法---");
 		String phone= request.getParameter("phone")==null?"":request.getParameter("phone");
 //		String password = phone.substring(5, 11);
 		String verifyCode=request.getParameter("verifyCode")==null?"":request.getParameter("verifyCode");
-		
-		
+		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+		String imgCode=request.getParameter("imgCode");
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
 		RespPojo resp=new RespPojo();
 		
-		
+		if(!imageCode.equalsIgnoreCase(imgCode)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("图形验证码错误");
+			  return resp;
+		}
 		if(StringUtils.isBlank(phone)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("手机号不能为空");
@@ -164,18 +182,29 @@ public class LoginController {
 	
 	@ResponseBody
 	@RequestMapping("/loginPW")
+	@ApiOperation(value = "管理员登录", notes = "管理员登录",httpMethod = "POST")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "password",value = "密码", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form")
+    })
 	public RespPojo doLoginSubmitPW(HttpServletRequest request){
 		logger.info("---进入登录方法---");
 		
 		String phone= request.getParameter("phone");
 		String password=request.getParameter("password");
-		
-		
+		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+		String imgCode=request.getParameter("imgCode");
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
 		RespPojo resp=new RespPojo();
 		
+		if(!imageCode.equalsIgnoreCase(imgCode)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("图形验证码错误");
+			  return resp;
+		}
 		
 		if(StringUtils.isBlank(phone)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
@@ -248,6 +277,11 @@ public class LoginController {
 	VerifyCodeService verifyCodeService;
 	@ResponseBody
 	@RequestMapping("/getVerifyCode")
+	@ApiOperation(value = "获取验证码", notes = "获取验证码",httpMethod = "POST")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "type",value = "验证码类型(register,login,forgetpassword,transfer)", required = true, paramType = "form")
+    })
 	public RespPojo doGetMessageCode(HttpServletRequest request) throws Exception{
 		logger.info("----发送短信验证码----");
 	 
@@ -401,18 +435,27 @@ public class LoginController {
 		return resp;
 		
 	}
-	//注册
-
-	@RequestMapping("/register")
+	@RequestMapping("/registerFirst")
 	@ResponseBody
-	public RespPojo register(HttpServletRequest request){
+	@ApiOperation(value = "管理员注册第一步", notes = "管理员注册第一步",httpMethod = "POST")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "verifyCode",value = "短信验证码", required = true, paramType = "form")
+    })
+	public RespPojo registerFirst(HttpServletRequest request){
 		
 		String phone= request.getParameter("phone");
-		String password=request.getParameter("password");
+		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+		String imgCode=request.getParameter("imgCode");
 		String verifyCode=request.getParameter("verifyCode");
 		
 		RespPojo resp=new RespPojo();
-		logger.info("---注册操作,手机号{}|{}|{}|{}|{}---",phone,verifyCode);
+		if(!imageCode.equalsIgnoreCase(imgCode)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("图形验证码错误");
+			  return resp;
+		}
 		
 		
 		if(StringUtils.isBlank(phone)){
@@ -420,15 +463,10 @@ public class LoginController {
 			  resp.setRetMsg("手机号不能为空");
 			  return resp;
 		}
-		if(StringUtils.isBlank(password)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("密码不能为空");
-			  return resp;
-		}
 		
 		if(StringUtils.isBlank(verifyCode)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("验证码不能为空");
+			  resp.setRetMsg("短信验证码不能为空");
 			  return resp;
 		}
 		if(!ValidateUtil.isMobile(phone))
@@ -437,13 +475,7 @@ public class LoginController {
 			  resp.setRetMsg("手机号格式错误");
 			  return resp;
 		}
-		
-		
-		if(!ValidateUtil.isPassword(password)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("密码长度为6-16位");
-			  return resp;
-		}
+	
 		
 		
 		try {
@@ -461,6 +493,66 @@ public class LoginController {
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;
 		}
+		HttpSession session = request.getSession(); 
+		String registerToken = UidUtil.getUUID();
+		session.setAttribute("registerToken",registerToken);
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		rtnMap.put("registerToken", registerToken);
+		resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		resp.setData(rtnMap);
+		return resp;
+	}
+	//注册
+	@ApiOperation(value = "管理员注册第二步", notes = "管理员注册第二步",httpMethod = "POST")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "password",value = "密码", required = true, paramType = "form"),
+        @ApiImplicitParam(name = "registerToken",value = "第一步返回的registerToken", required = true, paramType = "form")
+    })
+	@RequestMapping("/registerSecond")
+	@ResponseBody
+	public RespPojo register(HttpServletRequest request){
+		
+		String phone= request.getParameter("phone");
+		String password=request.getParameter("password");
+		String registerToken=request.getParameter("registerToken");
+		String rgToken=request.getSession().getAttribute("registerToken").toString();
+		RespPojo resp=new RespPojo();
+		
+		if(!registerToken.equalsIgnoreCase(rgToken)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("操作码错误");
+			  return resp;
+		}
+		if(StringUtils.isBlank(phone)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("手机号不能为空");
+			  return resp;
+		}
+		if(StringUtils.isBlank(password)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("密码不能为空");
+			  return resp;
+		}
+		
+		
+		
+		if(!ValidateUtil.isMobile(phone))
+		{
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("手机号格式错误");
+			  return resp;
+		}
+		
+		
+		if(!ValidateUtil.isPassword(password)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("密码长度为6-16位");
+			  return resp;
+		}
+		
+		
 		try {
 			boolean registerflag = loginService.register(phone,MD5Util.getMD5(password) );
 		}catch(BusiException e){
@@ -485,6 +577,7 @@ public class LoginController {
 	
 	@RequestMapping("/logout")
 	@ResponseBody
+	@ApiOperation(value = "退出登录", notes = "退出登录",httpMethod = "GET")
 	public RespPojo logout(HttpServletRequest request){
 		logger.info("---退出---");
 		UserPojo up=new UserPojo();

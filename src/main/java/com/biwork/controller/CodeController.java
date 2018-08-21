@@ -8,10 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.biwork.util.RandomCodeUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 
 /**
@@ -21,8 +25,9 @@ import com.biwork.util.RandomCodeUtil;
  */
 @Controller
 @RequestMapping("/code") 
+@Api(value = "/code", description = "图形验证码", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CodeController {
-	
+	@ApiOperation(value = "获取图形验证码", notes = "获取图形验证码",httpMethod = "GET")
 	@RequestMapping("/get") 
     public void getCode(HttpServletRequest req, HttpServletResponse resp) throws IOException { 
 		RandomCodeUtil rdnu = RandomCodeUtil.Instance();
