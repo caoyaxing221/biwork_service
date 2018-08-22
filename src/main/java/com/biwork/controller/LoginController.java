@@ -1,9 +1,5 @@
 package com.biwork.controller;
 
-
-
-
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -41,10 +37,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-
-
-
-
 /**
  * 
 * @ClassName: LoginController 
@@ -59,10 +51,6 @@ import io.swagger.annotations.ApiOperation;
 public class LoginController {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
-
-	
 	
 	//登录操作
 	@Autowired
@@ -284,8 +272,6 @@ public class LoginController {
     })
 	public RespPojo doGetMessageCode(HttpServletRequest request) throws Exception{
 		logger.info("----发送短信验证码----");
-	 
-		//logger.info("{}",json);
 		String phone= request.getParameter("phone")==null?"":request.getParameter("phone");
 		String type=request.getParameter("type")==null?"":request.getParameter("type");
 		
@@ -396,7 +382,6 @@ public class LoginController {
 			  resp.setRetMsg("密码长度为6-16位");
 			  return resp;
 		}
-		
 		
 		try {
 			boolean vflag= verifyCodeService.verifyCode(phone, verifyCode, "forgetpassword");
@@ -535,8 +520,6 @@ public class LoginController {
 			  resp.setRetMsg("密码不能为空");
 			  return resp;
 		}
-		
-		
 		
 		if(!ValidateUtil.isMobile(phone))
 		{
