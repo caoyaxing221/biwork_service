@@ -125,7 +125,7 @@ public class LoginInterceptor implements HandlerInterceptor{
         	
         }
       //URL:login.jsp是公开的;这个demo是除了login.jsp是可以公开访问的，其它的URL都进行拦截控制  
-        if(url.indexOf("login")>=0||url.indexOf("code")>=0){
+        if(url.indexOf("login")>=0||url.indexOf("code")>=0 || url.indexOf("v1") >= 0){
             return true;  
         }else{
         	 
