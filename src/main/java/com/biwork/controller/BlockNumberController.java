@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "/v1", description = "获取区块号")
 public class BlockNumberController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	//获取账户余额操作
+	//获取区块号
 	@Autowired
 	BlockNumberService bnService;
 	

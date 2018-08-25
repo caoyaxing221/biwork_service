@@ -53,7 +53,7 @@ public class TxLogController {
         return obj;
     }
 
-	//获取账户交易数量
+	//获取账户交易记录
 	@Autowired
 	TxLogService txLogService;
 	

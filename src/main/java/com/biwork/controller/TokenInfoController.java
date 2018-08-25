@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "/v1", description = "获取ERC20代币信息")
 public class TokenInfoController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	//获取账户交易数量
+	//获取ERC20信息
 	@Autowired
 	TokenInfoService tokenInfoService;
 	

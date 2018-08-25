@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "/v1", description = "发送签名后交易数据到区块链网络")
 public class RawTxController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	//获取账户交易数量
+	//发送签名后交易到区块链网络
 	@Autowired
 	RawTxService rawTxService;
 	
