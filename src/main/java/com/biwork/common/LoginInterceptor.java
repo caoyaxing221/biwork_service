@@ -28,8 +28,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.biwork.entity.Service;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
+import com.biwork.service.MyService;
 import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
 import com.biwork.util.JwtUtil;
@@ -38,8 +40,8 @@ import com.biwork.util.PropertiesUtil;
 
 public class LoginInterceptor implements HandlerInterceptor{
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
+	@Autowired
+	MyService myService;
 	
 	public final static List<String> WHITE_LIST=new LinkedList<String>();
 //	static {
@@ -68,14 +70,32 @@ public class LoginInterceptor implements HandlerInterceptor{
         if(WHITE_LIST.indexOf(request.getRequestURL().toString())>=0){
         	return true;
         }
+        RespPojo result = new RespPojo();
         //获取Session  
         HttpSession session = request.getSession(true);  
 //        logger.info("欢迎进入拦截器----------------");
-        
+       
         if(session.getAttribute("User") != null){  
 //        	logger.info("session非空,bye{}",session);
             return true;  
         }else{
+        	 Service service=myService.query();
+             if(service.getExpireDate().compareTo(new Date())<0){
+             	result.setRetCode(Constants.SERVICE_TIMOUT_CODE);
+                 result.setRetMsg(Constants.SERVICE_TIMOUT_MESSAGE);
+                 response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
+                 String str=JSON.toJSONString(result);
+                 try {  
+                     PrintWriter writer = response.getWriter();  
+                     writer.write(str);  
+                     writer.flush();  
+                     writer.close();  
+                     return false;
+                 } catch (Exception e) {  
+                     
+                     logger.error("会话处理异常{}"+e);
+                 }  
+             }
         	//JSONObject json=null;
 //        	try {  
 //        		
@@ -110,7 +130,7 @@ public class LoginInterceptor implements HandlerInterceptor{
         }else{
         	 
      		
-        	  RespPojo result = new RespPojo();
+        	  
               result.setRetCode(Constants.SESSION_TIMOUT_CODE);
               result.setRetMsg(Constants.SESSION_TIMOUT_MESSAGE);
               response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  

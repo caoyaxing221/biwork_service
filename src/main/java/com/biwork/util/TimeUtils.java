@@ -121,7 +121,7 @@ public class TimeUtils {
 		     
 		 } 
 	 public static void main(String[] args) throws ParseException {
-		System.out.println(getStringDate("2018年06月09日"));  
+		System.out.println(new Date().getTime());  
 	    }
 	 
 	 
