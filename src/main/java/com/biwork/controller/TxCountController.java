@@ -13,11 +13,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.biwork.entity.Balance;
+import com.biwork.entity.TxCount;
+
 import com.biwork.exception.BusiException;
-import com.biwork.po.BalancePojo;
+
 import com.biwork.po.RespPojo;
-import com.biwork.service.BalanceService;
+import com.biwork.po.TxCountPojo;
+
+import com.biwork.service.TxCountService;
+
 import com.biwork.util.Constants;
 
 import io.swagger.annotations.Api;
@@ -27,24 +31,24 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @RequestMapping("/v1")
-@Api(value = "/v1", description = "获取账户余额")
-public class BalanceController {
+@Api(value = "/v1", description = "获取账户交易数量")
+public class TxCountController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	//获取账户余额操作
+	//获取账户交易数量
 	@Autowired
-	BalanceService balanceService;
+	TxCountService txcService;
 	
 	@ResponseBody
-	@RequestMapping("/eth_getBalance")
-	@ApiOperation(value = "获取以太坊余额", notes = "获取以太坊余额",httpMethod = "POST")
+	@RequestMapping("/eth_getTransactionCount")
+	@ApiOperation(value = "获取以太坊交易数量", notes = "获取以太坊交易数量",httpMethod = "GET")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "address",value = "地址", required = true, paramType = "form")
+        @ApiImplicitParam(name = "address",value = "地址", required = true, paramType = "query")
     })
-	public RespPojo getEthBalance(HttpServletRequest request){
+	public RespPojo getEthTxCount(HttpServletRequest request){
 		
-		logger.info("---获取以太坊余额方法---");
+		logger.info("---获取以太坊交易数量方法---");
 		String address = request.getParameter("address")==null?"":request.getParameter("address");
-		BalancePojo bp=new BalancePojo();
+		TxCountPojo tx_pojo=new TxCountPojo();
 		
 		RespPojo resp=new RespPojo();
 		
@@ -54,26 +58,26 @@ public class BalanceController {
 			  return resp;
 		}
 		
-		Balance balance;
+		TxCount txc;
 		try {
-			balance = balanceService.getEthBalance(address);
+			txc = txcService.getEthTxCount(address);
 		}catch(BusiException e){
-			 logger.error("获取以太坊余额异常{}",e);
+			 logger.error("获取以太坊交易数量异常{}",e);
 			  resp.setRetCode(e.getCode());
 			  resp.setRetMsg(e.getMessage());
 			  return resp;
 		}
 		catch (Exception e) {
-			  logger.error("获取以太坊余额异常{}",e);
+			  logger.error("获取以太坊交易数量异常{}",e);
 			  resp.setRetCode(Constants.FAIL_CODE);
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;
 		}
-		if(balance!=null){
-			bp = new BalancePojo();
-			bp.setBalance(balance.getBalance());
+		if(txc!=null){
+			tx_pojo = new TxCountPojo();
+			tx_pojo.setTxCount(txc.getTxCount());
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
-			rtnMap.put("balance", balance.getBalance());
+			rtnMap.put("transactionCount", txc.getTxCount());
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);
@@ -83,49 +87,45 @@ public class BalanceController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/erc20_getBalance")
-	@ApiOperation(value = "获取ERC20余额", notes = "获取ERC20余额",httpMethod = "POST")
+	@RequestMapping("/btc_getTransactionCount")
+	@ApiOperation(value = "获取BTC交易数量", notes = "获取BTC交易数量",httpMethod = "GET")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "address", value = "账户地址", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "contract", value = "合约地址", required = true, paramType = "form")
-	})
-	
-	public RespPojo getErc20Balance(HttpServletRequest request) {
-		logger.info("---获取ERC20余额方法---");
-		RespPojo resp=new RespPojo();
-
+        @ApiImplicitParam(name = "address",value = "地址", required = true, paramType = "query")
+    })
+	public RespPojo getBtcTxCount(HttpServletRequest request){
+		
+		logger.info("---获取BTC交易数量方法---");
 		String address = request.getParameter("address")==null?"":request.getParameter("address");
-		if (StringUtils.isBlank(address)) {
-			resp.setRetCode(Constants.PARAMETER_CODE);
-			resp.setRetMsg("账户地址不能为空");
-			return resp;
-		}
-
-		String contract = request.getParameter("contract")==null?"":request.getParameter("contract");
-		if (StringUtils.isBlank(contract)) {
-			resp.setRetCode(Constants.PARAMETER_CODE);
-			resp.setRetMsg("合约地址不能为空");
-			return resp;
+		TxCountPojo tx_pojo=new TxCountPojo();
+		
+		RespPojo resp=new RespPojo();
+		
+		if(StringUtils.isBlank(address)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("地址不能为空");
+			  return resp;
 		}
 		
-		Balance balance;
+		TxCount txc;
 		try {
-			balance = balanceService.getErc20Balance(address, contract);
-		} catch (BusiException e) {
-			  logger.error("获取ERC20余额异常{}",e);
+			txc = txcService.getEthTxCount(address);
+		}catch(BusiException e){
+			 logger.error("获取BTC交易数量异常{}",e);
 			  resp.setRetCode(e.getCode());
 			  resp.setRetMsg(e.getMessage());
 			  return resp;
-		} catch (Exception e) {
-			  logger.error("获取ERC20余额异常{}",e);
+		}
+		catch (Exception e) {
+			  logger.error("获取BTC交易数量异常{}",e);
 			  resp.setRetCode(Constants.FAIL_CODE);
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;
 		}
-
-		if(balance!=null){
+		if(txc!=null){
+			tx_pojo = new TxCountPojo();
+			tx_pojo.setTxCount(txc.getTxCount());
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
-			rtnMap.put("balance", balance.getBalance());
+			rtnMap.put("transactionCount", txc.getTxCount());
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);
