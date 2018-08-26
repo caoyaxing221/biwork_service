@@ -17,10 +17,11 @@ public class Constants {
   public final static String NETWORK_CODE = "9999";
   public final static String NETWORK_MESSAGE = "网络异常，请重试...";
 
-  
- 
-  
-
+  public final static String MAX_TEAM_MESSAGE = "您创建的团队已达上限";
+  public final static String TEAM_NOT_FOUND="团队不存在";
+  public final static String MAX_ACCOUNT_MESSAGE = "您的团队成员已达上限";
+  public final static String INVITE_ALREADY_EXISTS="无法重复邀请";
+  public final static String RECORDS_NOT_FOUND="未找到记录";
   public static final String ACCOUNT_NOT_FOUND="账户不存在";
   public static final String ACCOUNT_MAY_NOT_FOUND="账户不存在,或密码错误";
   public static final String ACCOUNT_AlREAD_EXISTS="账户已存在";

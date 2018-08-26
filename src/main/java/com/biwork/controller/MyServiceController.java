@@ -29,6 +29,7 @@ import com.biwork.util.JwtUtil;
 import com.biwork.util.MD5Util;
 import com.biwork.util.UidUtil;
 import com.biwork.util.ValidateUtil;
+import com.biwork.vo.MeVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,17 +46,15 @@ import io.swagger.annotations.ApiOperation;
  */
 @Controller
 @RequestMapping("/myService")
-@Api(value = "/myService", description = "我的服务")
+@Api(value = "/myService", description = "我的服务及个人信息")
 public class MyServiceController {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	//登录操作
 	@Autowired
 	MyService myService;
 	
 	
-	//去密码登录操作（输入手机号获取验证码直接登录）
 			
 	@ResponseBody
 	@RequestMapping("/query")
@@ -92,6 +91,38 @@ public class MyServiceController {
 		return resp;
 		
 	}
+	@ResponseBody
+	@RequestMapping("/getMe")
+	@ApiOperation(value = "查询我的信息", notes = "查询我的信息",httpMethod = "GET")
 	
+	public RespPojo getMe(HttpServletRequest request){
+		
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		
+		RespPojo resp=new RespPojo();
+		Service service=null;
+		 MeVo userInfo=null;
+		try {
+			  userInfo = myService.getMe(up.getUserid());
+			  userInfo.getCreateTeams();
+		}
+		catch (Exception e) {
+			  logger.error("查询个人信息异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		resp.setData(userInfo);
+		    
+		return resp;
+		
+	}
 	
 }

@@ -12,10 +12,24 @@
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="token" jdbcType="VARCHAR" property="token" />
   </resultMap>
+   <resultMap id="UserInfoMap" type="com.biwork.vo.MeVo">
+     <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="default_team_id" jdbcType="INTEGER" property="defaultTeamId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <collection property="createTeams" ofType="com.biwork.vo.TeamVo"  column="id" select="com.biwork.mapper.TeamMapper.selectByCreateUserId">
+         
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List">
     id, phone, password, default_team_id, name, inserttime, updatetime, state, token
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getUserInfo" parameterType="java.lang.Integer" resultMap="UserInfoMap">
     select 
     <include refid="Base_Column_List" />
     from user

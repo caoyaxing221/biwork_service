@@ -11,6 +11,12 @@
     <result column="inserttime" jdbcType="TIMESTAMP" property="inserttime" />
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
   </resultMap>
+   <resultMap id="MemberVoMap" type="com.biwork.vo.MemberVo">
+       <id column="id" jdbcType="INTEGER" property="id" />
+	   <result column="inviter_id" jdbcType="INTEGER" property="inviterId" />
+	   <result column="name" jdbcType="VARCHAR" property="name" />
+	   <result column="phone" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, team_id, inviter_id, name, phone, state, inserttime, updatetime
   </sql>
@@ -19,6 +25,25 @@
     <include refid="Base_Column_List" />
     from member_invite
     where id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="selectByTeamId" parameterType="java.lang.Integer" resultMap="MemberVoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member_invite
+    where team_id= #{teamId,jdbcType=INTEGER} and state=0
+    <if test="inviterId != null">
+       and  inviter_id = #{inviterId,jdbcType=VARCHAR}
+     </if>
+  </select>
+  <select id="selectByPhone" parameterType="String" resultMap="MemberVoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member_invite
+    where phone= #{phone,jdbcType=VARCHAR} and state=0
+    <if test="teamId != null">
+       and  team_id= #{teamId,jdbcType=INTEGER} 
+     </if>
+    
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from member_invite
@@ -32,7 +57,7 @@
       #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
       #{inserttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.MemberInvite">
+  <insert id="insertSelective" parameterType="com.biwork.entity.MemberInvite" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into member_invite
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

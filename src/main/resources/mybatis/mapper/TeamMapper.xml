@@ -13,6 +13,10 @@
     <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
   </resultMap>
+ <resultMap id="TeamVoMap" type="com.biwork.vo.TeamVo">
+      <id column="id" jdbcType="INTEGER" property="id" />
+    	<result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, email, stuff_num, admin_name, state, inserttime, updatetime, invite_code, 
     create_user_id
@@ -22,6 +26,12 @@
     <include refid="Base_Column_List" />
     from team
     where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectByCreateUserId" parameterType="java.lang.Integer" resultMap="TeamVoMap">
+    select 
+    id,name
+    from team
+    where create_user_id = #{userId,jdbcType=INTEGER} and state=0
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from team
@@ -37,7 +47,7 @@
       #{inserttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{inviteCode,jdbcType=VARCHAR}, 
       #{createUserId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.Team">
+  <insert id="insertSelective"  parameterType="com.biwork.entity.Team"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into team
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

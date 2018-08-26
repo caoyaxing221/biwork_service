@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.biwork.entity.User;
@@ -23,6 +24,11 @@ import com.biwork.entity.User;
 import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
+import com.biwork.po.request.AdminLoginPojo;
+import com.biwork.po.request.GetVerifyCodePojo;
+import com.biwork.po.request.RegisterFirstPojo;
+import com.biwork.po.request.RegisterSecondPojo;
+import com.biwork.po.request.UserLoginPojo;
 import com.biwork.service.LoginService;
 import com.biwork.service.VerifyCodeService;
 
@@ -36,6 +42,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * 
@@ -62,18 +69,14 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping("/login")
 	@ApiOperation(value = "普通用户登录", notes = "普通用户登录",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "verifyCode",value = "短信验证码", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form")
-    })
-	public RespPojo doLoginSubmit(HttpServletRequest request){
+	public RespPojo doLoginSubmit(HttpServletRequest request,@RequestBody
+			@ApiParam(name="登录对象",value="传入json格式",required=true) UserLoginPojo userLoginPojo){
 		logger.info("---进入登录方法---");
-		String phone= request.getParameter("phone")==null?"":request.getParameter("phone");
+		String phone= userLoginPojo.getPhone();
 //		String password = phone.substring(5, 11);
-		String verifyCode=request.getParameter("verifyCode")==null?"":request.getParameter("verifyCode");
+		String verifyCode=userLoginPojo.getVerifyCode();
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=request.getParameter("imgCode");
+		String imgCode=userLoginPojo.getImgCode();
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
@@ -171,18 +174,15 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping("/loginPW")
 	@ApiOperation(value = "管理员登录", notes = "管理员登录",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "password",value = "密码", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form")
-    })
-	public RespPojo doLoginSubmitPW(HttpServletRequest request){
+
+	public RespPojo doLoginSubmitPW(HttpServletRequest request,@RequestBody
+			@ApiParam(name="登录对象",value="传入json格式",required=true) AdminLoginPojo adminLoginPojo){
 		logger.info("---进入登录方法---");
 		
-		String phone= request.getParameter("phone");
-		String password=request.getParameter("password");
+		String phone= adminLoginPojo.getPhone();
+		String password=adminLoginPojo.getPassword();
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=request.getParameter("imgCode");
+		String imgCode=adminLoginPojo.getImgCode();
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
@@ -266,14 +266,12 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping("/getVerifyCode")
 	@ApiOperation(value = "获取验证码", notes = "获取验证码",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "type",value = "验证码类型(register,login,forgetpassword,transfer)", required = true, paramType = "form")
-    })
-	public RespPojo doGetMessageCode(HttpServletRequest request) throws Exception{
+	
+	public RespPojo doGetMessageCode(HttpServletRequest request,@RequestBody
+			@ApiParam(name="登录对象",value="传入json格式",required=true) GetVerifyCodePojo req) throws Exception{
 		logger.info("----发送短信验证码----");
-		String phone= request.getParameter("phone")==null?"":request.getParameter("phone");
-		String type=request.getParameter("type")==null?"":request.getParameter("type");
+		String phone= req.getPhone();
+		String type=req.getType();
 		
 		RespPojo resp=new RespPojo();
 		
@@ -423,17 +421,13 @@ public class LoginController {
 	@RequestMapping("/registerFirst")
 	@ResponseBody
 	@ApiOperation(value = "管理员注册第一步", notes = "管理员注册第一步",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "imgCode",value = "图形验证码", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "verifyCode",value = "短信验证码", required = true, paramType = "form")
-    })
-	public RespPojo registerFirst(HttpServletRequest request){
+	public RespPojo registerFirst(HttpServletRequest request,@RequestBody
+			@ApiParam(name="登录对象",value="传入json格式",required=true) RegisterFirstPojo req){
 		
-		String phone= request.getParameter("phone");
+		String phone= req.getPhone();
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=request.getParameter("imgCode");
-		String verifyCode=request.getParameter("verifyCode");
+		String imgCode=req.getImgCode();
+		String verifyCode=req.getVerifyCode();
 		
 		RespPojo resp=new RespPojo();
 		if(!imageCode.equalsIgnoreCase(imgCode)){
@@ -490,18 +484,14 @@ public class LoginController {
 	}
 	//注册
 	@ApiOperation(value = "管理员注册第二步", notes = "管理员注册第二步",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "phone",value = "手机号", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "password",value = "密码", required = true, paramType = "form"),
-        @ApiImplicitParam(name = "registerToken",value = "第一步返回的registerToken", required = true, paramType = "form")
-    })
 	@RequestMapping("/registerSecond")
 	@ResponseBody
-	public RespPojo register(HttpServletRequest request){
+	public RespPojo register(HttpServletRequest request,@RequestBody
+			@ApiParam(name="登录对象",value="传入json格式",required=true) RegisterSecondPojo req){
 		
-		String phone= request.getParameter("phone");
-		String password=request.getParameter("password");
-		String registerToken=request.getParameter("registerToken");
+		String phone= req.getPhone();
+		String password=req.getPassword();
+		String registerToken=req.getRegisterToken();
 		String rgToken=request.getSession().getAttribute("registerToken").toString();
 		RespPojo resp=new RespPojo();
 		

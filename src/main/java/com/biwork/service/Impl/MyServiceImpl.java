@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.biwork.mapper.ServiceMapper;
+import com.biwork.mapper.UserMapper;
+import com.biwork.entity.User;
 import com.biwork.exception.BusiException;
 
 import com.biwork.service.MyService;
 import com.biwork.util.Constants;
+import com.biwork.vo.MeVo;
 
 
 
@@ -21,7 +24,8 @@ public class MyServiceImpl implements MyService {
 	
 	@Autowired
 	private ServiceMapper serviceMapper;
-
+	@Autowired
+	private UserMapper userMapper;
 	
 	
 	@Override
@@ -31,6 +35,21 @@ public class MyServiceImpl implements MyService {
 		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);   
 	   
 	    return service;
+	}
+
+
+
+	@Override
+	public User getUser(String userId) {
+		
+		return userMapper.selectByPrimaryKey(Integer.parseInt(userId));
+	}
+
+
+
+	@Override
+	public MeVo getMe(String userId) {
+		return userMapper.getUserInfo(Integer.parseInt(userId));
 	}
 	
 
