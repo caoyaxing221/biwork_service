@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.biwork.entity.Service;
+import com.biwork.entity.User;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
 import com.biwork.service.MyService;
@@ -112,6 +113,23 @@ public class LoginInterceptor implements HandlerInterceptor{
         		//||json.getString("uid")!=null
         		String token=request.getHeader("Authorization");
         		if(null!=JwtUtil.verifyToken(token)){
+        			User user=myService.getUser(JwtUtil.getAppUID(token).toString());
+        			if(null==user||user.getState()!=0){
+        				  result.setRetCode(Constants.FAIL_CODE);
+        	              result.setRetMsg(Constants.ACCOUNT_NOT_FOUND);
+        	              response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
+        	              String str=JSON.toJSONString(result);
+        	              try {  
+        	                  PrintWriter writer = response.getWriter();  
+        	                  writer.write(str);  
+        	                  writer.flush();  
+        	                  writer.close();  
+        	                  return false;
+        	              } catch (Exception e) {  
+        	                  
+        	                  logger.error("会话处理异常{}"+e);
+        	              }  
+        			}
         			UserPojo up = new UserPojo();
         			
         			
@@ -125,7 +143,7 @@ public class LoginInterceptor implements HandlerInterceptor{
         	
         }
       //URL:login.jsp是公开的;这个demo是除了login.jsp是可以公开访问的，其它的URL都进行拦截控制  
-        if(url.indexOf("login")>=0||url.indexOf("code")>=0){
+        if(url.indexOf("login")>=0||url.indexOf("code")>=0 || url.indexOf("v1") >= 0){
             return true;  
         }else{
         	 
