@@ -12,6 +12,6 @@ public interface FlowAuthorityMapper {
     FlowAuthority selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(FlowAuthority record);
-
+    int updateByFlowIdSelective(FlowAuthority record);
     int updateByPrimaryKey(FlowAuthority record);
 }

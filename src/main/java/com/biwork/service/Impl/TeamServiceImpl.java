@@ -56,7 +56,8 @@ public class TeamServiceImpl implements TeamService {
 		team.setEmail(email);
 		team.setName(name);
 		team.setStuffNum(Integer.parseInt(stuffNum));
-		int teamId=teamMapper.insertSelective(team);
+		teamMapper.insertSelective(team);
+		int teamId=team.getId();
 		//更新管理员姓名//设为默认团队
 		User user=  new User();
 		user.setId(Integer.parseInt(userId));
@@ -125,7 +126,8 @@ public class TeamServiceImpl implements TeamService {
 		minvite.setName(name);
 		minvite.setPhone(phone);
 		minvite.setTeamId(Integer.parseInt(teamId));
-		return memberInviteMapper.insertSelective(minvite);
+		 memberInviteMapper.insertSelective(minvite);
+		 return minvite.getId();
 		 
 	}
 	@Override

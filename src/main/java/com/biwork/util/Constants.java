@@ -25,6 +25,7 @@ public class Constants {
   public static final String ACCOUNT_NOT_FOUND="账户不存在";
   public static final String ACCOUNT_MAY_NOT_FOUND="账户不存在,或密码错误";
   public static final String ACCOUNT_AlREAD_EXISTS="账户已存在";
+  public static final String FLOW_ALREADY_EXISTS = "无法创建同名审批流程";
   
  
 

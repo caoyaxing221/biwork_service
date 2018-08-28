@@ -12,6 +12,6 @@ public interface FlowNodeMapper {
     FlowNode selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(FlowNode record);
-
+    int updateByFlowIdSelective(FlowNode record);
     int updateByPrimaryKey(FlowNode record);
 }

@@ -13,6 +13,22 @@
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
   </resultMap>
+   <resultMap id="FlowInfoMap" type="com.biwork.vo.FlowVo">
+    <id column="id" jdbcType="INTEGER" property="flowId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="visible_all" jdbcType="INTEGER" property="visibleAll" />
+    <collection property="authList" ofType="com.biwork.vo.TeamVo"  column="id" select="com.biwork.mapper.FlowAuthorityMapper.selectByFlowId">
+         
+    </collection>
+     <collection property="nodeList" ofType="com.biwork.vo.TeamVo"  column="id" select="com.biwork.mapper.FlowNodeMapper.selectByFlowId">
+         
+    </collection>
+    </resultMap>
+     <resultMap id="FlowListMap" type="com.biwork.vo.FlowListVo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+     <result column="is_batch_transer" jdbcType="INTEGER" property="isBatch" />    
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, node_num, visible_all, is_batch_transer, team_id, state, inserttime, updatetime, 
     create_user_id
@@ -22,6 +38,34 @@
     <include refid="Base_Column_List" />
     from flow
     where id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="getFlowInfo" parameterType="java.lang.Integer" resultMap="FlowInfoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from flow
+    where id = #{id,jdbcType=INTEGER}
+     <if test="userId != null">
+       and  create_user_id = #{userId,jdbcType=VARCHAR}
+     </if>
+  </select>
+  <select id="getFlowList" parameterType="java.lang.Integer" resultMap="FlowListMap">
+    select 
+    <include refid="Base_Column_List" />
+    from flow
+   where team_id= #{teamId,jdbcType=INTEGER} and state=0
+    <if test="userId != null">
+       and  create_user_id = #{userId,jdbcType=VARCHAR}
+     </if>
+  </select>
+   <select id="selectByName" parameterType="String" resultMap="FlowListMap">
+    select 
+    <include refid="Base_Column_List" />
+    from flow
+    where name= #{name,jdbcType=VARCHAR} and state=0
+    <if test="teamId != null">
+       and  team_id= #{teamId,jdbcType=INTEGER} 
+     </if>
+    
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from flow
@@ -37,7 +81,7 @@
       #{state,jdbcType=INTEGER}, #{inserttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
       #{createUserId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.Flow">
+  <insert id="insertSelective" parameterType="com.biwork.entity.Flow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into flow
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
