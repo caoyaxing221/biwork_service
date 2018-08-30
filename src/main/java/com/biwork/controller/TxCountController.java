@@ -6,6 +6,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "/v1", description = "获取账户交易数量")
 public class TxCountController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	//获取账户交易数量
 	@Autowired
 	TxCountService txcService;
@@ -108,7 +112,7 @@ public class TxCountController {
 		
 		TxCount txc;
 		try {
-			txc = txcService.getEthTxCount(address);
+			txc = txcService.getBtcTxCount(address);
 		}catch(BusiException e){
 			 logger.error("获取BTC交易数量异常{}",e);
 			  resp.setRetCode(e.getCode());

@@ -6,7 +6,7 @@ public class BlockNumber {
 	public String getBlockNumber() {
 		return blockNumber;
 	}
-	public void setBlockNUmber(String bn) {
+	public void setBlockNumber(String bn) {
 		blockNumber = bn;
 	}
 }

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.biwork.entity.Balance;
 import com.biwork.service.BalanceService;
+import com.biwork.util.HttpUtil;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -17,14 +18,42 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.biwork.exception.BusiException;
+
 @Service("BalanceService")
 public class BalanceServiceImpl implements BalanceService {
 
 	static Logger log = LoggerFactory.getLogger(BalanceService.class);
 	private static final String PRO_URL = "https://mainnet.infura.io/PVMw2QL6TZTb2TTgIgrs";
+    private static final String BCI_URL = "https://blockchain.info/";
 
 	public static Transaction createEthCallTransaction(String from, String to, String data) {
         return new Transaction(from, null, null, null, to, null, data);
+	}
+
+	//https://blockchain.info/balance?active=$address
+	//	https://blockchain.info/balance?active=1MDUoxL1bGvMxhuoDYx6i11ePytECAk9QK
+	//	{
+	//	    "1MDUoxL1bGvMxhuoDYx6i11ePytECAk9QK": {
+	//	        "final_balance": 0,
+	//	        "n_tx": 0,
+	//	        "total_received": 0
+	//	    }
+	//	}
+	public static Object GetResultJsonObject(String json) throws BusiException {
+		Object obj = new Object();
+		JSONParser parser = new JSONParser();
+		try {
+			obj = parser.parse(json);
+		} catch (ParseException e) {
+			throw new BusiException(Integer.toString(e.getErrorType()), e.getMessage());
+		}
+
+		return obj;
 	}
 
 	@Override
@@ -79,6 +108,34 @@ public class BalanceServiceImpl implements BalanceService {
 		bl.setAccount(account);
 		bl.setBalance(fixed.toString());
 
+		return bl;
+	}
+	
+	@Override
+	public Balance getBtcBalance(String account) throws Exception {
+		Balance bl = new Balance();
+		
+		String rsp = "";
+
+		try {
+			rsp = HttpUtil.testGet(BCI_URL + "balance?active=" + account);
+		} catch (Exception e) {
+			throw new BusiException(Integer.toString(e.hashCode()), e.getMessage());
+		}
+
+		Object balObj = GetResultJsonObject(rsp);
+
+		JSONObject jsonObject = (JSONObject) balObj;
+		JSONObject tmp = (JSONObject)jsonObject.get(account);
+		String final_balance = tmp.get("final_balance").toString();
+
+		BigDecimal bal_bd = new BigDecimal(final_balance);
+		BigDecimal ten = new BigDecimal(10);
+
+		BigDecimal fixed = bal_bd.divide(ten.pow(8), 8, BigDecimal.ROUND_HALF_UP);
+
+		bl.setBalance(fixed.toString());
+		
 		return bl;
 	}
 }

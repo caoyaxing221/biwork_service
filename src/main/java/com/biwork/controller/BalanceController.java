@@ -1,5 +1,6 @@
 package com.biwork.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,4 +134,50 @@ public class BalanceController {
 		}
 		return resp;
 	}
+	
+	@ResponseBody
+	@RequestMapping("/btc_getBalance")
+	@ApiOperation(value = "获取BTC余额", notes = "获取BTC余额",httpMethod = "GET")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "address", value = "账户地址", required = true, paramType = "query")
+	})
+	
+	public RespPojo getBtcBalance(HttpServletRequest request) {
+		logger.info("---获取BTC余额方法---");
+		RespPojo resp=new RespPojo();
+
+		String address = request.getParameter("address")==null?"":request.getParameter("address");
+		if (StringUtils.isBlank(address)) {
+			resp.setRetCode(Constants.PARAMETER_CODE);
+			resp.setRetMsg("账户地址不能为空");
+			return resp;
+		}
+
+		Balance balance;
+		try {
+			balance = balanceService.getBtcBalance(address);
+		} catch (BusiException e) {
+			  logger.error("获取BTC余额异常{}",e);
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		} catch (Exception e) {
+			  logger.error("获取BTC余额异常{}",e);
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+
+		if(balance!=null){
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
+			rtnMap.put("address", address);
+			rtnMap.put("balance", balance.getBalance());
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(rtnMap);
+			return resp;
+		}
+		return resp;
+	}
+
 }
