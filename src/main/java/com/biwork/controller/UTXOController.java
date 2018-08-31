@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.biwork.entity.UTXO;
 
 import com.biwork.exception.BusiException;
@@ -39,20 +40,6 @@ import org.json.simple.parser.ParseException;
 public class UTXOController {
     private Logger logger = LoggerFactory.getLogger(getClass());
     
-    public static Object GetResultJsonObject(String json) throws BusiException {
-    	Object obj = new Object();
-        JSONParser parser = new JSONParser();
-        try {
-            obj = parser.parse(json);
-            JSONObject jsonObject = (JSONObject) obj;
-            obj = jsonObject.get("unspent_outputs");
-        } catch (ParseException e) {
-            throw new BusiException(Integer.toString(e.getErrorType()), e.getMessage());
-        }
-
-        return obj;
-    }
-
 	//获取BTC UTXO
 	@Autowired
 	UTXOService utxoService;
@@ -77,10 +64,8 @@ public class UTXOController {
         
         UTXOPojo utxo_pojo = new UTXOPojo();
         UTXO utxo;
-        Object utxoObj = null;
 		try {
             utxo = utxoService.getBtcUtxo(address);
-            utxoObj = GetResultJsonObject(utxo.getUtxo());
 		}catch(BusiException e){
 			 logger.error("获取BTC UTXO异常{}",e);
 			  resp.setRetCode(e.getCode());
@@ -97,7 +82,11 @@ public class UTXOController {
 			utxo_pojo = new UTXOPojo();
 			utxo_pojo.setUtxo(utxo.getUtxo());
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
-            rtnMap.put("unspent_outputs", utxoObj);
+			
+			String s = utxo.getUtxo();
+			com.alibaba.fastjson.JSONArray utxoArr = JSON.parseArray(s);
+			
+            rtnMap.put("unspent_outputs", utxoArr);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);

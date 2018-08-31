@@ -130,11 +130,15 @@ public class BalanceServiceImpl implements BalanceService {
 		String final_balance = tmp.get("final_balance").toString();
 
 		BigDecimal bal_bd = new BigDecimal(final_balance);
-		BigDecimal ten = new BigDecimal(10);
-
-		BigDecimal fixed = bal_bd.divide(ten.pow(8), 8, BigDecimal.ROUND_HALF_UP);
-
-		bl.setBalance(fixed.toString());
+		if (bal_bd.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal ten = new BigDecimal(10);
+			
+			BigDecimal fixed = bal_bd.divide(ten.pow(8), 8, BigDecimal.ROUND_HALF_UP);
+			
+			bl.setBalance(fixed.toString());
+		} else {
+			bl.setBalance(bal_bd.toString());
+		}
 		
 		return bl;
 	}

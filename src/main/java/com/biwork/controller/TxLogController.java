@@ -80,27 +80,6 @@ public class TxLogController {
             return resp;
         }
         
-        // String page = request.getParameter("page")==null?"":request.getParameter("page");
-		// if (StringUtils.isBlank(page)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("page不能为空");
-        //     return resp;
-        // }
-        
-        // String offset = request.getParameter("offset")==null?"":request.getParameter("offset");
-		// if (StringUtils.isBlank(offset)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("offset不能为空");
-        //     return resp;
-        // }
-        
-        // String sort = request.getParameter("sort")==null?"":request.getParameter("sort");
-		// if (StringUtils.isBlank(sort)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("sort不能为空");
-        //     return resp;
-		// }
-		
         TxLogPojo txLog_pojo = new TxLogPojo();
         TxLog txLog;
         Object txLogsObj = null;
@@ -161,27 +140,6 @@ public class TxLogController {
             return resp;
         }
         
-        // String page = request.getParameter("page")==null?"":request.getParameter("page");
-		// if (StringUtils.isBlank(page)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("page不能为空");
-        //     return resp;
-        // }
-        
-        // String offset = request.getParameter("offset")==null?"":request.getParameter("offset");
-		// if (StringUtils.isBlank(offset)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("offset不能为空");
-        //     return resp;
-        // }
-        
-        // String sort = request.getParameter("sort")==null?"":request.getParameter("sort");
-		// if (StringUtils.isBlank(sort)) {
-        //     resp.setRetCode(Constants.PARAMETER_CODE);
-        //     resp.setRetMsg("sort不能为空");
-        //     return resp;
-		// }
-		
         TxLogPojo txLog_pojo = new TxLogPojo();
         TxLog txLog;
         Object txLogsObj = null;
