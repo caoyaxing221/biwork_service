@@ -8,6 +8,8 @@ public class ProcessWithBLOBs extends Process {
     private String remark;
 
     private String attachUrl;
+    
+    private String airDropTaskId;
 
     public String getCause() {
         return cause;
@@ -40,4 +42,12 @@ public class ProcessWithBLOBs extends Process {
     public void setAttachUrl(String attachUrl) {
         this.attachUrl = attachUrl == null ? null : attachUrl.trim();
     }
+
+	public String getAirDropTaskId() {
+		return airDropTaskId;
+	}
+
+	public void setAirDropTaskId(String airDropTaskId) {
+		this.airDropTaskId = airDropTaskId;
+	}
 }

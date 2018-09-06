@@ -9,6 +9,10 @@
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="state" jdbcType="INTEGER" property="state" />
   </resultMap>
+    <resultMap id="TeamVoMap" type="com.biwork.vo.TeamVo">
+      <id column="id" jdbcType="INTEGER" property="id" />
+    	<result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, team_id, inserttime, updatetime, state
   </sql>
@@ -18,6 +22,16 @@
     from department
     where id = #{id,jdbcType=INTEGER}
   </select>
+   <select id="selectDepartmentList" parameterType="java.lang.Integer" resultMap="TeamVoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where team_id is null and state=0
+     <if test="teamId != null">
+     union 
+	select * from department where  team_id = #{teamId,jdbcType=INTEGER} and state=0
+     </if>
+   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from department
     where id = #{id,jdbcType=INTEGER}

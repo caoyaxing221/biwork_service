@@ -134,7 +134,7 @@ public class LoginInterceptor implements HandlerInterceptor{
         			
         			
         			up.setUserid(JwtUtil.getAppUID(token).toString());
-        			
+        			up.setRoleid(JwtUtil.getRoleID(token).toString());
         			session.setAttribute("User",up);
         			return true;
         		}

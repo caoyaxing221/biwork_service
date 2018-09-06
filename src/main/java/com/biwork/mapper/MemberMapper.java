@@ -17,6 +17,7 @@ public interface MemberMapper {
     Member selectByPrimaryKey(Integer id);
     
     List<MemberVo> selectByTeamId(@Param("teamId")Integer id,@Param("userId") String  userId);
+    MemberVo selectByTeamIdUseId(@Param("teamId")Integer id,@Param("userId") String  userId);
     MemberVo selectByPhone(@Param("phone") String phone,@Param("teamId")Integer id);
 
     int updateByPrimaryKeySelective(Member record);

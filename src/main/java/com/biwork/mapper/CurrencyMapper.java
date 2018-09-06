@@ -1,5 +1,7 @@
 package com.biwork.mapper;
 
+import java.util.List;
+
 import com.biwork.entity.Currency;
 
 public interface CurrencyMapper {
@@ -10,7 +12,7 @@ public interface CurrencyMapper {
     int insertSelective(Currency record);
 
     Currency selectByPrimaryKey(Integer id);
-
+    List<Currency> selectCurrencys();
     int updateByPrimaryKeySelective(Currency record);
 
     int updateByPrimaryKey(Currency record);

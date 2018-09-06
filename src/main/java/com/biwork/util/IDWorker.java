@@ -51,7 +51,8 @@ public class IDWorker {
 				break;
 			}
 			String timeStr = String.valueOf(timestamp);
-			return timeStr.substring(0, 14) + flag + workId + timeStr.substring(14) + String.format("%03d", sequence);
+//			return timeStr.substring(0, 14) + flag + workId + timeStr.substring(14) + String.format("%03d", sequence);
+			return timeStr.substring(0, 14) + flag  + timeStr.substring(14) + String.format("%03d", sequence);
 		}
 	}
 
@@ -79,7 +80,7 @@ public class IDWorker {
 					int i = 0;
 					while (i < 100) {
 						try {
-							System.out.println(IDWorker.nextID("LS"));
+							System.out.println(IDWorker.nextID(""));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -89,5 +90,6 @@ public class IDWorker {
 			}) {
 			}.start();
 		}
+//		System.out.println(timeGen());
 	}
 }

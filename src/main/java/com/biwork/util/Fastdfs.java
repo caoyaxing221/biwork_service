@@ -50,7 +50,7 @@ public class Fastdfs {
 		StringBuilder str = new StringBuilder();
 		try {
 			ClassPathResource cpr = new ClassPathResource("fdfs_client.conf");
-			ClientGlobal.init(cpr.getClassLoader().getResource("fdfs_client.conf").getPath());
+			ClientGlobal.init(cpr.getClassLoader().getResource("fdfs_client.conf").getPath().replace("%20", " "));
 
 			// 创建一个TrackerClient对象。
 			TrackerClient trackerClient = new TrackerClient();
@@ -229,13 +229,14 @@ public class Fastdfs {
 		// 快惠卡
 		String urlFront = Fastdfs.upload2(fileByte);
 		System.out.println(urlFront);*/
-		/*String aa=Fastdfs.upload("http://pic13.photophoto.cn/20091109/0034034824143467_b.jpg");
-		System.out.println(aa);*/
-		
-		File file = new File("E:/111.jpg");
-		byte[] fileByte =Base64Util.getFileByte(file);
-		String s = Base64Util.byteToBase64Encoding(fileByte);
-		System.out.println(s);
+		String aa=Fastdfs.upload("http://pic13.photophoto.cn/20091109/0034034824143467_b.jpg");
+		System.out.println(aa);
+		ClassPathResource cpr = new ClassPathResource("fdfs_client.conf");
+		ClientGlobal.init(cpr.getClassLoader().getResource("fdfs_client.conf").getPath());
+//		File file = new File("E:/111.jpg");
+//		byte[] fileByte =Base64Util.getFileByte(file);
+//		String s = Base64Util.byteToBase64Encoding(fileByte);
+//		System.out.println(s);
 
 	}
 }

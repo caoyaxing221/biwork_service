@@ -17,6 +17,12 @@
 	   <result column="name" jdbcType="VARCHAR" property="name" />
 	   <result column="phone" jdbcType="VARCHAR" property="phone" />
   </resultMap>
+   <resultMap id="InviteVo" type="com.biwork.vo.InviteVo">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="teamName" jdbcType="VARCHAR" property="teamName" />
+      <result column="inviterName" jdbcType="VARCHAR" property="inviterName" />
+      <result column="phone" jdbcType="VARCHAR" property="inviterPhone" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, team_id, inviter_id, name, phone, state, inserttime, updatetime
   </sql>
@@ -34,6 +40,16 @@
     <if test="inviterId != null">
        and  inviter_id = #{inviterId,jdbcType=VARCHAR}
      </if>
+  </select>
+   <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="InviteVo">
+   select a.id,d.name as teamName,b.name as inviterName,b.phone from member_invite a 
+	join `user` b
+	on a.inviter_id=b.id
+	join `user` c
+	on a.phone=c.phone
+	join team d
+	on a.team_id =d.id
+	 where c.id=#{userId,jdbcType=INTEGER} and a.state=0
   </select>
   <select id="selectByPhone" parameterType="String" resultMap="MemberVoMap">
     select 

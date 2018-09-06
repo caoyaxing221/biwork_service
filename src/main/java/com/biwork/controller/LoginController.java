@@ -154,7 +154,7 @@ public class LoginController {
 			 Map<String, Object> rtnMap = new HashMap<String, Object>();
 			 String token="";
 			try {
-				token = JwtUtil.createToken(account.getId().longValue());
+				token = JwtUtil.createToken(account.getId().longValue(),1L);
 			} catch (Exception e) {
 				 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 				 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
@@ -244,7 +244,7 @@ public class LoginController {
 			 Map<String, Object> rtnMap = new HashMap<String, Object>();
 			 String token="";
 			try {
-				token = JwtUtil.createToken(account.getId().longValue());
+				token = JwtUtil.createToken(account.getId().longValue(),0L);
 			} catch (Exception e) {
 				 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 				 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);

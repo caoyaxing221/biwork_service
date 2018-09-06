@@ -61,6 +61,11 @@ public class TimeUtils {
 		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return simpleDateFormat.parse(simpleDateFormat.format(new Date()));
 	}
+	
+	public static Date getDateTime(String datetimeStr) throws ParseException{
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return simpleDateFormat.parse(datetimeStr);
+	}
 	/**
 	 * 
 	 * 方法描述：获得两个日期的月份差  格式yyyy-MM

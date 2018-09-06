@@ -6,6 +6,7 @@ public class MemberVo {
 	private String name;
 	private String inviterId;
 	private String phone;
+	private String userId;
 	public String getId() {
 		return id;
 	}
@@ -23,6 +24,12 @@ public class MemberVo {
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	/**
 	 * @return the name

@@ -20,6 +20,12 @@
     from currency
     where id = #{id,jdbcType=INTEGER}
   </select>
+   <select id="selectCurrencys"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from currency
+    where state=0
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from currency
     where id = #{id,jdbcType=INTEGER}

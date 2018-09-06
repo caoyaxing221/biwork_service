@@ -3,6 +3,7 @@ package com.biwork.po;
 public class UserPojo {
 
 	private String userid;
+	private String roleid;
 	private String token;
 	/**
 	 * @return the userid
@@ -15,6 +16,12 @@ public class UserPojo {
 	 */
 	public void setUserid(String userid) {
 		this.userid = userid;
+	}
+	public String getRoleid() {
+		return roleid;
+	}
+	public void setRoleid(String roleid) {
+		this.roleid = roleid;
 	}
 	/**
 	 * @return the token

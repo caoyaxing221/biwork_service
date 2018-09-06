@@ -48,6 +48,18 @@
        and  create_user_id = #{userId,jdbcType=VARCHAR}
      </if>
   </select>
+   <select id="getUseFlowInfo" parameterType="java.lang.Integer" resultMap="FlowInfoMap">
+    select   <include refid="Base_Column_List" />   
+ 	from flow 
+	where id = #{id,jdbcType=INTEGER} and visible_all=1  and state=0
+	union
+	select a.*
+ 	from flow a
+	join flow_authority b
+	on a.id=b.flow_id
+	where a.id = #{id,jdbcType=INTEGER} and visible_all=0  and a.state=0 and b.state=0 and b.user_id=#{userId,jdbcType=VARCHAR}
+  
+  </select>
   <select id="getFlowList" parameterType="java.lang.Integer" resultMap="FlowListMap">
     select 
     <include refid="Base_Column_List" />
@@ -56,6 +68,18 @@
     <if test="userId != null">
        and  create_user_id = #{userId,jdbcType=VARCHAR}
      </if>
+  </select>
+  <select id="getUseFlowList" parameterType="java.lang.Integer" resultMap="FlowListMap">
+    select   <include refid="Base_Column_List" />   
+ 	from flow 
+	where team_id=#{teamId,jdbcType=INTEGER} and visible_all=1  and state=0
+	union
+	select a.*
+ 	from flow a
+	join flow_authority b
+	on a.id=b.flow_id
+	where a.team_id=#{teamId,jdbcType=INTEGER} and visible_all=0  and a.state=0 and b.state=0 and b.user_id=#{userId,jdbcType=VARCHAR}
+  
   </select>
    <select id="selectByName" parameterType="String" resultMap="FlowListMap">
     select 

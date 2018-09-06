@@ -17,6 +17,7 @@
 	   <result column="inviter_id" jdbcType="INTEGER" property="inviterId" />
 	   <result column="name" jdbcType="VARCHAR" property="name" />
 	   <result column="phone" jdbcType="VARCHAR" property="phone" />
+	   <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, team_id, inviter_id, user_id, name, phone, state, inserttime, updatetime
@@ -33,13 +34,22 @@
     from member
     where team_id= #{teamId,jdbcType=INTEGER} and state=0
     <if test="userId != null">
-       and  inviter_id = #{userId,jdbcType=VARCHAR} or user_id = #{userId,jdbcType=VARCHAR}
+       and  inviter_id = #{userId,jdbcType=VARCHAR} 
+     </if>
+  </select>
+    <select id="selectByTeamIdUseId" parameterType="java.lang.Integer" resultMap="MemberVoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member
+    where team_id= #{teamId,jdbcType=INTEGER} and state=0
+    <if test="userId != null">
+       and  user_id = #{userId,jdbcType=VARCHAR}
      </if>
   </select>
   <select id="selectByPhone" parameterType="String" resultMap="MemberVoMap">
     select 
     <include refid="Base_Column_List" />
-    from member_invite
+    from member
     where phone= #{phone,jdbcType=VARCHAR} and state=0
     <if test="teamId != null">
        and  team_id= #{teamId,jdbcType=INTEGER} 

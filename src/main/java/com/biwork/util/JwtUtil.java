@@ -35,7 +35,7 @@ public class JwtUtil {
      * @param user_id
      *            登录成功后用户user_id, 参数user_id不可传空
      */
-    public static String createToken(Long user_id) throws Exception {
+    public static String createToken(Long user_id,Long role_id) throws Exception {
         Date iatDate = new Date();
         // expire time
         Calendar nowTime = Calendar.getInstance();
@@ -52,6 +52,7 @@ public class JwtUtil {
         String token = JWT.create().withHeader(map) // header
                 .withClaim("iss", "Service") // payload
                 .withClaim("aud", "APP").withClaim("user_id", null == user_id ? null : user_id.toString())
+                .withClaim("role_id", null == role_id ? null : role_id.toString())
                 .withIssuedAt(iatDate) // sign time
                 .withExpiresAt(expiresDate) // expire time
                 .sign(Algorithm.HMAC256(SECRET)); // signature
@@ -92,6 +93,20 @@ public class JwtUtil {
             // token 校验失败, 抛出Token验证非法异常
         }
         return Long.valueOf(user_id_claim.asString());
+    }
+    /**
+     * 根据Token获取user_id
+     * 
+     * @param token
+     * @return user_id
+     */
+    public static Long getRoleID(String token) {
+        Map<String, Claim> claims = verifyToken(token);
+        Claim role_id_claim = claims.get("role_id");
+        if (null == role_id_claim || StringUtils.isEmpty(role_id_claim.asString())) {
+            // token 校验失败, 抛出Token验证非法异常
+        }
+        return Long.valueOf(role_id_claim.asString());
     }
   public static void main(String[] args) {
 //	try {

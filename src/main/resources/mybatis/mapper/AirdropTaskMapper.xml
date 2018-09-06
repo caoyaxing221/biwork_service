@@ -10,15 +10,58 @@
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="team_id" jdbcType="INTEGER" property="teamId" />
+    <result column="banner_url" jdbcType="VARCHAR" property="bannerUrl" />
+    <result column="create_userid" jdbcType="VARCHAR" property="createUserid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
   </resultMap>
+     <sql id="page_val">
+   <if test="fetch!=null">limit #{fetch,jdbcType=INTEGER} </if>
+		<if test="offset!=null">offset #{offset,jdbcType=INTEGER} </if>
+		
+    </sql>
   <sql id="Base_Column_List">
-    id, name, inserttime, updatetime, endtime, state, title, remark
+    id, name, inserttime, updatetime, endtime, state, title, remark,banner_url,team_id,create_userid,type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from airdrop_task
     where id = #{id,jdbcType=INTEGER}
+  </select>
+ 
+  <select id="selectByName" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from airdrop_task
+    where name = #{name,jdbcType=VARCHAR} and state=0
+     <if test="teamId != null">
+       and  team_id= #{teamId,jdbcType=INTEGER} 
+     </if>
+  </select>
+  <select id="selectByTeamId"  resultType="com.biwork.vo.TaskListVo">
+    select  (@rowNum:=@rowNum+1) rm ,t.* ,(select count(1) from airdrop_task where create_userid=#{userId,jdbcType=INTEGER}
+    AND state=0 
+    and team_id=#{teamId,jdbcType=INTEGER}
+    <if test="type != null">
+        and type=#{type,jdbcType=INTEGER}
+      </if>        ) count
+	from (
+	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
+	,endtime as endTime,state,type
+	from airdrop_task a 
+	where  a.create_userid=#{userId,jdbcType=INTEGER} and a.team_id=#{teamId,jdbcType=INTEGER} 
+	 <if test="type != null">
+        and a.type=#{type,jdbcType=INTEGER}
+      </if> 
+	 order by a.inserttime desc ) t,(SELECT @rowNum:=0) b 
+  	<include refid="page_val" />
+  </select>
+  <select id="selectByTaskId"  resultType="com.biwork.vo.TaskVo">
+  	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
+	,endtime as endTime,state,type,title,banner_url as bannerUrl,remark
+	from airdrop_task a 
+	where   <if test="userId != null"> a.create_userid=#{userId,jdbcType=INTEGER} and  </if> id=#{taskId,jdbcType=INTEGER} 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from airdrop_task
@@ -32,7 +75,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, 
       #{title,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.AirdropTask">
+  <insert id="insertSelective" parameterType="com.biwork.entity.AirdropTask"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into airdrop_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -58,6 +101,18 @@
       </if>
       <if test="remark != null">
         remark,
+      </if>
+      <if test="bannerUrl != null">
+        banner_url,
+      </if>
+       <if test="teamId != null">
+        team_id,
+      </if>
+       <if test="createUserid != null">
+        create_userid,
+      </if>
+       <if test="type != null">
+       type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -85,6 +140,18 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
+       <if test="bannerUrl != null">
+        #{bannerUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="teamId != null">
+        #{teamId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserid != null">
+        #{createUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.AirdropTask">
@@ -110,6 +177,18 @@
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerUrl != null">
+        banner_url = #{bannerUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="teamId != null">
+        team_id = #{teamId,jdbcType=VARCHAR},
+      </if>
+       <if test="createUserid != null">
+        create_userid = #{createUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

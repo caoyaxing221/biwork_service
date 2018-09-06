@@ -53,6 +53,10 @@ public class ValidateUtil {
      */
     public static final String REGEX_MONEY = "^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$";
     /**
+     * 正则表达式：验证日期 
+     */
+    public static final String REGEX_DATETIME = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[13579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
+    /**
      * 校验用户名
      * 
      * @param username
@@ -167,12 +171,16 @@ public class ValidateUtil {
       return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0'); 
     }
     public static void main(String[] args) {
-        String username = "fdsdfsdj";
-        System.out.println(ValidateUtil.isUsername(username));
-        System.out.println(ValidateUtil.isChinese(username));
+        String username = "2018-09-02";
+        System.out.println(ValidateUtil.isDateTime(username));
+       // System.out.println(ValidateUtil.isChinese(username));
     }
   //金额验证  
     public static boolean isMoney(String str){   
         return  Pattern.matches(REGEX_MONEY,str);
      }  
+    //时间验证  
+    public static boolean isDateTime(String str){   
+        return  Pattern.matches(REGEX_DATETIME,str);
+     } 
 }

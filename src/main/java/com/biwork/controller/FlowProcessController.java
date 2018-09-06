@@ -19,11 +19,16 @@ import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
 import com.biwork.po.request.AddFlowPojo;
+import com.biwork.po.request.CommitProcessPojo;
+import com.biwork.po.request.DealProcessPojo;
 import com.biwork.po.request.EditFlowPojo;
+import com.biwork.po.request.ReceiverMsgPojo;
 import com.biwork.service.FlowProcessService;
 import com.biwork.util.Constants;
 import com.biwork.vo.FlowListVo;
 import com.biwork.vo.FlowVo;
+import com.biwork.vo.ProcessListVo;
+import com.biwork.vo.ProcessVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -210,12 +215,67 @@ public class FlowProcessController {
 		
 	}
 	@ResponseBody
+	@RequestMapping(value="/dealProcess", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "处理审批", notes = "处理审批",httpMethod = "POST")
+	public RespPojo dealProcess(HttpServletRequest request,@RequestBody
+			@ApiParam(name="审批对象",value="传入json格式",required=true) DealProcessPojo req){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		
+		RespPojo resp=new RespPojo();
+		String processId=req.getProcessId();
+		String dealFlag=req.getDealFlag();
+		if(StringUtils.isBlank(processId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择审批");
+			  return resp;
+		}
+		
+		if(StringUtils.isBlank(dealFlag)||(!"-2".equals(dealFlag)&&!"1".equals(dealFlag)&&!"-1".equals(dealFlag))){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("处理方式缺失");
+			  return resp;
+		}
+		
+		
+		try {
+			  flowProcessService.dealProcess(up.getUserid(), processId, Integer.parseInt(dealFlag));
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("审批异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("processId", processId);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
 	@RequestMapping(value="/query", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "流程管理根据id查询流程信息", notes = "流程管理根据id查询流程信息",httpMethod = "GET")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "flowId",value = "流程id", required = true, paramType = "query")
 	})
-	public RespPojo queryTeam(HttpServletRequest request){
+	public RespPojo queryFlow(HttpServletRequest request){
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		FlowVo flow=null;
@@ -231,6 +291,57 @@ public class FlowProcessController {
 		
 		try {
 			flow=flowProcessService.queryFlowById(flowId, up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询流程异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("flow", flow);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryFlow", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通用户根据id查询流程信息", notes = "普通用户根据id查询流程信息",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "flowId",value = "流程id", required = true, paramType = "query")
+	})
+	public RespPojo queryFlowUser(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		FlowVo flow=null;
+		RespPojo resp=new RespPojo();
+		String flowId=request.getParameter("flowId");
+		
+		if(StringUtils.isBlank(flowId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("流程id不能为空");
+			  return resp;
+		}
+		
+		
+		try {
+			flow=flowProcessService.queryUseFlowById(flowId, up.getUserid());
 			
 		}
 		catch(BusiException e){
@@ -352,6 +463,277 @@ public class FlowProcessController {
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/queryUseFlowList", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通账号查询可用流程列表", notes = "普通账号查询可用流程列表",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query")
+	})
+	public RespPojo queryUseFlowList(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		List<FlowListVo> flow=null;
+		RespPojo resp=new RespPojo();
+		String teamId=request.getParameter("teamId");
+		
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		
+		try {
+			  flow=flowProcessService.queryUseFlows(teamId, up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("普通账号查询可用流程列表异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("flowList", flow);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryProcess", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "根据id查询审批信息", notes = "根据id查询审批信息",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "processId",value = "审批id", required = true, paramType = "query")
+	})
+	public RespPojo queryProcess(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		ProcessVo process=null;
+		RespPojo resp=new RespPojo();
+		String processId=request.getParameter("processId");
+		
+		if(StringUtils.isBlank(processId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("审批id不能为空");
+			  return resp;
+		}
+		
+		
+		try {
+			process=flowProcessService.queryProcessById(processId, up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询审批异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("process", process);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryProcessList", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "查询审批列表", notes = "查询审批列表",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "type",value = "类别（-1我提交的,0待审批,1已审批）", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "pageNo",value = "页码", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "pageSize",value = "每页条数", required = true, paramType = "query")
+	})
+	public RespPojo queryProcessList(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		List<ProcessListVo> process=null;
+		RespPojo resp=new RespPojo();
+		String teamId=request.getParameter("teamId");
+		String type=request.getParameter("type");
+		String pageNo=request.getParameter("pageNo");
+		String pageSize=request.getParameter("pageSize");
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		if(StringUtils.isBlank(type)||(!type.equals("-1")&&!type.equals("0")&&!type.equals("1"))){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("类别有误");
+			  return resp;
+		}
+		if(StringUtils.isBlank(pageNo)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("页码不能为空");
+			  return resp;
+		}
+		
+		
+		if(StringUtils.isBlank(pageSize)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("每页条数不能为空");
+			  return resp;
+		}
+		Integer offset =(Integer.parseInt(pageNo)-1)*Integer.parseInt(pageSize);
+		Integer totalCount;
+		try {
+			if(type.equals("-1")){
+				 process=flowProcessService.queryProcess(teamId, up.getUserid(), pageSize, offset.toString());
+			}else{
+				 process=flowProcessService.queryApproveProcess(teamId, up.getUserid(), pageSize, offset.toString(), type);
+			}
+			 
+			totalCount=process.size()==0?0:Integer.parseInt(process.get(0).getCount());
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("管理员查询创建流程列表异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("processList", process);
+		 rtnMap.put("totalCount", totalCount);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/commitProcess", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通用户提交审批", notes = "普通用户提交审批",httpMethod = "POST")
+//
+	public RespPojo commitProcess(HttpServletRequest request,@RequestBody
+			@ApiParam(name="审批对象",value="传入json格式",required=true) CommitProcessPojo req){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		
+		RespPojo resp=new RespPojo();
+		int processId=0;
+		String flowId=req.getFlowId();
+		String applicationNumber=req.getApplicationNumber();
+		String attachUrl=req.getAttachUrl();
+		String categoryId=req.getCategoryId();
+		String cause=req.getCause();
+		String currencyId=req.getCurrencyId();
+		String departmentId = req.getDepartmentId();
+		String receiver=req.getReceiver();
+		ReceiverMsgPojo receiverMsg = req.getReceiverMsg();
+		String remark = req.getRemark();
+		String userId=up.getUserid();
+		String airDropTaskId=null==req.getAirDropTaskId()||"".equals(req.getAirDropTaskId())?null:req.getAirDropTaskId();
+		if(StringUtils.isBlank(flowId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择流程");
+			  return resp;
+		}
+		if(StringUtils.isBlank(applicationNumber)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("申请编号缺失");
+			  return resp;
+		}
+		
+		if(StringUtils.isBlank(categoryId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择付币类型");
+			  return resp;
+		}
+		if(StringUtils.isBlank(currencyId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择币种");
+			  return resp;
+		}
+		if(StringUtils.isBlank(departmentId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择入账部门");
+			  return resp;
+		}
+		if(StringUtils.isBlank(receiver)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择收款人");
+			  return resp;
+		}
+		if(null==receiverMsg){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未提交地址信息");
+			  return resp;
+		}
+		try {
+			processId=flowProcessService.commitProcess(userId, flowId, applicationNumber, currencyId,
+					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId);
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("提交审批异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("processId", processId);
 		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		 resp.setData(rtnMap);

@@ -11,9 +11,23 @@
     <result column="approver_id" jdbcType="INTEGER" property="approverId" />
     <result column="state" jdbcType="INTEGER" property="state" />
   </resultMap>
+   <resultMap id="ProcessNodeMap" type="com.biwork.vo.ProcessNodeVo">
+    	<id column="id" jdbcType="INTEGER" property="id" />
+      	<result column="no" jdbcType="VARCHAR" property="no" />
+    	<result column="name" jdbcType="VARCHAR" property="name" />
+    	<result column="state" jdbcType="VARCHAR" property="state" />
+    	<result column="time" jdbcType="VARCHAR" property="time" />
+    	<result column="approver_id" jdbcType="VARCHAR" property="approverId" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, process_id, no, inserttime, updatetime, finishtime, approver_id, state
   </sql>
+     <select id="selectByProcessId" parameterType="java.lang.Integer" resultMap="ProcessNodeMap">
+   select a.id,no,IFNULL(b.name,c.name) as name,a.state,a.updatetime as time,approver_id from process_node a join user b 
+	on a.approver_id =b.id 
+	left join member c on a.approver_id=c.user_id
+	where process_id= #{processId,jdbcType=INTEGER} order by no asc
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

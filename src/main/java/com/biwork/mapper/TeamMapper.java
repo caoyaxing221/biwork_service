@@ -14,7 +14,7 @@ public interface TeamMapper {
 
     Team selectByPrimaryKey(Integer id);
     List<TeamVo> selectByCreateUserId(Integer id);
-
+    List<TeamVo> selectByJoinUserId(Integer id);
     int updateByPrimaryKeySelective(Team record);
 
     int updateByPrimaryKey(Team record);

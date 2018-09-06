@@ -19,7 +19,8 @@ public interface FlowMapper {
     FlowListVo selectByName(@Param("name") String name,@Param("teamId")Integer id);
     FlowVo getFlowInfo(@Param("userId") String userId,@Param("id")Integer id);
     List<FlowListVo> getFlowList(@Param("userId") String userId,@Param("teamId")Integer teamId);
+    List<FlowListVo> getUseFlowList(@Param("userId") Integer userId,@Param("teamId")Integer teamId);
     int updateByPrimaryKeySelective(Flow record);
-
+    FlowVo getUseFlowInfo(@Param("userId") Integer userId,@Param("id")Integer id);
     int updateByPrimaryKey(Flow record);
 }

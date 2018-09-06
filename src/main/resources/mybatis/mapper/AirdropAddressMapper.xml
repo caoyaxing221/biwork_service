@@ -10,6 +10,11 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
   </resultMap>
+   <sql id="page_val">
+   <if test="fetch!=null">limit #{fetch,jdbcType=INTEGER} </if>
+		<if test="offset!=null">offset #{offset,jdbcType=INTEGER} </if>
+		
+    </sql>
   <sql id="Base_Column_List">
     id, taskid, inserttime, updatetime, state, address, amount
   </sql>
@@ -18,6 +23,20 @@
     <include refid="Base_Column_List" />
     from airdrop_address
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByAddress" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from airdrop_address
+    where taskid = #{taskId,jdbcType=INTEGER} and address=#{address,jdbcType=VARCHAR} and state=0
+  </select>
+  <select id="selectByTaskId"  resultType="com.biwork.vo.AddressListVo">
+   select  (@rowNum:=@rowNum+1) rm ,t.* ,(select count(1) from airdrop_address where   taskid=#{taskId,jdbcType=INTEGER} AND state=0      ) count
+	from (
+	select a.id,a.address	
+	from airdrop_address a 
+	where  a.taskid=#{taskId,jdbcType=INTEGER} AND state=0    order by a.inserttime desc ) t,(SELECT @rowNum:=0) b 
+  	<include refid="page_val" />
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from airdrop_address
@@ -31,7 +50,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
       #{amount,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.AirdropAddress">
+  <insert id="insertSelective" parameterType="com.biwork.entity.AirdropAddress" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into airdrop_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

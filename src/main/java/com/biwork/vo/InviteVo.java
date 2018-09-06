@@ -46,7 +46,7 @@ public class InviteVo {
 	 * @return the inviterPhone
 	 */
 	public String getInviterPhone() {
-		return inviterPhone;
+		return inviterPhone.replaceAll("(?<=[\\d]{3})\\d(?=[\\d]{4})", "*");
 	}
 	/**
 	 * @param inviterPhone the inviterPhone to set

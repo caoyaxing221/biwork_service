@@ -18,6 +18,14 @@ public class AirdropTask {
     private String title;
 
     private String remark;
+    
+    private String teamId;
+    
+    private String bannerUrl;
+    
+    private Integer createUserid;
+    
+    private Integer type;
 
     public Integer getId() {
         return id;
@@ -82,4 +90,36 @@ public class AirdropTask {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+
+	public String getBannerUrl() {
+		return bannerUrl;
+	}
+
+	public void setBannerUrl(String bannerUrl) {
+		this.bannerUrl = bannerUrl;
+	}
+
+	public Integer getCreateUserid() {
+		return createUserid;
+	}
+
+	public void setCreateUserid(Integer createUserid) {
+		this.createUserid = createUserid;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

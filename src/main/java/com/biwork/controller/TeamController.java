@@ -29,7 +29,9 @@ import com.biwork.po.request.EditTeamPojo;
 import com.biwork.service.TeamService;
 import com.biwork.util.Constants;
 import com.biwork.util.ValidateUtil;
+import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
+import com.biwork.vo.TeamVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -502,6 +504,137 @@ public class TeamController {
 		}
 		catch (Exception e) {
 			  logger.error("加入团队异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/getInviteList", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通账号查询团队邀请", notes = "普通账号查询团队邀请",httpMethod = "GET")
+	public RespPojo getInviteList(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		 List<InviteVo> team=null;
+		RespPojo resp=new RespPojo();
+		
+		
+		try {
+			  team=teamService.queryInviteList(up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询邀请异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("inviteList", team);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryJoinTeams", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通账号查询加入的团队列表", notes = "普通账号查询加入的团队列表",httpMethod = "GET")
+	public RespPojo queryJoinTeams(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		 List<TeamVo> team=null;
+		RespPojo resp=new RespPojo();
+		
+		
+		try {
+			  team=teamService.getJoinTeams(up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询团队异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("teamList", team);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/setDefault", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "员工设置默认团队", notes = "员工设置默认团队",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query")
+	})
+	public RespPojo setDefault(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		RespPojo resp=new RespPojo();
+		String teamId=request.getParameter("teamId");
+		
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		
+		
+		try {
+			  boolean result = teamService.setDefaultTeam(teamId, up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("设置默认团队异常{}",e);
 			  
 			  resp.setRetCode(Constants.FAIL_CODE);
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
