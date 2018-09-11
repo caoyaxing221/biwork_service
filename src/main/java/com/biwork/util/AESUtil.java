@@ -78,7 +78,7 @@ public class AESUtil {
         System.out.println("encrypted message is below :");
         System.out.println(encryptMsg);
 
-        String decryptedMsg = AESDncode(key,"dacPIZ 5P1nJzYTnc7z4vQ==");
+        String decryptedMsg = AESDncode(key,"5pzxXz5O4wPOWk+jb6vFew==");
         System.out.println("decrypted message is below :");
         System.out.println(decryptedMsg);
     }

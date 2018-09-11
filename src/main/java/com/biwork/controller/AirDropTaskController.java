@@ -34,6 +34,8 @@ import com.biwork.util.ValidateUtil;
 import com.biwork.vo.AddressListVo;
 import com.biwork.vo.TaskListVo;
 import com.biwork.vo.TaskVo;
+import com.biwork.util.AESUtil;
+import com.biwork.util.PropertiesUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -145,8 +147,15 @@ public class AirDropTaskController {
 		
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
-		 
+		 String taskToken="";
+		 try {
+			taskToken=AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), String.valueOf(taskId));
+		} catch (Exception e) {
+			logger.error("添加空投活动生成token异常{}",e);
+//			e.printStackTrace();
+		}
 		 rtnMap.put("taskId", taskId);
+		 rtnMap.put("taskToken", taskToken);
 		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		 resp.setData(rtnMap);
@@ -224,11 +233,18 @@ public class AirDropTaskController {
 			  return resp;
 		}
 		
-		
+		 String taskToken="";
+		 try {
+			taskToken=AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), String.valueOf(taskId));
+		} catch (Exception e) {
+			logger.error("修改空投活动生成token异常{}",e);
+//			e.printStackTrace();
+		}
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 
 		 rtnMap.put("taskId",taskId);
+		 rtnMap.put("taskToken", taskToken);
 		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		 resp.setData(rtnMap);
@@ -296,7 +312,13 @@ public class AirDropTaskController {
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		String address=req.getAddress();
-		String taskId=req.getTaskId();
+		String taskToken=req.getTaskToken();
+		String taskId = null;
+		try {
+			taskId = AESUtil.AESDncode(PropertiesUtil.getProperty("aeskey"), taskToken);
+		} catch (Exception e1) {
+			 logger.error("添加地址解析Token异常{}",e1);
+		}
 		RespPojo resp=new RespPojo();
 		int addressId=0;
 		if(StringUtils.isBlank(taskId)){
@@ -531,18 +553,23 @@ public class AirDropTaskController {
 	  @RequestMapping(value = "/addressUpload",method = RequestMethod.POST,consumes="multipart/*",headers="content-type=multipart/form-data")
 	  @ApiOperation(value = "上传地址", notes = "上传地址")
 	  @ApiImplicitParams({
-			@ApiImplicitParam(name = "taskId",value = "活动id", required = true, paramType = "query")
+			@ApiImplicitParam(name = "taskToken",value = "活动Token", required = true, paramType = "query")
 		})
 	  public RespPojo photoUpload(@ApiParam(value="上传的文件",required=true)MultipartFile file,HttpServletRequest request) throws IllegalStateException, IOException{
 			RespPojo resp=new RespPojo();
-			String taskId=request.getParameter("taskId");
+			String taskToken=request.getParameter("taskToken");
 			
-			if(StringUtils.isBlank(taskId)){
+			if(StringUtils.isBlank(taskToken)){
 				  resp.setRetCode(Constants.PARAMETER_CODE);
-				  resp.setRetMsg("记录id不能为空");
+				  resp.setRetMsg("记录token不能为空");
 				  return resp;
 			}
-			
+			String taskId = null;
+			try {
+				taskId = AESUtil.AESDncode(PropertiesUtil.getProperty("aeskey"), taskToken);
+			} catch (Exception e1) {
+				 logger.error("添加地址解析Token异常{}",e1);
+			}
 	      if (file!=null) {// 判断上传的文件是否为空
 	          String path=null;// 文件路径
 	          String type=null;// 文件类型

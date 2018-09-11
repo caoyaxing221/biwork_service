@@ -8,22 +8,23 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value="添加地址对象",description="添加地址对象")
 public class  AddAddressPojo {
-	@ApiModelProperty(value="空投活动id",name="taskId",example="",required=true)
-	private String taskId;
+	@ApiModelProperty(value="空投活动token",name="空投活动token",example="",required=true)
+	private String taskToken;
+	/**
+	 * @return the taskToken
+	 */
+	public String getTaskToken() {
+		return taskToken;
+	}
+	/**
+	 * @param taskToken the taskToken to set
+	 */
+	public void setTaskToken(String taskToken) {
+		this.taskToken = taskToken;
+	}
 	@ApiModelProperty(value="地址",name="address",example="",required=true)
 	private String address;
-	/**
-	 * @return the taskId
-	 */
-	public String getTaskId() {
-		return taskId;
-	}
-	/**
-	 * @param taskId the taskId to set
-	 */
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
+
 	/**
 	 * @return the address
 	 */
