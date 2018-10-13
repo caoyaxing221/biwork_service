@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.biwork.mapper.TxGasLimitMapper">
+  <resultMap id="BaseResultMap" type="com.biwork.entity.TxGasLimit">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="coin_name" jdbcType="VARCHAR" property="coinName" />
+    <result column="coin_mark" jdbcType="VARCHAR" property="coinMark" />
+    <result column="gas_limit" jdbcType="VARCHAR" property="gasLimit" />
+    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="inserttime" jdbcType="TIMESTAMP" property="inserttime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+    
+  <sql id="Base_Column_List">
+    id, coin_name, coin_mark, gas_limit, contract_address, state, inserttime, updatetime
+  </sql>
+ 
+   <select id="selectallCoinInfo"  resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from coin_info
+	    where state=0
+  </select>
+
+</mapper>

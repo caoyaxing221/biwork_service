@@ -1,5 +1,6 @@
 package com.biwork.controller;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @RequestMapping("/v1")
 @Api(value = "/v1", description = "获取以太坊交易GasPrice")
-public class TxFeeController {
+public class TxFeeController{
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	// 获取以太坊交易GasPrice
@@ -67,8 +68,12 @@ public class TxFeeController {
 		if (txf != null) {
 			tx_pojo = new TxFeePojo();
 			tx_pojo.setTxFee(txf.getTxFee());
-			Map<String, Object> rtnMap = new HashMap<String, Object>();
-			rtnMap.put("gasPrice", txf.getTxFee());
+			Map<String, BigInteger> rtnMap = new HashMap<String, BigInteger>();
+			BigInteger fee = new BigInteger(txf.getTxFee());  
+			BigInteger two = new BigInteger("2"); 
+			rtnMap.put("fastestFee", (fee.multiply(two)));
+			rtnMap.put("hourFee", fee);
+			rtnMap.put("halfHourFee", (fee.divide(two)));
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);

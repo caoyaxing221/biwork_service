@@ -39,7 +39,6 @@ public class TxFeeServiceImpl implements TxFeeService {
 		}
 
 		txf.setTxFee(txf_bi.toString(10));
-
 		return txf;
 	}
 }
