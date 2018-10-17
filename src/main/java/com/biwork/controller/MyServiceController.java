@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.biwork.entity.Currency;
 import com.biwork.entity.Service;
+import com.biwork.entity.Version;
 import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
@@ -269,6 +270,56 @@ public class MyServiceController {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		rtnMap.put("userInfo", userInfo);
 		rtnMap.put("roleId", up.getRoleid());
+		resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		resp.setData(rtnMap);
+		    
+		return resp;
+		
+	}
+	@ResponseBody
+	@RequestMapping("/getCurrentVersion")
+	@ApiOperation(value = "版本更新", notes = "版本更新",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "type",value = "客户端类型(IOS/ANDROID)", required = true, paramType = "query"),
+	})
+	public RespPojo getCurrentVersion(HttpServletRequest request){
+		
+		
+		
+		RespPojo resp=new RespPojo();
+		String type=request.getParameter("type");
+		if(StringUtils.isBlank(type)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("客户端类型不能为空");
+			  return resp;
+		}
+		Version version=null;
+		try {
+			version = myService.getCurrentVersion(type);
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询最新客户端版本异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> appVersion = new HashMap<String, Object>();
+		appVersion.put("type", version.getType());
+		appVersion.put("version",version.getNewversion());
+		appVersion.put("downloadUrl",version.getApkurl());
+		appVersion.put("updateDescription",version.getUpdatedescription());
+		rtnMap.put("versionInfo", appVersion);
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(rtnMap);

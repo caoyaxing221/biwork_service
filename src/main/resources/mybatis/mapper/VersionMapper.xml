@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.biwork.mapper.VersionMapper">
+  <resultMap id="BaseResultMap" type="com.biwork.entity.Version">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="newVersion" jdbcType="VARCHAR" property="newversion" />
+    <result column="minVersion" jdbcType="VARCHAR" property="minversion" />
+    <result column="apkUrl" jdbcType="VARCHAR" property="apkurl" />
+    <result column="updateDescription" jdbcType="VARCHAR" property="updatedescription" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, newVersion, minVersion, apkUrl, updateDescription, size
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from version
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByType" parameterType="String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from version
+    where type = #{type,jdbcType=VARCHAR} and state=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from version
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.biwork.entity.Version">
+    insert into version (id, type, newVersion, 
+      minVersion, apkUrl, updateDescription, 
+      size)
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{newversion,jdbcType=VARCHAR}, 
+      #{minversion,jdbcType=VARCHAR}, #{apkurl,jdbcType=VARCHAR}, #{updatedescription,jdbcType=VARCHAR}, 
+      #{size,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.biwork.entity.Version">
+    insert into version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="newversion != null">
+        newVersion,
+      </if>
+      <if test="minversion != null">
+        minVersion,
+      </if>
+      <if test="apkurl != null">
+        apkUrl,
+      </if>
+      <if test="updatedescription != null">
+        updateDescription,
+      </if>
+      <if test="size != null">
+        size,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="newversion != null">
+        #{newversion,jdbcType=VARCHAR},
+      </if>
+      <if test="minversion != null">
+        #{minversion,jdbcType=VARCHAR},
+      </if>
+      <if test="apkurl != null">
+        #{apkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedescription != null">
+        #{updatedescription,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        #{size,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.Version">
+    update version
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="newversion != null">
+        newVersion = #{newversion,jdbcType=VARCHAR},
+      </if>
+      <if test="minversion != null">
+        minVersion = #{minversion,jdbcType=VARCHAR},
+      </if>
+      <if test="apkurl != null">
+        apkUrl = #{apkurl,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedescription != null">
+        updateDescription = #{updatedescription,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.biwork.entity.Version">
+    update version
+    set type = #{type,jdbcType=VARCHAR},
+      newVersion = #{newversion,jdbcType=VARCHAR},
+      minVersion = #{minversion,jdbcType=VARCHAR},
+      apkUrl = #{apkurl,jdbcType=VARCHAR},
+      updateDescription = #{updatedescription,jdbcType=VARCHAR},
+      size = #{size,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

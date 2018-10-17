@@ -15,8 +15,10 @@ import com.biwork.mapper.DepartmentMapper;
 import com.biwork.mapper.MemberMapper;
 import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.UserMapper;
+import com.biwork.mapper.VersionMapper;
 import com.biwork.entity.Currency;
 import com.biwork.entity.User;
+import com.biwork.entity.Version;
 import com.biwork.exception.BusiException;
 
 import com.biwork.service.MyService;
@@ -43,6 +45,8 @@ public class MyServiceImpl implements MyService {
 	private DepartmentMapper departmentMapper;
 	@Autowired
 	private MemberMapper memberMapper;
+	@Autowired
+	private VersionMapper versionMapper;
 	@Override
 	public com.biwork.entity.Service  query() {		 
 	    
@@ -85,5 +89,10 @@ public class MyServiceImpl implements MyService {
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 		}
 		return departmentMapper.selectDepartmentList(Integer.parseInt(teamId));
+	}
+	@Override
+	public Version getCurrentVersion(String type) {
+		Version version = versionMapper.selectByType(type);
+		return version;
 	}
 }
