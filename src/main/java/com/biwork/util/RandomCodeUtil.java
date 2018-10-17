@@ -20,6 +20,7 @@ import javax.imageio.stream.ImageOutputStream;
 public class RandomCodeUtil {
 	private ByteArrayInputStream byteImg;	// byte图像1
 	private BufferedImage buffImg;			// buff图像2
+	private String base64Img;			// base64图像3
 	private String str;						// 验证码
 	private int codeCount = 4;				// 定义图片上显示验证码的个数  
 	private int xx = 28; 					// 验证码水平位置偏移
@@ -71,7 +72,9 @@ public class RandomCodeUtil {
 	public String getString() {
 		return this.str;
 	}
-
+	public String getBase64Img() {
+		return this.base64Img;
+	}
 	/**
 	 * 初始化属性
 	 */
@@ -123,8 +126,10 @@ public class RandomCodeUtil {
 			ImageOutputStream imageOut = ImageIO
 					.createImageOutputStream(output);
 			ImageIO.write(buffImg, "JPEG", imageOut);
+			
 			imageOut.close();
 			input = new ByteArrayInputStream(output.toByteArray());
+			 this.base64Img=Base64Util.byteToBase64Encoding(output.toByteArray());
 		} catch (Exception e) {
 			System.out.println("验证码图片产生出现错误：" + e.toString());
 		}

@@ -10,6 +10,7 @@ public class Constants {
   public final static String PARAMETER_MESSAGE = "参数校验失败";
   public final static String EXCEPTION_CODE = "0004";
   public final static String EXCEPTION_MESSAGE = "格式化数据异常";
+  public final static String IMGCODEEXPIRE_CODE = "0005";
   public final static String SERVICE_TIMOUT_CODE = "7777";
   public final static String SERVICE_TIMOUT_MESSAGE = "您的服务已过期";
   public final static String SESSION_TIMOUT_CODE = "8888";

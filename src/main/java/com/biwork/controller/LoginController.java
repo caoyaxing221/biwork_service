@@ -148,6 +148,7 @@ public class LoginController {
 			
 			
 			up.setUserid(account.getId().toString());
+			up.setRoleid("1");
 			request.getSession().setAttribute("User",up);
 		
 			//TODO:返回需要跳转到哪个页面
@@ -181,12 +182,19 @@ public class LoginController {
 		
 		String phone= adminLoginPojo.getPhone();
 		String password=adminLoginPojo.getPassword();
+		RespPojo resp=new RespPojo();
+//		System.out.println(request.getSession().getAttribute("RANDOMCODE"));
+		if(null==request.getSession().getAttribute("RANDOMCODE")){
+			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
+			  resp.setRetMsg("图形验证码超时");
+			  return resp;
+		}
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
 		String imgCode=adminLoginPojo.getImgCode();
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
-		RespPojo resp=new RespPojo();
+		
 		
 		if(!imageCode.equalsIgnoreCase(imgCode)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
@@ -240,6 +248,7 @@ public class LoginController {
 			
 			
 			up.setUserid(account.getId().toString());
+			up.setRoleid("0");
 			request.getSession().setAttribute("User",up);
 			 Map<String, Object> rtnMap = new HashMap<String, Object>();
 			 String token="";
@@ -314,6 +323,12 @@ public class LoginController {
 		
 		try {
 			 verifyCodeService.getCode(phone, type);
+		}catch(BusiException e){
+			 
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
 		}
 		catch (Exception e) {
 			  logger.error("验证码获取异常{}",e);
@@ -423,13 +438,18 @@ public class LoginController {
 	@ApiOperation(value = "管理员注册第一步", notes = "管理员注册第一步",httpMethod = "POST")
 	public RespPojo registerFirst(HttpServletRequest request,@RequestBody
 			@ApiParam(name="登录对象",value="传入json格式",required=true) RegisterFirstPojo req){
-		
+		RespPojo resp=new RespPojo();
 		String phone= req.getPhone();
+		if(null==request.getSession().getAttribute("RANDOMCODE")){
+			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
+			  resp.setRetMsg("图形验证码超时");
+			  return resp;
+		}
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
 		String imgCode=req.getImgCode();
 		String verifyCode=req.getVerifyCode();
 		
-		RespPojo resp=new RespPojo();
+		
 		if(!imageCode.equalsIgnoreCase(imgCode)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("图形验证码错误");
