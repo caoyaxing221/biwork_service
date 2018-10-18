@@ -29,6 +29,7 @@ import com.neemre.btcdcli4j.core.CommunicationException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -49,43 +50,29 @@ public class RawTxServiceImpl implements RawTxService {
 		} catch (IOException e) {
 			e.printStackTrace();
         }
-        
         if (ethSendTransaction.hasError()) {
             throw new BusiException(Integer.toString(ethSendTransaction.getError().getCode()), ethSendTransaction.getError().getMessage());
         } else {
             hash = ethSendTransaction.getTransactionHash();
         }
-
         rawTx.setRawTx(hash);
-   	
 		return rawTx;
 	}
 
 	@Override
 	public RawTx getBtcRawTx(String data) throws Exception {
 		RawTx rawTx = new RawTx();
-		
-		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-		CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
-				.build();
-		Properties nodeConfig = new Properties();
-		InputStream is = this.getClass().getResourceAsStream("/node_config.properties");
-		nodeConfig.load(is);
-		is.close();
-
-		BtcdClient client = new BtcdClientImpl(httpProvider, nodeConfig);
 		String txid = "";
-		
-		try {
-			txid = client.sendRawTransaction(data);
-		} catch (BitcoindException btce) {
-            throw new BusiException(Integer.toString(btce.getCode()), btce.getMessage());			
-		} catch (CommunicationException ce) {
-            throw new BusiException(Integer.toString(ce.getCode()), ce.getMessage());		
-		}
-		
+		Map<String,String> params=new HashMap<String,String>();
+		System.out.println("dataTwo = " + data);
+		params.put("tx", data);
+		 try {
+			 txid =  HttpUtil.testPost(params, "https://blockchain.info/pushtx");
+			 System.out.println("txid =" + txid);
+		 } catch (Exception e) {
+			 throw new BusiException("pushtx",  e.getMessage());	
+		 }
         rawTx.setRawTx(txid);
-		
 		return rawTx;
 	}
 }

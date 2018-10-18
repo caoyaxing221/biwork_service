@@ -10,14 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.biwork.entity.RawTx;
 
 import com.biwork.exception.BusiException;
 
 import com.biwork.po.RespPojo;
+import com.biwork.po.request.RawTxFlowPojo;
 import com.biwork.po.RawTxPojo;
 
 import com.biwork.service.RawTxService;
@@ -28,6 +32,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Controller
 @RequestMapping("/v1")
@@ -39,19 +44,17 @@ public class RawTxController {
 	RawTxService rawTxService;
 	
 	@ResponseBody
-	@RequestMapping("/eth_sendRawTransaction")
+	@RequestMapping(value = "/eth_sendRawTransaction", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "发送签名后交易数据到以太坊区块链网络", notes = "发送签名后交易数据到以太坊区块链网络",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "data",value = "签名后数据", required = true, paramType = "form")
-    })
-	public RespPojo getEthRawTx(HttpServletRequest request){
+	public RespPojo getEthRawTx(HttpServletRequest request, @RequestBody 
+			@ApiParam(name="发送签名后交易对象",value="传入json格式",required=true) RawTxFlowPojo rwatxFlowPojo){
 		
 		logger.info("---发送签名后交易数据到以太坊区块链网络方法---");
-		String data = request.getParameter("data")==null?"":request.getParameter("data");
 		RawTxPojo rawTx_pojo=new RawTxPojo();
-		
 		RespPojo resp=new RespPojo();
-		
+		String data = rwatxFlowPojo.getData();
+		System.out.println("data = " + data);
+
 		if(StringUtils.isBlank(data)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("签名后数据不能为空");
@@ -85,20 +88,18 @@ public class RawTxController {
 		}
 		return resp;
 	}
-
-	@ResponseBody
-	@RequestMapping("/btc_sendRawTransaction")
-	@ApiOperation(value = "发送签名后交易数据到BTC区块链网络", notes = "发送签名后交易数据到BTC区块链网络",httpMethod = "POST")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "data",value = "签名后数据", required = true, paramType = "form")
-    })
-	public RespPojo getBtcRawTx(HttpServletRequest request){
+	
+	@ResponseBody 
+	@RequestMapping(value="/btc_sendRawTransaction", method=RequestMethod.POST, produces="application/json;charset=utf-8;")	@ApiOperation(value = "发送签名后交易数据到BTC区块链网络", notes = "发送签名后交易数据到BTC区块链网络",httpMethod = "POST")
+	public RespPojo getBtcRawTx(HttpServletRequest request,@RequestBody
+			@ApiParam(name="流程对象",value="传入json格式",required=true) RawTxFlowPojo rwatxFlowPojo){
 		
 		logger.info("---发送签名后交易数据到BTC区块链网络方法---");
-		String data = request.getParameter("data")==null?"":request.getParameter("data");
 		RawTxPojo rawTx_pojo=new RawTxPojo();
-		
 		RespPojo resp=new RespPojo();
+		
+		String data = rwatxFlowPojo.getData();
+		System.out.println("data = " + data);
 		
 		if(StringUtils.isBlank(data)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);

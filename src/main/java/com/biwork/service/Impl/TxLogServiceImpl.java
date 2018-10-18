@@ -86,6 +86,7 @@ public class TxLogServiceImpl implements TxLogService {
 		Object balObj = GetResultJsonObject(rsp);
 
 		JSONObject jsonObject = (JSONObject) balObj;
+		System.out.println("bitcoin recor" + jsonObject);
 		JSONArray txs = (JSONArray)jsonObject.get("txs");
 
 		txl.setTxLog(txs.toString());

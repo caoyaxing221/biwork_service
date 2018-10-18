@@ -224,8 +224,8 @@ public class HttpUtil {
 			URL url = new URL(reqUrl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("POST");
-			conn.setConnectTimeout(10000);
-			conn.setReadTimeout(10000);
+			conn.setConnectTimeout(90000);
+			conn.setReadTimeout(90000);
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			conn.setRequestProperty("Content-Type",

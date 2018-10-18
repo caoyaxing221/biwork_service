@@ -10,6 +10,9 @@ import com.biwork.util.HttpUtil;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
@@ -41,4 +44,15 @@ public class TxFeeServiceImpl implements TxFeeService {
 		txf.setTxFee(txf_bi.toString(10));
 		return txf;
 	}
+	
+//	public TxFee getEthGas() throws Exception {
+//		TxFee txf = new TxFee();
+//		Web3j web3j = Web3j.build(new HttpService(PRO_URL, true));
+//		Request<?, EthEstimateGas> txf_bi = null;
+//		Transaction transaction = null;
+//		txf_bi = web3j.ethEstimateGas(transaction);
+//
+//		txf.setTxFee(txf_bi.toString());
+//		return txf;
+//	}
 }
