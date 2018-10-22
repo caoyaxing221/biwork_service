@@ -25,7 +25,7 @@ public class CoinRateServiceImpl implements CoinRateService {
 	
 	static Logger log = LoggerFactory.getLogger(CoinRateService.class);
 	private static final String COIN_URL = "http://op.juhe.cn/onebox/exchange/query";
-	private static final String OKEX_URL = "https://www.okex.com/api/v1/ticker.do";
+	private static final String COIN_MARKET_URL = "https://api.coinmarketcap.com/v2/ticker/";
 	private static final String AppKey = "0fab0b7318d7f03ef64543b06ecda60c"; 
 	
 	public static Object GetResultJsonObject(String json) throws BusiException {
@@ -40,12 +40,14 @@ public class CoinRateServiceImpl implements CoinRateService {
 	}
 	
 	@Override
-	public List<CoinRate> getAllCoinRate() {
-		String[] CoinSymbol = new String[]{"btc_usdt"};
+	public Map<String, Object> getAllCoinRate() {
+		
 		String rsp = "";
 		String usaCoin = "";
 		CoinRate coinRate;
-		HashMap<String, Object> hashMap = new HashMap();
+		
+		// 获取美元汇率
+		List<CoinRate> coinRates = new ArrayList();
 		try {
 			rsp = HttpUtil.testGet(COIN_URL + "?key=" + AppKey);
 		} catch (Exception e) {
@@ -62,10 +64,32 @@ public class CoinRateServiceImpl implements CoinRateService {
 				usaCoin = list.get(i).get(5).toString();
 			}
 		}
-		
-		System.out.println("usaCoin = " + usaCoin);
-	
-		return null;
+		Double usdCoin = Double.parseDouble(usaCoin) * 1e-2;
+		System.out.println("usdCoin = " + usdCoin);
+		//获取当前币的汇率；目前需要支持的币种有
+		//BTC=1; ETH=1027; USDT=825; BNB=1839;
+		//HT=2502; OKB=760; BTM=543; AE=1700;
+		//ELF=2299; IOST=2405;
+		//LET=2468; SSP=2862; Kcash=2379;
+		String[] CoinSymbol = new String[]{"1", "1027","825", "1839", "2502", "760", "543", "1700",
+				"2299", "2405", "2468", "2862", "2379"};
+		Map<String, Object> coinRateMap = new HashMap<String, Object>();
+		for(int j = 0; j < CoinSymbol.length; j++) {
+			try {
+				rsp = HttpUtil.testGet(COIN_MARKET_URL + CoinSymbol[j] + "/");
+			} catch (Exception e) {
+				throw new BusiException(Integer.toString(e.hashCode()), e.getMessage());
+			}
+			Object rateObj = GetResultJsonObject(rsp);
+			JSONObject rateObject = (JSONObject) rateObj;
+			JSONObject data = (JSONObject) rateObject.get("data");
+			String coinSymbol = (String) data.get("symbol");
+			JSONObject coinQuotes = (JSONObject) data.get("quotes");
+            JSONObject coinUsd = (JSONObject) coinQuotes.get("USD");
+            Double coinPrice = (Double) coinUsd.get("price");
+            Double lastPrice = coinPrice * usdCoin;
+            coinRateMap.put(coinSymbol, lastPrice);
+		}
+		return coinRateMap;
 	}
-
 }

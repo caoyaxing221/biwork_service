@@ -1,6 +1,8 @@
 package com.biwork.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -231,12 +233,80 @@ public class TxLogController {
 			txLog_pojo = new TxLogPojo();
 			txLog_pojo.setTxLog(txLog.getTxLog());
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
-
+            List<Map> jsonObjects = new ArrayList<Map>();
 			String s = txLog.getTxLog();
 			com.alibaba.fastjson.JSONArray txLogsArr = JSON.parseArray(s);
-
-			//rtnMap.put("txLogs", txLog.getTxLog());
-			rtnMap.put("txLogs", txLogsArr);
+			int formAmount = 0, toAmount = 0;
+            for(int i = 0; i < txLogsArr.size(); i++){
+            	//交易Hash
+                Map<String, Object> txLogMap = new HashMap<String, Object>();
+                txLogMap.put("tansHash", txLogsArr.getJSONObject(i).get("hash"));
+    			
+                //区块高度
+                txLogMap.put("blockHeight", txLogsArr.getJSONObject(i).get("block_height"));
+                
+                //转账时间
+                txLogMap.put("transTime", txLogsArr.getJSONObject(i).get("time"));
+                
+                //交易标识
+                txLogMap.put("transMark", txLogsArr.getJSONObject(i).get("tx_index"));
+               
+                //转账状态
+                txLogMap.put("transtatus", 1);
+                
+                //转出地址
+                String inputStr = txLogsArr.getJSONObject(i).get("inputs").toString();
+                com.alibaba.fastjson.JSONArray inputsArr = JSON.parseArray(inputStr);
+                List<Map> AddressObjects = new ArrayList<Map>();
+                
+                for(int j = 0; j < inputsArr.size(); j++) {
+                    Map<String, Object> AddressMap = new HashMap<String, Object>();
+                	String prevOut = inputsArr.getJSONObject(j).get("prev_out").toString();
+                	com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(prevOut);
+                	String fromAddress = (String) jsonObject.get("addr");
+                	formAmount = (int) jsonObject.get("value");
+                	AddressMap.put("address", fromAddress);
+                	AddressMap.put("tansAmount", formAmount * 1e-8);
+                	AddressObjects.add(AddressMap);
+                }
+                txLogMap.put("fromData", AddressObjects);
+                jsonObjects.add(txLogMap);
+                
+                //转入地址
+                List<Map> toAddressObjects = new ArrayList<Map>();
+                
+                String outStr = txLogsArr.getJSONObject(i).get("out").toString();
+                com.alibaba.fastjson.JSONArray outArr = JSON.parseArray(outStr);
+                
+                for(int k = 0; k < outArr.size(); k++) {
+                    Map<String, Object> toAddressMap = new HashMap<String, Object>();
+                	String Out = outArr.getJSONObject(k).toString();
+                	com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(Out);
+                	String toAddress = (String) jsonObject.get("addr");
+                	toAmount = (int) jsonObject.get("value");
+                	toAddressMap.put("address", toAddress);
+                	toAddressMap.put("tansAmount", toAmount * 1e-8);
+                	toAddressObjects.add(toAddressMap);
+                }
+                
+                txLogMap.put("toData", toAddressObjects);
+                jsonObjects.add(txLogMap);
+            
+                //===========转账金额度和手续费====================
+                int totalAmount = toAmount;
+                int sendFee = formAmount - toAmount;
+                txLogMap.put("tansAmount", totalAmount * 1e-8);
+                txLogMap.put("tansFee", sendFee * 1e-8);
+                
+                //转账类型
+                int ret = (int) txLogsArr.getJSONObject(i).get("result");
+                if(ret < 0) {
+                	txLogMap.put("transType", 1);
+                }
+                txLogMap.put("transType", 0);
+            }
+            
+			rtnMap.put("txLogs", jsonObjects);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);

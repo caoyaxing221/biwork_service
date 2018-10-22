@@ -1,8 +1,8 @@
 package com.biwork.service;
 
 import java.util.List;
-import com.biwork.entity.CoinRate;
+import java.util.Map;
 
 public interface CoinRateService {
-	List<CoinRate> getAllCoinRate() throws Exception;
+	Map<String, Object> getAllCoinRate() throws Exception;
 }

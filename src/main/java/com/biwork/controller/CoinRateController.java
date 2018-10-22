@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.biwork.entity.CoinRate;
 import com.biwork.entity.TxGasLimit;
 import com.biwork.exception.BusiException;
@@ -39,9 +40,7 @@ private Logger logger = LoggerFactory.getLogger(getClass());
 	public RespPojo getEthTxFee(HttpServletRequest request) {
 		logger.info("获取数字货币的汇率");
 		RespPojo resp=new RespPojo();
-		CoinRate crate;
-		HashMap<String, CoinRate> map = new HashMap();
-		List<CoinRate>coinRate = null;
+		Map<String, Object>coinRate = new HashMap();
 		try {
 			coinRate = coinRateService.getAllCoinRate();
 		} catch (BusiException e) {
@@ -55,17 +54,9 @@ private Logger logger = LoggerFactory.getLogger(getClass());
 			resp.setRetMsg(Constants.FAIL_MESSAGE);
 			return resp;
 		}
-		System.out.println("coinRate = " + coinRate);
-		if (coinRate == null) {
-			Map<String, Object> rtnMap = new HashMap<String, Object>();
-	        String jsonString = "";//"[\"coinName\":"BTC","coinAmount":67000],["coinName":"ETH","coinAmount":3000]";
-			rtnMap.put("data",jsonString);
-			resp.setRetCode(Constants.SUCCESSFUL_CODE);
-			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
-			resp.setData(rtnMap);
-			return resp;
-		}
+		resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		resp.setData(coinRate);
 		return resp;
 	}
-	
 }

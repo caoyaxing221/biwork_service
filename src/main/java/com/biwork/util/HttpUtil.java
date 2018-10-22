@@ -197,6 +197,9 @@ public class HttpUtil {
 		} else if (response.getStatusLine().getStatusCode() == 200) {
 			HttpEntity entity = response.getEntity();
 			redirectUrl = EntityUtils.toString(entity);
+		} else {
+			HttpEntity entity = response.getEntity();
+			redirectUrl = EntityUtils.toString(entity);
 		}
 
 		return redirectUrl;
