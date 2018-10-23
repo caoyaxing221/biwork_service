@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @RequestMapping("/v1")
-@Api(value = "/v1", description = "获取以太坊交易GasPrice")
+@Api(value = "/v1", description = "获取比特币，以太坊和ERC20代币的手续费")
 public class TxFeeController{
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -45,12 +45,9 @@ public class TxFeeController{
 	@RequestMapping("/eth_gasPrice")
 	@ApiOperation(value = "获取以太坊交易GasPrice", notes = "获取以太坊交易GasPrice", httpMethod = "GET")
 	public RespPojo getEthTxFee(HttpServletRequest request) {
-
 		logger.info("---获取以太坊交易GasPrice---");
 		TxFeePojo tx_pojo = new TxFeePojo();
-
 		RespPojo resp = new RespPojo();
-
 		TxFee txf;
 		try {
 			txf = txFeeService.getEthTxFee();
@@ -77,6 +74,43 @@ public class TxFeeController{
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);
+			return resp;
+		}
+		return resp;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/btc_txFee")
+	@ApiOperation(value = "获取比特币交易手续费btc_txFee", notes = "获取比特币交易手续费btc_txFee", httpMethod = "GET")
+	public RespPojo getBitcoinTxFee(HttpServletRequest request) {
+		logger.info("---获取比特币交易手续费---");
+		RespPojo resp = new RespPojo();
+		String bitTxf = "";
+		try {
+			bitTxf = txFeeService.getBitCoinFee();
+		} catch (BusiException e) {
+			logger.error("获取以太坊交易GasPrice异常{}", e);
+			resp.setRetCode(e.getCode());
+			resp.setRetMsg(e.getMessage());
+			return resp;
+		} catch (Exception e) {
+			logger.error("获取以太坊交易GasPrice异常{}", e);
+			resp.setRetCode(Constants.FAIL_CODE);
+			resp.setRetMsg(Constants.FAIL_MESSAGE);
+			return resp;
+		}
+		if (bitTxf != null) {
+			Object obj = new Object();
+			JSONParser parser = new JSONParser();
+			try {
+				obj = parser.parse(bitTxf);
+			} catch (ParseException e) {
+				throw new BusiException(Integer.toString(e.getErrorType()), e.getMessage());
+			}
+			JSONObject jsonObject = (JSONObject) obj;
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(jsonObject);
 			return resp;
 		}
 		return resp;

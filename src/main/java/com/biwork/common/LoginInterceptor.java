@@ -148,9 +148,6 @@ public class LoginInterceptor implements HandlerInterceptor{
         		|| url.indexOf("/myService/getCurrentVersion") >= 0){
             return true;  
         }else{
-        	 
-     		
-        	  
               result.setRetCode(Constants.SESSION_TIMOUT_CODE);
               result.setRetMsg(Constants.SESSION_TIMOUT_MESSAGE);
               response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  

@@ -26,11 +26,12 @@ import com.biwork.exception.BusiException;
 
 @Service("TxFeeService")
 public class TxFeeServiceImpl implements TxFeeService {
-
+    String bitCoinFee = "";
 	static Logger log = LoggerFactory.getLogger(TxFeeService.class);
 	private static final String PRO_URL = "https://mainnet.infura.io/PVMw2QL6TZTb2TTgIgrs";
-
-	@Override
+    private static final String BITCOIN_RECOMMENT = "https://bitcoinfees.earn.com/api/v1/fees/recommended";
+	
+    @Override
 	public TxFee getEthTxFee() throws Exception {
 		TxFee txf = new TxFee();
 		Web3j web3j = Web3j.build(new HttpService(PRO_URL, true));
@@ -43,6 +44,15 @@ public class TxFeeServiceImpl implements TxFeeService {
 
 		txf.setTxFee(txf_bi.toString(10));
 		return txf;
+	}
+	
+	public String getBitCoinFee() throws Exception {
+		try {
+			bitCoinFee = HttpUtil.testGet(BITCOIN_RECOMMENT);
+		} catch (Exception e) {
+			throw new BusiException(Integer.toString(e.hashCode()), e.getMessage());
+		}
+		return bitCoinFee;
 	}
 	
 //	public TxFee getEthGas() throws Exception {
