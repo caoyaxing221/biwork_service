@@ -230,9 +230,6 @@ public class TxLogController {
 			  return resp;
 		}
 		if (txLog != null) {
-			txLog_pojo = new TxLogPojo();
-			txLog_pojo.setTxLog(txLog.getTxLog());
-			Map<String, Object> rtnMap = new HashMap<String, Object>();
             List<Map> jsonObjects = new ArrayList<Map>();
 			String s = txLog.getTxLog();
 			com.alibaba.fastjson.JSONArray txLogsArr = JSON.parseArray(s);
@@ -270,7 +267,6 @@ public class TxLogController {
                 	AddressObjects.add(AddressMap);
                 }
                 txLogMap.put("fromData", AddressObjects);
-                jsonObjects.add(txLogMap);
                 
                 //转入地址
                 List<Map> toAddressObjects = new ArrayList<Map>();
@@ -305,11 +301,9 @@ public class TxLogController {
                 }
                 txLogMap.put("transType", 0);
             }
-            
-			rtnMap.put("txLogs", jsonObjects);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
-			resp.setData(rtnMap);
+			resp.setData(jsonObjects);
 			return resp;
 		}
 		return resp;

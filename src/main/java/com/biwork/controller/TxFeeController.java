@@ -2,6 +2,7 @@ package com.biwork.controller;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.biwork.entity.AddCoin;
 import com.biwork.entity.TxFee;
 
 import com.biwork.exception.BusiException;
@@ -30,6 +34,7 @@ import com.biwork.util.Constants;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Controller
 @RequestMapping("/v1")
@@ -37,10 +42,48 @@ import io.swagger.annotations.ApiOperation;
 public class TxFeeController{
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	// 获取以太坊交易GasPrice
 	@Autowired
 	TxFeeService txFeeService;
-
+	@ResponseBody
+	@RequestMapping(value = "/est_gasLimit", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "获取估计值的gasLimit", notes = "获取估计值的gasLimit",httpMethod = "POST")
+	public RespPojo queryCoinInfo(HttpServletRequest request, @RequestBody 
+			@ApiParam(name="获取估计值的gasLimit",value="传入json格式",required=true) com.biwork.po.request.TxFeeGasLimitPojo txFeeGasLimitPojo){
+		logger.info("---获取估计值的gasLimit---");
+		RespPojo resp=new RespPojo();
+		String formAddress = txFeeGasLimitPojo.getFormAddress();
+		String toAddress = txFeeGasLimitPojo.getToAddress();
+		BigInteger value = txFeeGasLimitPojo.getValue();
+		BigInteger nonce = txFeeGasLimitPojo.getNonce();
+		BigInteger gasPrice = txFeeGasLimitPojo.getGasPrice();
+		String data = txFeeGasLimitPojo.getData();
+		BigInteger gas = txFeeGasLimitPojo.getGas();
+		BigInteger gasLimit;
+		try {
+			gasLimit = txFeeService.getGasLimit(formAddress, toAddress, value, nonce, gasPrice, data, gas);
+		}catch(BusiException e){
+			 logger.error("获取估计值的gasLimit异常{}",e);
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("获取估计值的gasLimit异常{}",e);
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		if(gasLimit != null){
+			Object obj = new Object();
+			JSONParser parser = new JSONParser();
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(gasLimit);
+			return resp;
+		}
+		return resp;
+	}
+	
 	@ResponseBody
 	@RequestMapping("/eth_gasPrice")
 	@ApiOperation(value = "获取以太坊交易GasPrice", notes = "获取以太坊交易GasPrice", httpMethod = "GET")

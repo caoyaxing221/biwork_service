@@ -45,7 +45,6 @@ public class AddCoinController {
 	public RespPojo getLikeQueryCoin(HttpServletRequest request, @RequestBody 
 			@ApiParam(name="模糊查询币种",value="传入json格式",required=true) com.biwork.po.request.AddCoinPojo addCoinPojo){
 		logger.info("---根据输入模糊查询币种---");
-		
 		com.biwork.po.AddCoinPojo addCoinPo =new com.biwork.po.AddCoinPojo();
 		RespPojo resp=new RespPojo();
 		String queryMark = addCoinPojo.getSearchMark();

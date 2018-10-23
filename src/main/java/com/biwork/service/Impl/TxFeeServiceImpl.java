@@ -41,7 +41,6 @@ public class TxFeeServiceImpl implements TxFeeService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		txf.setTxFee(txf_bi.toString(10));
 		return txf;
 	}
@@ -54,15 +53,28 @@ public class TxFeeServiceImpl implements TxFeeService {
 		}
 		return bitCoinFee;
 	}
-	
-//	public TxFee getEthGas() throws Exception {
-//		TxFee txf = new TxFee();
-//		Web3j web3j = Web3j.build(new HttpService(PRO_URL, true));
-//		Request<?, EthEstimateGas> txf_bi = null;
-//		Transaction transaction = null;
-//		txf_bi = web3j.ethEstimateGas(transaction);
-//
-//		txf.setTxFee(txf_bi.toString());
-//		return txf;
-//	}
+
+	@Override
+	public BigInteger getGasLimit(String formAddress, String toAddress, BigInteger value, BigInteger nonce,
+			BigInteger gasPrice, String data, BigInteger gasLimit) throws Exception {
+	Web3j web3j = Web3j.build(new HttpService(PRO_URL, true));
+		Transaction transaction = new Transaction(formAddress,nonce, gasPrice, gasLimit, toAddress, value, data);
+		transaction.getFrom();
+		transaction.getTo();
+		transaction.getValue();
+		transaction.getData();
+		transaction.getGasPrice();
+		transaction.getNonce();
+		transaction.getGas();
+		EthEstimateGas ethEstimateGas;
+		try {
+            ethEstimateGas = web3j.ethEstimateGas(transaction).send();
+            if (ethEstimateGas.hasError()){
+                throw new RuntimeException(ethEstimateGas.getError().getMessage());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("网络错误");
+        }
+		return ethEstimateGas.getAmountUsed();
+	}
 }
