@@ -31,9 +31,4 @@ public class Constants {
   public static final String ADDRESS_ALREADY_EXISTS = "无法提交相同地址";
   public static final String ALREADY_EXISTS = "无法重复提交";
   
- 
-
-
-  
-
 }
