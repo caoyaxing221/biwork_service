@@ -18,7 +18,7 @@ public class AirdropTask {
     private String title;
 
     private String remark;
-    
+    private Integer needAttach;
     private String teamId;
     
     private String bannerUrl;
@@ -90,6 +90,20 @@ public class AirdropTask {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	/**
+	 * @return the needAttach
+	 */
+	public Integer getNeedAttach() {
+		return needAttach;
+	}
+
+	/**
+	 * @param needAttach the needAttach to set
+	 */
+	public void setNeedAttach(Integer needAttach) {
+		this.needAttach = needAttach;
+	}
 
 	public String getTeamId() {
 		return teamId;

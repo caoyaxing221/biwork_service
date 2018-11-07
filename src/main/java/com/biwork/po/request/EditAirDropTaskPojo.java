@@ -18,6 +18,8 @@ public class  EditAirDropTaskPojo {
 	private String title;
 	@ApiModelProperty(value="备注",name="remark",example="",required=false)
 	private String remark;
+	@ApiModelProperty(value="是否需要附件1 需要 0不需要",name="needAttach",example="",required=false)
+	private String needAttach;
 	@ApiModelProperty(value="banner图链接",name="bannerUrl",example="",required=false)
 	private String bannerUrl;
 	
@@ -80,6 +82,18 @@ public class  EditAirDropTaskPojo {
 	 */
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	/**
+	 * @return the needAttach
+	 */
+	public String getNeedAttach() {
+		return needAttach;
+	}
+	/**
+	 * @param needAttach the needAttach to set
+	 */
+	public void setNeedAttach(String needAttach) {
+		this.needAttach = needAttach;
 	}
 	/**
 	 * @return the bannerUrl

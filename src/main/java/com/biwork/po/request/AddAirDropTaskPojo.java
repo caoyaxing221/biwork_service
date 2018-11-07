@@ -18,6 +18,8 @@ public class  AddAirDropTaskPojo {
 	private String title;
 	@ApiModelProperty(value="备注",name="remark",example="",required=false)
 	private String remark;
+	@ApiModelProperty(value="需要上传附件(1需要0不需要)",name="needAttach",example="",required=false)
+	private String needAttach;
 	@ApiModelProperty(value="banner图链接",name="bannerUrl",example="",required=false)
 	private String bannerUrl;
 	@ApiModelProperty(value="任务类型 0 空投任务 1 导入地址任务",name="type",example="",required=true)
@@ -81,6 +83,18 @@ public class  AddAirDropTaskPojo {
 	 */
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	/**
+	 * @return the needAttach
+	 */
+	public String getNeedAttach() {
+		return needAttach;
+	}
+	/**
+	 * @param needAttach the needAttach to set
+	 */
+	public void setNeedAttach(String needAttach) {
+		this.needAttach = needAttach;
 	}
 	/**
 	 * @return the bannerUrl

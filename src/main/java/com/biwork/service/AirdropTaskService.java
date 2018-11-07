@@ -11,9 +11,9 @@ import com.biwork.vo.TaskListVo;
 import com.biwork.vo.TaskVo;
 
 public interface AirdropTaskService {
-	int addTask(String teamId,String userId, String name, String endTime, String title, String remark,String bannerUrl,String type) throws ParseException;
+	int addTask(String teamId,String userId, String name, String endTime, String title, String remark,String needAttach,String bannerUrl,String type) throws ParseException;
 
-	boolean editTask(String taskId, String userId, String name, String endTime, String title, String remark,
+	boolean editTask(String taskId, String userId, String name, String endTime, String title, String remark,String needAttach,
 			String bannerUrl) throws ParseException;
 
 	List<TaskListVo> queryTaskList(String teamId, String userId, String type, String fetch, String offset);
@@ -22,7 +22,7 @@ public interface AirdropTaskService {
 
 	List<AddressListVo> queryAddressList(String taskId, String userId, String fetch, String offset);
 
-	int addAddress(String taskId, String address);
+	int addAddress(String taskId, String address,String attachUrl);
 
 	boolean endTask(String taskId, String userId) throws ParseException;
 

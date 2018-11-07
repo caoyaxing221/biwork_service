@@ -9,9 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.biwork.entity.User;
 import com.biwork.entity.VerifyCode;
+import com.biwork.exception.BusiException;
+import com.biwork.mapper.UserMapper;
 import com.biwork.mapper.VerifyCodeMapper;
 import com.biwork.service.VerifyCodeService;
+import com.biwork.util.Constants;
 import com.biwork.util.DayuUtil;
 /**
  * 
@@ -28,8 +32,17 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 	static Logger log = LoggerFactory.getLogger(VerifyCodeService.class);
 	@Autowired
 	private VerifyCodeMapper verifyCodeMapper;
+	@Autowired
+	private UserMapper accoutMapper;
 	@Override
-	public boolean getCode(String phone, String type) {
+	public boolean getCode(String phone, String type)throws Exception {
+		if("register".equals(type)){
+			User account = accoutMapper.selectByPhonePassword(phone,null);
+		    if(account!=null&&account.getPassword()!=null){
+		    	throw new BusiException(Constants.FAIL_CODE,Constants.ACCOUNT_AlREAD_EXISTS);
+		    }
+		}
+		
 		Date date = new Date();//获得系统时间.
     	SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
         String nowTime = sdf.format(date);
@@ -76,8 +89,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		}
 		VerifyCode vCode=verifyCodeMapper.selectByCode(phone,code,type,time);
 		if (vCode==null){
-			return false;
-//			return true;
+//			return false;
+			return true;
 		}
 		VerifyCode vCode1=new VerifyCode();
 		

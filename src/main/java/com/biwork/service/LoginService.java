@@ -9,6 +9,7 @@ public interface LoginService {
 	 boolean forgetPassword(String phone,String password) throws Exception;
 	 User checkAccountByPhone(String phone)throws Exception;
 	 boolean register(String phone,String password)throws Exception;
-	User loginOrRegist(String phone);
+	User loginOrRegist(String phone,String inviteCode,String name);
 	User loginByUid(Integer uid) throws Exception;
+	User invite(String phone, String inviteCode, String name);
 }

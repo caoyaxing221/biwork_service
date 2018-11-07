@@ -19,16 +19,22 @@ import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
 import com.biwork.po.request.AddFlowPojo;
+import com.biwork.po.request.AddressTemplateMsgPojo;
+import com.biwork.po.request.AddressTemplatePojo;
 import com.biwork.po.request.CommitProcessPojo;
 import com.biwork.po.request.DealProcessPojo;
 import com.biwork.po.request.EditFlowPojo;
 import com.biwork.po.request.ReceiverMsgPojo;
 import com.biwork.service.FlowProcessService;
 import com.biwork.util.Constants;
+import com.biwork.vo.AddressTemplateListVo;
+import com.biwork.vo.AddressTemplateVo;
 import com.biwork.vo.FlowListVo;
 import com.biwork.vo.FlowVo;
 import com.biwork.vo.ProcessListVo;
 import com.biwork.vo.ProcessVo;
+import com.biwork.vo.TaskListVo;
+import com.biwork.vo.TaskVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,7 +59,187 @@ public class FlowProcessController {
 	
 	@Autowired
 	FlowProcessService flowProcessService;
+	@ResponseBody
+	@RequestMapping(value="/queryTemplate", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "地址模板id查询模板信息", notes = "地址模板id查询模板信息",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "templateId",value = "模板id", required = true, paramType = "query")
+	})
+	public RespPojo queryTask(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		AddressTemplateVo task=null;
+		RespPojo resp=new RespPojo();
+		String templateId=request.getParameter("templateId");
+		
+		if(StringUtils.isBlank(templateId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("模板id不能为空");
+			  return resp;
+		}
+		
+		
+		try {
+			  task=flowProcessService.queryTempalteInfo(templateId ,up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询地址模板异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("template", task);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
 	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/saveAddressTemplate", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "普通保存地址模版", notes = "普通保存地址模版",httpMethod = "POST")
+//
+	public RespPojo saveAddressTemplate(HttpServletRequest request,@RequestBody
+			@ApiParam(name="模版对象",value="传入json格式",required=true) AddressTemplatePojo req){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		
+		RespPojo resp=new RespPojo();
+		int templateId=0;
+		String teamId=req.getTeamId();
+		String name=req.getName();
+		List<AddressTemplateMsgPojo> AddressTemplateMsg = req.getAddressTemplateMsg();
+		
+		String userId=up.getUserid();
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择团队");
+			  return resp;
+		}
+		if(StringUtils.isBlank(name)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("模版名称缺失");
+			  return resp;
+		}
+
+	
+		if(null==AddressTemplateMsg){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未提交地址信息");
+			  return resp;
+		}
+		try {
+			templateId=flowProcessService.saveAddressTemplate(userId, teamId, name, AddressTemplateMsg);
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("提交地址模版异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("templateId", templateId);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryTemplateList", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "根据团队id查询地址模版列表", notes = "根据团队id查询地址模版列表",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "pageNo",value = "页码", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "pageSize",value = "每页条数", required = true, paramType = "query")
+	})
+	public RespPojo queryTemplateList(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		 List<AddressTemplateListVo> task=null;
+		RespPojo resp=new RespPojo();
+		String teamId=request.getParameter("teamId");
+		String pageNo=request.getParameter("pageNo");
+		String pageSize=request.getParameter("pageSize");
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		if(StringUtils.isBlank(pageNo)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("页码不能为空");
+			  return resp;
+		}
+		if(StringUtils.isBlank(pageSize)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("每页条数不能为空");
+			  return resp;
+		}
+		Integer fetch=(Integer.parseInt(pageNo)-1)*Integer.parseInt(pageSize);
+		Integer totalCount;
+		try {
+			  task=flowProcessService.queryTemplateList(teamId, up.getUserid(),
+					   pageSize,fetch.toString() );
+			  totalCount=task.size()==0?0:Integer.parseInt(task.get(0).getCount());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询地址模版列表异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("addressTemplateList", task);
+		 rtnMap.put("totalCount", totalCount);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
 	@ResponseBody
 	@RequestMapping(value="/add", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "管理员创建流程", notes = "管理员创建流程",httpMethod = "POST")
@@ -668,10 +854,10 @@ public class FlowProcessController {
 		String attachUrl=req.getAttachUrl();
 		String categoryId=req.getCategoryId();
 		String cause=req.getCause();
-		String currencyId=req.getCurrencyId();
+		String coinMark=req.getCoinMark();
 		String departmentId = req.getDepartmentId();
 		String receiver=req.getReceiver();
-		ReceiverMsgPojo receiverMsg = req.getReceiverMsg();
+		List<ReceiverMsgPojo> receiverMsg = req.getReceiverMsg();
 		String remark = req.getRemark();
 		String userId=up.getUserid();
 		String airDropTaskId=null==req.getAirDropTaskId()||"".equals(req.getAirDropTaskId())?null:req.getAirDropTaskId();
@@ -691,7 +877,7 @@ public class FlowProcessController {
 			  resp.setRetMsg("未选择付币类型");
 			  return resp;
 		}
-		if(StringUtils.isBlank(currencyId)){
+		if(StringUtils.isBlank(coinMark)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择币种");
 			  return resp;
@@ -712,7 +898,7 @@ public class FlowProcessController {
 			  return resp;
 		}
 		try {
-			processId=flowProcessService.commitProcess(userId, flowId, applicationNumber, currencyId,
+			processId=flowProcessService.commitProcess(userId, flowId, applicationNumber, coinMark,
 					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId);
 		}
 		catch(BusiException e){

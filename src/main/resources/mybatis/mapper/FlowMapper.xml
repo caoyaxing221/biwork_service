@@ -27,7 +27,8 @@
      <resultMap id="FlowListMap" type="com.biwork.vo.FlowListVo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-     <result column="is_batch_transer" jdbcType="INTEGER" property="isBatch" />    
+     <result column="is_batch_transer" jdbcType="INTEGER" property="isBatch" />   
+    <result column="visible_all" jdbcType="INTEGER" property="visibleAll" />   
   </resultMap>
   <sql id="Base_Column_List">
     id, name, node_num, visible_all, is_batch_transer, team_id, state, inserttime, updatetime, 

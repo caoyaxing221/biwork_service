@@ -10,12 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.biwork.po.RespPojo;
+import com.biwork.po.request.AddAddressPojo;
+import com.biwork.po.request.UploadPhotoPojo;
 import com.biwork.service.UploadService;
 import com.biwork.util.Constants;
 
@@ -37,15 +40,14 @@ public class UploadController extends BaseController {
 
   @ResponseBody
   @RequestMapping("/upload")
-//  @ApiOperation(value = "上传图片", notes = "上传图片",httpMethod = "POST")
-//  @ApiImplicitParams({
-//	@ApiImplicitParam(name = "picUrl",value = "图片base64", required = true, paramType = "query")
-//  })
-  public RespPojo upload(HttpServletRequest request,
+  @ApiOperation(value = "上传图片", notes = "上传图片",httpMethod = "POST")
+  
+  public RespPojo upload(HttpServletRequest request,@RequestBody
+			@ApiParam(name="图片base64",value="传入json格式",required=true) UploadPhotoPojo req,
       HttpServletResponse response) {
-    String base64 = request.getParameter("picUrl");
+    String base64 = req.getPicUrl();
     logger.info("上传上来的base64数据: {}",base64);
-    RespPojo result = uploadService.upLoad(base64);
+    RespPojo result = uploadService.upLoadLocal(base64, request);
     return result;
   }
   /**

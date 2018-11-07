@@ -9,9 +9,10 @@
     <result column="apkUrl" jdbcType="VARCHAR" property="apkurl" />
     <result column="updateDescription" jdbcType="VARCHAR" property="updatedescription" />
     <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="forceUpdate" jdbcType="VARCHAR" property="forceUpdate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, type, newVersion, minVersion, apkUrl, updateDescription, size
+    id, type, newVersion, minVersion, apkUrl, updateDescription, size,forceUpdate
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

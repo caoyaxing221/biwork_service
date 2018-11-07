@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.biwork.entity.AddressTemplate;
 import com.biwork.entity.AirdropTask;
 import com.biwork.entity.ApprovalCategory;
 import com.biwork.entity.Currency;
@@ -20,6 +21,7 @@ import com.biwork.entity.Team;
 import com.biwork.entity.ProcessWithBLOBs;
 import com.biwork.entity.ProcessNode;
 import com.biwork.exception.BusiException;
+import com.biwork.mapper.AddressTemplateMapper;
 import com.biwork.mapper.AirdropTaskMapper;
 import com.biwork.mapper.ApprovalCategoryMapper;
 import com.biwork.mapper.CurrencyMapper;
@@ -32,14 +34,18 @@ import com.biwork.mapper.ProcessMapper;
 import com.biwork.mapper.ProcessNodeMapper;
 import com.biwork.mapper.TeamMapper;
 import com.biwork.po.request.ReceiverMsgPojo;
+import com.biwork.po.request.AddressTemplateMsgPojo;
 import com.biwork.service.FlowProcessService;
 import com.biwork.util.Constants;
+import com.biwork.vo.AddressTemplateListVo;
+import com.biwork.vo.AddressTemplateVo;
 import com.biwork.vo.FlowListVo;
 import com.biwork.vo.FlowVo;
 import com.biwork.vo.MemberVo;
 import com.biwork.vo.ProcessListVo;
 import com.biwork.vo.ProcessNodeVo;
 import com.biwork.vo.ProcessVo;
+import com.biwork.vo.TaskVo;
 
 
 
@@ -68,6 +74,43 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	private ProcessNodeMapper processNodeMapper;
 	@Autowired
 	private AirdropTaskMapper airdropTaskMapper;
+	@Autowired
+	private AddressTemplateMapper addressTemplateMapper;
+	@Override
+	public AddressTemplateVo queryTempalteInfo(String templateId,String userId) {
+		AddressTemplateVo task=addressTemplateMapper.selectByTemplateId(Integer.parseInt(templateId),Integer.parseInt(userId));
+		return task;
+	}
+	@Override
+	public List<AddressTemplateListVo> queryTemplateList(String teamId,String userId,String fetch,String offset) {
+		List<AddressTemplateListVo> taskList=addressTemplateMapper.selectByTeamId(Integer.parseInt(teamId),Integer.parseInt(userId)
+				,Integer.parseInt(fetch),Integer.parseInt(offset));
+		return taskList;
+	}
+	@Override
+	public int saveAddressTemplate(String userId,String teamId, String name,
+			List<AddressTemplateMsgPojo> AddressTemplateMsg) {
+		int templateId=0;
+		
+	
+		MemberVo memberDb = memberMapper.selectByTeamIdUseId(Integer.parseInt(teamId), userId);
+		if( null==memberDb){
+			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
+		}
+		
+		
+		
+		AddressTemplate address =new AddressTemplate();
+
+		address.setTeamId(Integer.parseInt(teamId));
+	
+		address.setAddressMsg(JSON.toJSONString(AddressTemplateMsg));
+		address.setCreateUserid(Integer.parseInt(userId));;
+		address.setName(name);
+		addressTemplateMapper.insertSelective(address);
+		templateId=address.getId();
+		return templateId;
+	}
 	@Override
 	public int addFlow(String teamId, String name, String isBatch, String visibleAll, String authList, String nodeList,
 			String userId) {
@@ -123,9 +166,9 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		return flowId;
 	}
 	@Override
-	public int commitProcess(String userId,String flowId, String applicationNumber, String currencyId,
+	public int commitProcess(String userId,String flowId, String applicationNumber, String coinMark,
 			String cause, String departmentId, String categoryId,
-			ReceiverMsgPojo receiverMsg,String receiver,String remark,String attachUrl
+			List<ReceiverMsgPojo> receiverMsg,String receiver,String remark,String attachUrl
 			,String airDropTaskId) {
 		int processId=0;
 		if(null!=airDropTaskId&&!"".equals(airDropTaskId)){
@@ -147,10 +190,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		if( null==memberDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 		}
-		 Currency currencyDb = currencyMapper.selectByPrimaryKey(Integer.parseInt(currencyId));
-		if(null==currencyDb){
-			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
-		}
+		
 		 Department departmentDb = departmentMapper.selectByPrimaryKey(Integer.parseInt(departmentId));
 		if(null==departmentDb||(null!=departmentDb.getTeamId()&&departmentDb.getTeamId()!=teamId)){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
@@ -163,7 +203,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		ProcessWithBLOBs process =new ProcessWithBLOBs();
 		process.setApplicationNumber(applicationNumber);
 		process.setCategoryId(Integer.parseInt(categoryId));
-		process.setCurrencyId(Integer.parseInt(currencyId));
+		process.setCoinMark(coinMark);;
 		process.setCurrentNode(1);
 		process.setDepartmentId(Integer.parseInt(departmentId));
 		process.setReceiver(receiver);
@@ -174,6 +214,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		process.setReceiverMsg(JSON.toJSONString(receiverMsg));
 		process.setRemark(remark);
 		process.setAirDropTaskId(airDropTaskId);
+		process.setIsBatchTranser(flowDb.getIsBatchTranser());
 		processMapper.insertSelective(process);
 		processId=process.getId();
 		processMapper.insertNodes(processId, Integer.parseInt(flowId));
@@ -199,19 +240,29 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 			
 		}
 		if(dealFlag==1||dealFlag==-1){
+			Integer currentNode=Integer.parseInt(processdb.getCurrentNode());
 			
 			List<ProcessNodeVo> processNodeVo=processdb.getProcessNode();
 			int i=0;
-			for( i=0;i<processNodeVo.size();i++){
-				if(processNodeVo.get(i).getApproverId().equals(userId)){
-					break;
-				}
-			}
-			if(i>processNodeVo.size()){
+//			for( i=0;i<processNodeVo.size();i++){
+//				if(processNodeVo.get(i).getApproverId().equals(userId)){
+//					break;
+//				}
+//			}
+			if(currentNode>processNodeVo.size()){
 				throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 				
 			}
-			processNode.setId(processNodeVo.get(i).getId());
+			ProcessNodeVo currentApprover = processNodeVo.get(currentNode-1);
+//			if(i>processNodeVo.size()||!processNodeVo.get(i).getNo().toString().equals(currentNode)){
+//				throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
+//				
+//			}
+			if(!currentApprover.getApproverId().equals(userId)){
+				throw new BusiException(Constants.FAIL_CODE,Constants.CAN_NOT_APPROVE);
+				
+			}
+			processNode.setId(currentApprover.getId());
 			processNode.setUpdatetime(new Date());
 			processNode.setState(dealFlag);
 			processNodeMapper.updateByPrimaryKeySelective(processNode);
@@ -220,6 +271,11 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 				process.setId(Integer.parseInt(processdb.getId()));
 				process.setUpdatetime(new Date());
 				process.setState(dealFlag);
+				processMapper.updateByPrimaryKeySelective(process);
+			}else if(dealFlag==1){
+				process.setCurrentNode(currentNode+1);
+				process.setId(Integer.parseInt(processdb.getId()));
+				process.setUpdatetime(new Date());
 				processMapper.updateByPrimaryKeySelective(process);
 			}
 			

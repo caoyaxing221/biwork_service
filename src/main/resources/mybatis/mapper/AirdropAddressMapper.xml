@@ -8,6 +8,7 @@
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="attach_url" jdbcType="VARCHAR" property="attachUrl" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
   </resultMap>
    <sql id="page_val">
@@ -16,7 +17,7 @@
 		
     </sql>
   <sql id="Base_Column_List">
-    id, taskid, inserttime, updatetime, state, address, amount
+    id, taskid, inserttime, updatetime, state, address, amount,attach_url
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -74,6 +75,9 @@
       <if test="amount != null">
         amount,
       </if>
+       <if test="attachUrl != null">
+        attach_url,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -97,6 +101,9 @@
       <if test="amount != null">
         #{amount,jdbcType=DECIMAL},
       </if>
+      <if test="attachUrl != null">
+        #{attachUrl,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.AirdropAddress">
@@ -119,6 +126,9 @@
       </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="attachUrl != null">
+        attach_url =#{attachUrl,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

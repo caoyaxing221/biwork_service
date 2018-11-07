@@ -5,6 +5,7 @@ public class TaskListVo {
 	String name;
 	String addressCount;
 	String endTime;
+	String leftSeconds;
 	String state;
 	String type;
 	String count;
@@ -55,6 +56,18 @@ public class TaskListVo {
 	 */
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+	/**
+	 * @return the leftSeconds
+	 */
+	public String getLeftSeconds() {
+		return leftSeconds;
+	}
+	/**
+	 * @param leftSeconds the leftSeconds to set
+	 */
+	public void setLeftSeconds(String leftSeconds) {
+		this.leftSeconds = leftSeconds;
 	}
 	/**
 	 * @return the state

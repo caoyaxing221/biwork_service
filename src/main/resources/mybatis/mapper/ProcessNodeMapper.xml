@@ -23,9 +23,9 @@
     id, process_id, no, inserttime, updatetime, finishtime, approver_id, state
   </sql>
      <select id="selectByProcessId" parameterType="java.lang.Integer" resultMap="ProcessNodeMap">
-   select a.id,no,IFNULL(b.name,c.name) as name,a.state,a.updatetime as time,approver_id from process_node a join user b 
+   select a.id,no,b.name as name,a.state,DATE_FORMAT(a.updatetime,'%Y-%m-%d %h:%i:%s') as time,approver_id from process_node a join user b 
 	on a.approver_id =b.id 
-	left join member c on a.approver_id=c.user_id
+	<!--left   join member c on a.approver_id=c.user_id-->
 	where process_id= #{processId,jdbcType=INTEGER} order by no asc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

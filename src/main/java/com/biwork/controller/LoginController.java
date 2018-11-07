@@ -28,6 +28,7 @@ import com.biwork.po.request.AdminLoginPojo;
 import com.biwork.po.request.GetVerifyCodePojo;
 import com.biwork.po.request.RegisterFirstPojo;
 import com.biwork.po.request.RegisterSecondPojo;
+import com.biwork.po.request.UserInvitePojo;
 import com.biwork.po.request.UserLoginPojo;
 import com.biwork.service.LoginService;
 import com.biwork.service.VerifyCodeService;
@@ -63,7 +64,105 @@ public class LoginController {
 	@Autowired
 	LoginService loginService;
 	
-	
+	@ResponseBody
+	@RequestMapping("/invite")
+	@ApiOperation(value = "邀请注册", notes = "邀请注册",httpMethod = "POST")
+	public RespPojo invite(HttpServletRequest request,@RequestBody
+			@ApiParam(name="邀请注册对象",value="传入json格式",required=true) UserInvitePojo userLoginPojo){
+		String phone= userLoginPojo.getPhone();
+//		String password = phone.substring(5, 11);
+		String verifyCode=userLoginPojo.getVerifyCode();
+		String inviteCode=userLoginPojo.getInviteCode();
+		String name =userLoginPojo.getName();
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		
+		RespPojo resp=new RespPojo();
+		
+		
+		if(StringUtils.isBlank(phone)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("手机号不能为空");
+			  return resp;
+		}
+		if(StringUtils.isBlank(verifyCode)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("验证码不能为空");
+			  return resp;
+		}
+		
+		if(!ValidateUtil.isMobile(phone)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("手机号格式错误");
+			  return resp;
+		}
+		
+		try {
+			boolean vflag= verifyCodeService.verifyCode(phone, verifyCode, "invite");
+			if(!vflag){
+				resp.setRetCode(Constants.FAIL_CODE);
+			    resp.setRetMsg("验证码校验失败");
+			    return resp;
+			}
+		}
+		catch (Exception e) {
+			  logger.error("邀请注册验证码校验异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		//此处验证user表中是否有这个商户注册信息，有则不添加新的，无则添加
+		User account = null;
+		try {
+			account = loginService.invite(phone,inviteCode,name);
+			
+		}catch(BusiException e){
+			 logger.error("邀请注册异常{}",e);
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("邀请注册异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		if(account!=null){
+			 //将用户信息存入session
+			
+//			up=(UserPojo) request.getSession().getAttribute("User");
+//			
+//			up=new UserPojo();
+//			
+//			
+//			up.setUserid(account.getId().toString());
+//			up.setRoleid("1");
+//			request.getSession().setAttribute("User",up);
+		
+			 Map<String, Object> rtnMap = new HashMap<String, Object>();
+//			 String token="";
+//			try {
+//				token = JwtUtil.createToken(account.getId().longValue(),1L);
+//			} catch (Exception e) {
+//				 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+//				 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+//				 logger.error("手机号{}登录生成token失败{}",phone,e);
+//			}
+//			 rtnMap.put("token", token);
+			 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			 resp.setData(rtnMap);
+			    
+			return resp;
+		}
+		return resp;
+		
+	}
 	//去密码登录操作（输入手机号获取验证码直接登录）
 			
 	@ResponseBody
@@ -77,6 +176,8 @@ public class LoginController {
 		String verifyCode=userLoginPojo.getVerifyCode();
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
 		String imgCode=userLoginPojo.getImgCode();
+		String inviteCode="";
+		String name ="";
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
@@ -123,7 +224,7 @@ public class LoginController {
 		//此处验证user表中是否有这个商户注册信息，有则不添加新的，无则添加
 		User account = null;
 		try {
-			account = loginService.loginOrRegist(phone);
+			account = loginService.loginOrRegist(phone,inviteCode,name);
 			
 		}catch(BusiException e){
 			 logger.error("登录异常{}",e);

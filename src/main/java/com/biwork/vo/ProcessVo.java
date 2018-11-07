@@ -12,8 +12,7 @@ public class ProcessVo {
 	private String payCategory;
 	private String cause;
 	private String enterDepartment;
-	private String currencyName;
-	private String currencyType;
+	private String coinMark;
 	private String receiver;
 	private String receiverMsg;
 	private String remark;
@@ -21,9 +20,12 @@ public class ProcessVo {
 	private String commitTime;
 	private String state;
 	private String canApprove;
+	private String canCancel;
 	private List<ProcessNodeVo> processNode;
 	private String airDropTaskId;
 	private String airDropTaskName;
+	private String currentNode;
+	private String waitSeconds;
 	/**
 	 * @return the id
 	 */
@@ -102,29 +104,18 @@ public class ProcessVo {
 	public void setEnterDepartment(String enterDepartment) {
 		this.enterDepartment = enterDepartment;
 	}
+	
 	/**
-	 * @return the currencyName
+	 * @return the coinMark
 	 */
-	public String getCurrencyName() {
-		return currencyName;
+	public String getCoinMark() {
+		return coinMark;
 	}
 	/**
-	 * @param currencyName the currencyName to set
+	 * @param coinMark the coinMark to set
 	 */
-	public void setCurrencyName(String currencyName) {
-		this.currencyName = currencyName;
-	}
-	/**
-	 * @return the currencyType
-	 */
-	public String getCurrencyType() {
-		return currencyType;
-	}
-	/**
-	 * @param currencyType the currencyType to set
-	 */
-	public void setCurrencyType(String currencyType) {
-		this.currencyType = currencyType;
+	public void setCoinMark(String coinMark) {
+		this.coinMark = coinMark;
 	}
 	/**
 	 * @return the receiver
@@ -211,6 +202,18 @@ public class ProcessVo {
 		this.canApprove = canApprove;
 	}
 	/**
+	 * @return the canCancel
+	 */
+	public String getCanCancel() {
+		return canCancel;
+	}
+	/**
+	 * @param canCancel the canCancel to set
+	 */
+	public void setCanCancel(String canCancel) {
+		this.canCancel = canCancel;
+	}
+	/**
 	 * @return the processNode
 	 */
 	public List<ProcessNodeVo> getProcessNode() {
@@ -245,6 +248,30 @@ public class ProcessVo {
 	 */
 	public void setAirDropTaskName(String airDropTaskName) {
 		this.airDropTaskName = airDropTaskName;
+	}
+	/**
+	 * @return the currentNode
+	 */
+	public String getCurrentNode() {
+		return currentNode;
+	}
+	/**
+	 * @param currentNode the currentNode to set
+	 */
+	public void setCurrentNode(String currentNode) {
+		this.currentNode = currentNode;
+	}
+	/**
+	 * @return the waitSeconds
+	 */
+	public String getWaitSeconds() {
+		return waitSeconds;
+	}
+	/**
+	 * @param waitSeconds the waitSeconds to set
+	 */
+	public void setWaitSeconds(String waitSeconds) {
+		this.waitSeconds = waitSeconds;
 	}
 	
 }

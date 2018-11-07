@@ -19,9 +19,12 @@ import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.TeamMapper;
 import com.biwork.mapper.UserMapper;
 import com.biwork.service.TeamService;
+import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
+import com.biwork.util.PropertiesUtil;
 import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
+import com.biwork.vo.TeamInfoVo;
 import com.biwork.vo.TeamVo;
 
 
@@ -58,6 +61,14 @@ public class TeamServiceImpl implements TeamService {
 		team.setStuffNum(Integer.parseInt(stuffNum));
 		teamMapper.insertSelective(team);
 		int teamId=team.getId();
+		User userDb = userMapper.selectByPrimaryKey(Integer.parseInt(userId));
+		Member member=new Member();
+		member.setInviterId(null);
+		member.setName(userDb.getName());
+		member.setPhone(userDb.getPhone());
+		member.setTeamId(teamId);
+		member.setUserId(Integer.parseInt(userId));
+		memberMapper.insertSelective(member);
 		//更新管理员姓名//设为默认团队
 		User user=  new User();
 		user.setId(Integer.parseInt(userId));
@@ -106,6 +117,10 @@ public class TeamServiceImpl implements TeamService {
 	}
 	@Override
 	public int addInvite(String teamId,String userId,String name, String phone) {
+		User userDb = userMapper.selectByPrimaryKey(Integer.parseInt(userId));
+		if( phone.equals(userDb.getPhone())){
+			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
+		}
 		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);
 		List<MemberVo> inviteList=memberInviteMapper.selectByTeamId(Integer.parseInt(teamId),userId);
 		if(inviteList.size()>=service.getMaxAccount()){
@@ -132,6 +147,29 @@ public class TeamServiceImpl implements TeamService {
 		 
 	}
 	@Override
+	public String getInviteCode(String teamId,String userId) {
+		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);
+		List<MemberVo> inviteList=memberInviteMapper.selectByTeamId(Integer.parseInt(teamId),userId);
+		if(inviteList.size()>=service.getMaxAccount()){
+			throw new BusiException(Constants.FAIL_CODE,Constants.MAX_ACCOUNT_MESSAGE);
+		}
+		Team teamDb = teamMapper.selectByPrimaryKey(Integer.parseInt(teamId));
+		if(null==teamDb){
+			throw new BusiException(Constants.FAIL_CODE,Constants.TEAM_NOT_FOUND);
+		}
+		if(!teamDb.getCreateUserId().toString().equals(userId)){
+			throw new BusiException(Constants.FAIL_CODE,Constants.TEAM_NOT_FOUND);
+		}
+		String inviteCode;
+		try {
+			inviteCode = AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), teamId+"|"+userId);
+		} catch (Exception e) {
+			throw new BusiException(Constants.FAIL_CODE,Constants.NETWORK_MESSAGE);
+		}
+		 return inviteCode;
+		 
+	}
+	@Override
 	public boolean delInvite(String inviteId,String userId) {
 		MemberInvite mInvitedb = memberInviteMapper.selectByPrimaryKey(Integer.parseInt(inviteId));
 		if(null==mInvitedb){
@@ -146,7 +184,7 @@ public class TeamServiceImpl implements TeamService {
 		minvite.setUpdatetime(new Date());
 		memberInviteMapper.updateByPrimaryKeySelective(minvite);
 		//同时删除团队成员
-		MemberVo memberDb = memberMapper.selectByTeamIdUseId(mInvitedb.getTeamId(), userId);
+		MemberVo memberDb = memberMapper.selectByInviteTableId(mInvitedb.getId());
 		if( null!=memberDb){
 			Member member=new Member();
 			member.setId(Integer.parseInt(memberDb.getId()));
@@ -154,16 +192,30 @@ public class TeamServiceImpl implements TeamService {
 			member.setUpdatetime(new Date());
 			memberMapper.updateByPrimaryKeySelective(member);
 		}
-		
+		//更新default team
+		List<TeamVo> joinTeams = teamMapper.selectByJoinUserId(Integer.parseInt(userId));
+		Integer teamId=null;
+		if(joinTeams.size()!=0){
+			teamId=joinTeams.get(0).getId();
+		}
+		User user=  new User();
+		user.setId(Integer.parseInt(userId));
+		user.setUpdatetime(new Date());
+		user.setDefaultTeamId(teamId);
+		userMapper.updateByPrimaryKeySelective(user);
 		return true;
 	}
 	@Override
-	public Team queryTeamById(String teamId,String userId) {
-		Team teamDb = teamMapper.selectByPrimaryKey(Integer.parseInt(teamId));
+	public TeamInfoVo queryTeamById(String teamId,String userId) {
+		TeamInfoVo teamDb = teamMapper.selectById(Integer.parseInt(teamId));
 		if(null==teamDb||!teamDb.getCreateUserId().toString().equals(userId)){
 			throw new BusiException(Constants.FAIL_CODE,Constants.TEAM_NOT_FOUND);
 		}
 		return teamDb;
+	}
+	@Override
+	public  List<TeamVo> queryTeamSize() {
+		return teamMapper.selectTeamSize();
 	}
 	@Override
 	public boolean setDefaultTeam(String teamId,String userId) {
@@ -198,11 +250,12 @@ public class TeamServiceImpl implements TeamService {
 		mInvite.setUpdatetime(new Date());
 		memberInviteMapper.updateByPrimaryKeySelective(mInvite);
 		Member member=new Member();
-		member.setInviterId(mInvitedb.getId());
+		member.setInviterId(mInvitedb.getInviterId());
 		member.setName(mInvitedb.getName());
 		member.setPhone(mInvitedb.getPhone());
 		member.setTeamId(mInvitedb.getTeamId());
 		member.setUserId(Integer.parseInt(userId));
+		member.setInviteTableId(mInvitedb.getId());
 		memberMapper.insertSelective(member);
 		// 如果没有默认团队，设为默认
 		if(null==userDb.getDefaultTeamId()){
@@ -210,6 +263,7 @@ public class TeamServiceImpl implements TeamService {
 			user.setId(userDb.getId());
 			user.setDefaultTeamId(mInvitedb.getTeamId());
 			user.setUpdatetime(new Date());
+			user.setName(mInvitedb.getName());
 			userMapper.updateByPrimaryKeySelective(user);
 		}
 		return true;

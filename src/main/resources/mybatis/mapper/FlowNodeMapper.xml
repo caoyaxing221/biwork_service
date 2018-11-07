@@ -24,10 +24,9 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
    <select id="selectByFlowId" parameterType="java.lang.Integer" resultMap="TeamVoMap">
-    select 
-    approver_id,name
-    from flow_node a join member b on a.approver_id=b.user_id
-    where flow_id = #{flowId,jdbcType=INTEGER} and a.state=0 order by no ASC
+    select approver_id,b.name from flow_node a join user b 
+on a.approver_id=b.id
+ where flow_id = #{flowId,jdbcType=INTEGER} and a.state=0  order by no ASC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from flow_node

@@ -5,6 +5,7 @@ import java.util.List;
 import com.biwork.entity.Team;
 import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
+import com.biwork.vo.TeamInfoVo;
 import com.biwork.vo.TeamVo;
 
 public interface TeamService {	 
@@ -18,7 +19,8 @@ public interface TeamService {
 	List<MemberVo> queryTeamMembers(String teamId,String userId);
 	int addInvite(String teamId,String userId,String name,String phone);
 	boolean delInvite(String inviteId,String userId);
-	Team queryTeamById(String teamId,String userId);
-	
+	TeamInfoVo queryTeamById(String teamId,String userId);
+	List<TeamVo> queryTeamSize();
 	List<InviteVo> queryInviteList(String userId);
+	String getInviteCode(String teamId, String userId);
 }
