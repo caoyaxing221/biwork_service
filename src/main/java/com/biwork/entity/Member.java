@@ -8,6 +8,8 @@ public class Member {
     private Integer teamId;
 
     private Integer inviterId;
+    
+    private Integer inviteTableId;
 
     private Integer userId;
 
@@ -45,7 +47,21 @@ public class Member {
         this.inviterId = inviterId;
     }
 
-    public Integer getUserId() {
+    /**
+	 * @return the inviteTableId
+	 */
+	public Integer getInviteTableId() {
+		return inviteTableId;
+	}
+
+	/**
+	 * @param inviteTableId the inviteTableId to set
+	 */
+	public void setInviteTableId(Integer inviteTableId) {
+		this.inviteTableId = inviteTableId;
+	}
+
+	public Integer getUserId() {
         return userId;
     }
 

@@ -24,9 +24,10 @@
   </select>
     <select id="selectByFlowId" parameterType="java.lang.Integer" resultMap="TeamVoMap">
     select 
-    a.user_id,name
-    from flow_authority a join member b on a.user_id=b.user_id
-    where flow_id = #{flowId,jdbcType=INTEGER} and a.state=0
+    a.user_id,b.name
+    from flow_authority a join user b on a.user_id=b.id
+   
+    where flow_id = #{flowId,jdbcType=INTEGER} and a.state=0 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from flow_authority

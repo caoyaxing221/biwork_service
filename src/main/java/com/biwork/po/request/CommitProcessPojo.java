@@ -1,5 +1,7 @@
 package com.biwork.po.request;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,8 +14,8 @@ public class  CommitProcessPojo {
 	private String flowId;
 	@ApiModelProperty(value="申请编号",name="applicationNumber",example="",required=true)
 	private String applicationNumber;
-	@ApiModelProperty(value="支付币种",name="currencyId",example="",required=true)
-	private String currencyId;
+	@ApiModelProperty(value="支付币种",name="coinMark",example="",required=true)
+	private String coinMark;
 	@ApiModelProperty(value="事由",name="cause",example="",required=true)
 	private String cause;
 	@ApiModelProperty(value="入账部门",name="departmentId",example="",required=true)
@@ -21,7 +23,7 @@ public class  CommitProcessPojo {
 	@ApiModelProperty(value="付币类别",name="categoryId",example="",required=true)
 	private String categoryId;
 	@ApiModelProperty(value="收币地址及数量信息",name="receiverMsg",example="",required=true)
-	private ReceiverMsgPojo receiverMsg;
+	private  List<ReceiverMsgPojo> receiverMsg;
 	@ApiModelProperty(value="空投助手id",name="airDropTaskId",example="",required=false)
 	private String airDropTaskId;
 	@ApiModelProperty(value="收币方",name="receiver",example="",required=true)
@@ -54,17 +56,18 @@ public class  CommitProcessPojo {
 	public void setApplicationNumber(String applicationNumber) {
 		this.applicationNumber = applicationNumber;
 	}
+	
 	/**
-	 * @return the currencyId
+	 * @return the coinMark
 	 */
-	public String getCurrencyId() {
-		return currencyId;
+	public String getCoinMark() {
+		return coinMark;
 	}
 	/**
-	 * @param currencyId the currencyId to set
+	 * @param coinMark the coinMark to set
 	 */
-	public void setCurrencyId(String currencyId) {
-		this.currencyId = currencyId;
+	public void setCoinMark(String coinMark) {
+		this.coinMark = coinMark;
 	}
 	/**
 	 * @return the cause
@@ -102,16 +105,17 @@ public class  CommitProcessPojo {
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
+	
 	/**
 	 * @return the receiverMsg
 	 */
-	public ReceiverMsgPojo getReceiverMsg() {
+	public List<ReceiverMsgPojo> getReceiverMsg() {
 		return receiverMsg;
 	}
 	/**
 	 * @param receiverMsg the receiverMsg to set
 	 */
-	public void setReceiverMsg(ReceiverMsgPojo receiverMsg) {
+	public void setReceiverMsg(List<ReceiverMsgPojo> receiverMsg) {
 		this.receiverMsg = receiverMsg;
 	}
 	/**

@@ -24,6 +24,8 @@ public class  AddAddressPojo {
 	}
 	@ApiModelProperty(value="地址",name="address",example="",required=true)
 	private String address;
+	@ApiModelProperty(value="附件url",name="attachUrl",example="",required=false)
+	private String attachUrl;
 
 	/**
 	 * @return the address
@@ -36,6 +38,18 @@ public class  AddAddressPojo {
 	 */
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	/**
+	 * @return the attachUrl
+	 */
+	public String getAttachUrl() {
+		return attachUrl;
+	}
+	/**
+	 * @param attachUrl the attachUrl to set
+	 */
+	public void setAttachUrl(String attachUrl) {
+		this.attachUrl = attachUrl;
 	}
 	
 	

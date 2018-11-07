@@ -10,6 +10,7 @@ public class TaskVo {
 	String title;
 	String bannerUrl;
 	String remark;
+	String needAttach;
 	/**
 	 * @return the id
 	 */
@@ -117,5 +118,17 @@ public class TaskVo {
 	 */
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	/**
+	 * @return the needAttach
+	 */
+	public String getNeedAttach() {
+		return needAttach;
+	}
+	/**
+	 * @param needAttach the needAttach to set
+	 */
+	public void setNeedAttach(String needAttach) {
+		this.needAttach = needAttach;
 	}
 }

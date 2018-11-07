@@ -31,6 +31,7 @@ import com.biwork.util.Constants;
 import com.biwork.util.ValidateUtil;
 import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
+import com.biwork.vo.TeamInfoVo;
 import com.biwork.vo.TeamVo;
 
 import io.swagger.annotations.Api;
@@ -207,6 +208,50 @@ public class TeamController {
 		
 	}
 	@ResponseBody
+	@RequestMapping(value="/queryTeamSize", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "团队管理查询团队规模", notes = "团队管理查询团队规模",httpMethod = "GET")
+	
+	public RespPojo queryTeamSize(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		List<TeamVo> team=null;
+		RespPojo resp=new RespPojo();
+		
+		
+		
+		
+		try {
+			  team=teamService.queryTeamSize();
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询团队规模异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("teamSize", team);
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	@ResponseBody
 	@RequestMapping(value="/query", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "团队管理根据id查询团队信息", notes = "团队管理根据id查询团队信息",httpMethod = "GET")
 	@ApiImplicitParams({
@@ -215,7 +260,7 @@ public class TeamController {
 	public RespPojo queryTeam(HttpServletRequest request){
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
-		 Team team=null;
+		TeamInfoVo team=null;
 		RespPojo resp=new RespPojo();
 		String teamId=request.getParameter("teamId");
 		
@@ -645,6 +690,57 @@ public class TeamController {
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 
+		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+		 resp.setData(rtnMap);
+		    
+		return resp;
+	
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/getInviteCode", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "团队管理邀请注册", notes = "团队管理邀请注册生成邀请码",httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query")
+	})
+	public RespPojo getInviteCode(HttpServletRequest request){
+		UserPojo up=new UserPojo();
+		RespPojo resp=new RespPojo();
+		up=(UserPojo) request.getSession().getAttribute("User");
+		String teamId=request.getParameter("teamId");
+		String inviteCode="";
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		
+		
+		try {
+			inviteCode= teamService.getInviteCode(teamId, up.getUserid());
+			
+		}
+		catch(BusiException e){
+			  
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("团队管理邀请注册生成邀请码异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		
+		
+		
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 rtnMap.put("inviteCode", inviteCode);
 		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		 resp.setData(rtnMap);

@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ProcessListVo {
 	private String id;
 	private String submitterName;
-	private String currencyName;
+	private String coinMark;
 	private String receiverMsg;
 	private String commitTime;
 	private String state;
 	private String count;
+	private String isBatchTranser;
 	/**
 	 * @return the id
 	 */
@@ -34,17 +35,18 @@ public class ProcessListVo {
 	public void setSubmitterName(String submitterName) {
 		this.submitterName = submitterName;
 	}
+
 	/**
-	 * @return the currencyName
+	 * @return the coinMark
 	 */
-	public String getCurrencyName() {
-		return currencyName;
+	public String getCoinMark() {
+		return coinMark;
 	}
 	/**
-	 * @param currencyName the currencyName to set
+	 * @param coinMark the coinMark to set
 	 */
-	public void setCurrencyName(String currencyName) {
-		this.currencyName = currencyName;
+	public void setCoinMark(String coinMark) {
+		this.coinMark = coinMark;
 	}
 	/**
 	 * @return the receiverMsg
@@ -87,6 +89,18 @@ public class ProcessListVo {
 	}
 	public void setCount(String count) {
 		this.count = count;
+	}
+	/**
+	 * @return the isBatchTranser
+	 */
+	public String getIsBatchTranser() {
+		return isBatchTranser;
+	}
+	/**
+	 * @param isBatchTranser the isBatchTranser to set
+	 */
+	public void setIsBatchTranser(String isBatchTranser) {
+		this.isBatchTranser = isBatchTranser;
 	}
 	
 }

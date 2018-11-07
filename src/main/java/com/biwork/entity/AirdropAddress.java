@@ -15,6 +15,8 @@ public class AirdropAddress {
     private Integer state;
 
     private String address;
+    
+    private String attachUrl;
 
     private BigDecimal amount;
 
@@ -66,7 +68,21 @@ public class AirdropAddress {
         this.address = address == null ? null : address.trim();
     }
 
-    public BigDecimal getAmount() {
+    /**
+	 * @return the attachUrl
+	 */
+	public String getAttachUrl() {
+		return attachUrl;
+	}
+
+	/**
+	 * @param attachUrl the attachUrl to set
+	 */
+	public void setAttachUrl(String attachUrl) {
+		this.attachUrl = attachUrl;
+	}
+
+	public BigDecimal getAmount() {
         return amount;
     }
 

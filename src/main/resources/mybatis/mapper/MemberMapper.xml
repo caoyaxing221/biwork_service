@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="team_id" jdbcType="INTEGER" property="teamId" />
     <result column="inviter_id" jdbcType="INTEGER" property="inviterId" />
+    <result column="invite_table_id" jdbcType="INTEGER" property="inviteTableId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
@@ -20,7 +21,7 @@
 	   <result column="user_id" jdbcType="VARCHAR" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, team_id, inviter_id, user_id, name, phone, state, inserttime, updatetime
+    id, team_id, inviter_id, user_id, name, phone, state, inserttime, updatetime,invite_table_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -36,6 +37,13 @@
     <if test="userId != null">
        and  inviter_id = #{userId,jdbcType=VARCHAR} 
      </if>
+  </select>
+  <select id="selectByInviteTableId" parameterType="java.lang.Integer" resultMap="MemberVoMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member
+    where invite_table_id= #{inviteTableId,jdbcType=INTEGER} and state=0
+  
   </select>
     <select id="selectByTeamIdUseId" parameterType="java.lang.Integer" resultMap="MemberVoMap">
     select 
@@ -82,6 +90,9 @@
       <if test="inviterId != null">
         inviter_id,
       </if>
+       <if test="inviteTableId != null">
+        invite_table_id,
+      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -111,6 +122,9 @@
       <if test="inviterId != null">
         #{inviterId,jdbcType=INTEGER},
       </if>
+      <if test="inviteTableId != null">
+        #{inviteTableId,jdbcType=INTEGER},
+      </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
@@ -139,6 +153,9 @@
       </if>
       <if test="inviterId != null">
         inviter_id = #{inviterId,jdbcType=INTEGER},
+      </if>
+      <if test="inviteTableId != null">
+       invite_table_id= #{inviteTableId,jdbcType=INTEGER},
       </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},

@@ -11,7 +11,7 @@ public class Process {
 
     private String applicationNumber;
 
-    private Integer currencyId;
+    private String coinMark;
 
     private Integer departmentId;
 
@@ -28,6 +28,8 @@ public class Process {
     private Date updatetime;
 
     private Date finishtime;
+    
+    private Integer isBatchTranser;
 
     public Integer getId() {
         return id;
@@ -61,13 +63,15 @@ public class Process {
         this.applicationNumber = applicationNumber == null ? null : applicationNumber.trim();
     }
 
-    public Integer getCurrencyId() {
-        return currencyId;
-    }
+    public String getCoinMark() {
+		return coinMark;
+	}
 
-    public void setCurrencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-    }
+	public void setCoinMark(String coinMark) {
+		this.coinMark = coinMark;
+	}
+
+	
 
     public Integer getDepartmentId() {
         return departmentId;
@@ -132,4 +136,18 @@ public class Process {
     public void setFinishtime(Date finishtime) {
         this.finishtime = finishtime;
     }
+
+	/**
+	 * @return the isBatchTranser
+	 */
+	public Integer getIsBatchTranser() {
+		return isBatchTranser;
+	}
+
+	/**
+	 * @param isBatchTranser the isBatchTranser to set
+	 */
+	public void setIsBatchTranser(Integer isBatchTranser) {
+		this.isBatchTranser = isBatchTranser;
+	}
 }

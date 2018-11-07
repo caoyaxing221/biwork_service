@@ -6,7 +6,7 @@
     <result column="team_id" jdbcType="INTEGER" property="teamId" />
     <result column="submitter_id" jdbcType="INTEGER" property="submitterId" />
     <result column="application_number" jdbcType="VARCHAR" property="applicationNumber" />
-    <result column="currency_id" jdbcType="INTEGER" property="currencyId" />
+    <result column="coin_mark" jdbcType="VARCHAR" property="coinMark" />
     <result column="department_id" jdbcType="INTEGER" property="departmentId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="receiver" jdbcType="VARCHAR" property="receiver" />
@@ -25,6 +25,7 @@
     <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
     <result column="attach_url" jdbcType="LONGVARCHAR" property="attachUrl" />
     <result column="airdroptask_id" jdbcType="VARCHAR" property="airDropTaskId" />
+    <result column="is_batch_transer" jdbcType="INTEGER" property="isBatchTranser" />
   </resultMap>
    <resultMap id="ProcessInfoMap" type="com.biwork.vo.ProcessVo">
     <id column="id" jdbcType="INTEGER" property="id" />
@@ -34,8 +35,7 @@
      <result column="payCategory" jdbcType="VARCHAR" property="payCategory" />
      <result column="cause" jdbcType="VARCHAR" property="cause" />
      <result column="enterDepartment" jdbcType="VARCHAR" property="enterDepartment" />
-     <result column="currencyName" jdbcType="VARCHAR" property="currencyName" />
-     <result column="currencyType" jdbcType="VARCHAR" property="currencyType" />
+     <result column="coinMark" jdbcType="VARCHAR" property="coinMark" />
      <result column="receiver" jdbcType="VARCHAR" property="receiver" />
      <result column="receiverMsg" jdbcType="VARCHAR" property="receiverMsg" />
      <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -43,21 +43,25 @@
      <result column="commitTime" jdbcType="VARCHAR" property="commitTime" />
      <result column="state" jdbcType="VARCHAR" property="state" />
      <result column="canApprove" jdbcType="VARCHAR" property="canApprove" />
+     <result column="canCancel" jdbcType="VARCHAR" property="canCancel" />
      <result column="airdroptask_id" property="airDropTaskId"/>
 	<result property="airDropTaskName" column="airDropTaskName"/>
+	 <result property="currentNode" column="current_node"/>
+	 <result property="waitSeconds" column="waitSeconds"/>
     <collection property="processNode" ofType="com.biwork.vo.ProcessNodeVo"  column="id" select="com.biwork.mapper.ProcessNodeMapper.selectByProcessId">
          
     </collection>
-	 
+	
     </resultMap>
      <resultMap id="ProcessListMap" type="com.biwork.vo.ProcessListVo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="submitterName" jdbcType="VARCHAR" property="submitterName" />
-     <result column="currencyName" jdbcType="VARCHAR" property="currencyName" />
+     <result column="coinMark" jdbcType="VARCHAR" property="coinMark" />
      <result column="receiverMsg" jdbcType="VARCHAR" property="receiverMsg" />
      <result column="commitTime" jdbcType="VARCHAR" property="commitTime" />
      <result column="state" jdbcType="VARCHAR" property="state" />
      <result column="count" jdbcType="VARCHAR" property="count" />
+     <result column="isBatchTranser" jdbcType="VARCHAR" property="isBatchTranser" />
     </resultMap>
      <sql id="page_val">
    <if test="fetch!=null">limit #{fetch,jdbcType=INTEGER} </if>
@@ -65,8 +69,8 @@
 		
     </sql>
   <sql id="Base_Column_List">
-    id, team_id, submitter_id, application_number, currency_id, department_id, category_id, 
-    receiver, current_node, state, inserttime, updatetime, finishtime
+    id, team_id, submitter_id, application_number, coin_mark, department_id, category_id, 
+    receiver, current_node, state, inserttime, updatetime, finishtime,is_batch_transer
   </sql>
   <sql id="Blob_Column_List">
     cause, receiver_msg, remark, attach_url,airdroptask_id
@@ -91,46 +95,46 @@
     
 		select a.id,submitter_id,e.name as submitterName,a.application_number as applicationNo,
 		b.name as payCategory,cause,
-		c.name as enterDepartment,d.name as currencyName,
-		d.type as currencyType,receiver,receiver_msg as receiverMsg,
-		a.remark,attach_url as attachUrl,a.inserttime as commitTime ,
+		c.name as enterDepartment,a.coin_mark as coinMark,
+		receiver,receiver_msg as receiverMsg,
+		a.remark,attach_url as attachUrl,DATE_FORMAT(a.inserttime,'%Y-%m-%d %h:%i:%s')  as commitTime ,
 		a.state,case when  f.approver_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canApprove,
+		case when  a.submitter_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canCancel,
 		h.name as airDropTaskName,airdroptask_id
+		 ,TIMESTAMPDIFF(SECOND,IFNULL(a.updatetime,a.inserttime),now()) as waitSeconds,current_node
 		from process a
 		join approval_category b
 		on a.category_id =b.id
 		JOIN department c
 		on a.department_id =c.id
-		join currency d
-		on a.currency_id =d.id
-		join member e
-		on a.submitter_id =e.user_id
+	
+		join user e
+		on a.submitter_id =e.id
 		LEFT JOIN process_node f
 		on a.id=f.process_id and  a.current_node =f.`no` 
 		left join process_node g
 		on a.id=g.process_id and g.approver_id= #{userId,jdbcType=INTEGER}
 		left join airdrop_task h
 		on a.airdroptask_id=h.id
-		 where a.id=#{id,jdbcType=INTEGER} and(g.id is not null  or a.submitter_id=#{userId,jdbcType=INTEGER})
+		 where a.id=#{id,jdbcType=INTEGER} and(g.id is not null  or a.submitter_id=#{userId,jdbcType=INTEGER}) limit 1
   
   </select>
   <select id="getProcessList" parameterType="java.lang.Integer" resultMap="ProcessListMap">
     
-		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process where submitter_id=#{userId,jdbcType=INTEGER} 
+		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process a where submitter_id=#{userId,jdbcType=INTEGER} 
 		and a.team_id=#{teamId,jdbcType=INTEGER}   ) count  
 
 		from (
 		select a.id,e.name as submitterName,
-		d.name as currencyName,
+		a.coin_mark as coinMark,
 	 	 receiver_msg as receiverMsg,
 		a.inserttime as commitTime ,
-		a.state
+		a.state,a.is_batch_transer as isBatchTranser
 		from process a 
 	
-		join currency d
-		on a.currency_id =d.id
-		join member e
-		on a.submitter_id =e.user_id
+		
+		join user e
+		on a.submitter_id =e.id
 		
 		where  a.submitter_id=#{userId,jdbcType=INTEGER} and a.team_id=#{teamId,jdbcType=INTEGER} 
 		 order by a.inserttime desc  ) t,(SELECT @rowNum:=0) b 
@@ -140,25 +144,28 @@
   </select>
   <select id="getApproveProcessList" parameterType="java.lang.Integer" resultMap="ProcessListMap">
     
-		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process a  JOIN process_node f
-		on a.id=f.process_id and   f.approver_id=#{userId,jdbcType=INTEGER} and f.state=#{state,jdbcType=INTEGER}  
-		where a.state in(0,1) and a.team_id=#{teamId,jdbcType=INTEGER})  count  
+		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process a  JOIN  (select * from process_node where approver_id=#{userId,jdbcType=INTEGER} 
+		and((state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER} and state in(-1,1) ))
+		 limit 1 )f
+		on a.id=f.process_id  
+		where a.state in(0,1,-1) and a.team_id=#{teamId,jdbcType=INTEGER})  count  
 
 		from (
 		select a.id,e.name as submitterName,
-		d.name as currencyName,
+		a.coin_mark as coinMark,
 	 	 receiver_msg as receiverMsg,
 		a.inserttime as commitTime ,
-		a.state
+		a.state,a.is_batch_transer as isBatchTranser
 		from process a 
 	
-		join currency d
-		on a.currency_id =d.id
-		join member e
-		on a.submitter_id =e.user_id
-		 JOIN process_node f
-		on a.id=f.process_id and   f.approver_id=#{userId,jdbcType=INTEGER} and f.state=#{state,jdbcType=INTEGER}
-		   where a.state in(0,1) and a.team_id=#{teamId,jdbcType=INTEGER} 
+	
+		join user e
+		on a.submitter_id =e.id
+		 JOIN (select * from process_node x where approver_id=#{userId,jdbcType=INTEGER} and 
+		 ((state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER} and state in(-1,1) ))
+		 limit 1 )f
+		on a.id=f.process_id    
+		   where a.state in(0,1,-1) and a.team_id=#{teamId,jdbcType=INTEGER} 
 		 order by a.inserttime desc  ) t,(SELECT @rowNum:=0) b 
 
 		 
@@ -170,13 +177,13 @@
   </delete>
   <insert id="insert" parameterType="com.biwork.entity.ProcessWithBLOBs">
     insert into process (id, team_id, submitter_id, 
-      application_number, currency_id, department_id, 
+      application_number, coin_mark, department_id, 
       category_id, receiver, current_node, 
       state, inserttime, updatetime, 
       finishtime, cause, receiver_msg, 
       remark, attach_url)
     values (#{id,jdbcType=INTEGER}, #{teamId,jdbcType=INTEGER}, #{submitterId,jdbcType=INTEGER}, 
-      #{applicationNumber,jdbcType=VARCHAR}, #{currencyId,jdbcType=INTEGER}, #{departmentId,jdbcType=INTEGER}, 
+      #{applicationNumber,jdbcType=VARCHAR}, #{coinMark,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER}, 
       #{categoryId,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, #{currentNode,jdbcType=INTEGER}, 
       #{state,jdbcType=INTEGER}, #{inserttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
       #{finishtime,jdbcType=TIMESTAMP}, #{cause,jdbcType=LONGVARCHAR}, #{receiverMsg,jdbcType=LONGVARCHAR}, 
@@ -203,8 +210,8 @@
       <if test="applicationNumber != null">
         application_number,
       </if>
-      <if test="currencyId != null">
-        currency_id,
+      <if test="coinMark != null">
+        coin_mark,
       </if>
       <if test="departmentId != null">
         department_id,
@@ -245,6 +252,11 @@
       <if test="airDropTaskId != null">
         airdroptask_id,
       </if>
+       <if test="airDropTaskId != null">
+        airdroptask_id,
+      </if> <if test="isBatchTranser != null">
+        is_batch_transer,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -259,8 +271,8 @@
       <if test="applicationNumber != null">
         #{applicationNumber,jdbcType=VARCHAR},
       </if>
-      <if test="currencyId != null">
-        #{currencyId,jdbcType=INTEGER},
+      <if test="coinMark != null">
+        #{coinMark,jdbcType=VARCHAR},
       </if>
       <if test="departmentId != null">
         #{departmentId,jdbcType=INTEGER},
@@ -301,6 +313,12 @@
        <if test="airDropTaskId != null">
         #{airDropTaskId,jdbcType=LONGVARCHAR},
       </if>
+       <if test="airDropTaskId != null">
+        #{airDropTaskId,jdbcType=LONGVARCHAR},
+      </if>
+       <if test="isBatchTranser != null">
+        #{isBatchTranser,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.ProcessWithBLOBs">
@@ -315,8 +333,8 @@
       <if test="applicationNumber != null">
         application_number = #{applicationNumber,jdbcType=VARCHAR},
       </if>
-      <if test="currencyId != null">
-        currency_id = #{currencyId,jdbcType=INTEGER},
+      <if test="coinMark != null">
+        coin_mark = #{coinMark,jdbcType=VARCHAR},
       </if>
       <if test="departmentId != null">
         department_id = #{departmentId,jdbcType=INTEGER},
@@ -357,6 +375,9 @@
       <if test="airDropTaskId != null">
         airdroptask_id = #{airDropTaskId,jdbcType=LONGVARCHAR},
       </if>
+       <if test="isBatchTranser != null">
+        is_batch_transer = #{isBatchTranser,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -365,7 +386,7 @@
     set team_id = #{teamId,jdbcType=INTEGER},
       submitter_id = #{submitterId,jdbcType=INTEGER},
       application_number = #{applicationNumber,jdbcType=VARCHAR},
-      currency_id = #{currencyId,jdbcType=INTEGER},
+      coin_mark = #{coinMark,jdbcType=VARCHAR},
       department_id = #{departmentId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       receiver = #{receiver,jdbcType=VARCHAR},
@@ -385,7 +406,7 @@
     set team_id = #{teamId,jdbcType=INTEGER},
       submitter_id = #{submitterId,jdbcType=INTEGER},
       application_number = #{applicationNumber,jdbcType=VARCHAR},
-      currency_id = #{currencyId,jdbcType=INTEGER},
+      coin_mark = #{coinMark,jdbcType=VARCHAR},
       department_id = #{departmentId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       receiver = #{receiver,jdbcType=VARCHAR},

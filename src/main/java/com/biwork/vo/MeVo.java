@@ -9,6 +9,7 @@ public class MeVo {
 	private Integer defaultTeamId;
 	private List<TeamVo> createTeams;
 	private String phone;
+	private String uuid;
 	/**
 	 * @return the phone
 	 */
@@ -20,6 +21,18 @@ public class MeVo {
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	/**
+	 * @return the uuid
+	 */
+	public String getUuid() {
+		return uuid;
+	}
+	/**
+	 * @param uuid the uuid to set
+	 */
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	/**
 	 * @return the name

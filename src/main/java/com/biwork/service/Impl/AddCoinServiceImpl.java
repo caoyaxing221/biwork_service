@@ -12,6 +12,7 @@ import com.biwork.entity.AddCoin;
 import com.biwork.exception.BusiException;
 import com.biwork.service.AddCoinService;
 import com.biwork.util.HttpUtil;
+import com.biwork.vo.CoinInfoVo;
 import com.biwork.mapper.AddCoinMapper;
 
 @Service("AddCoinService")
@@ -32,7 +33,9 @@ public class AddCoinServiceImpl implements AddCoinService{
 		}
 		return rsp;
 	}
-	
+	public List<CoinInfoVo> queryCoinInfoAll() throws Exception {
+		return addCoinMapper.queryCoinInfoAll();
+	}
 	
 	public List<AddCoin> queryCoinInfo(String coinName, String coinMark, String contractAddress) throws Exception {
 		log.info("查询结果：" + addCoinMapper.queryCoinInfo(coinName, coinMark, contractAddress));

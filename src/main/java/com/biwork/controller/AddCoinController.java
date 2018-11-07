@@ -25,6 +25,7 @@ import com.biwork.po.RespPojo;
 import com.biwork.po.request.AddCoinPojo;
 import com.biwork.service.AddCoinService;
 import com.biwork.util.Constants;
+import com.biwork.vo.CoinInfoVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -109,6 +110,38 @@ public class AddCoinController {
 		}
 		catch (Exception e) {
 			  logger.error("模糊查询币种异常{}",e);
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
+		if(coinInfo != null){
+			System.out.println("coinInfo = " + coinInfo);
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
+			rtnMap.put("data", coinInfo);
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(coinInfo);
+			return resp;
+		}
+		return resp;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/coin_queryCoinAll", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
+	@ApiOperation(value = "查询全部币种", notes = "查询全部币种",httpMethod = "GET")
+	public RespPojo queryCoinAll(HttpServletRequest request ){
+		
+		RespPojo resp=new RespPojo();
+		List<CoinInfoVo> coinInfo;  
+		try {
+			coinInfo = addCoinService.queryCoinInfoAll();
+		}catch(BusiException e){
+			 logger.error("查询币种异常{}",e);
+			  resp.setRetCode(e.getCode());
+			  resp.setRetMsg(e.getMessage());
+			  return resp;
+		}
+		catch (Exception e) {
+			  logger.error("查询币种异常{}",e);
 			  resp.setRetCode(Constants.FAIL_CODE);
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;

@@ -319,6 +319,7 @@ public class MyServiceController {
 		appVersion.put("version",version.getNewversion());
 		appVersion.put("downloadUrl",version.getApkurl());
 		appVersion.put("updateDescription",version.getUpdatedescription());
+		appVersion.put("forceUpdate", version.getForceUpdate());
 		rtnMap.put("versionInfo", appVersion);
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);

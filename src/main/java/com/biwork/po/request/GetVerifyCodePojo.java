@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class  GetVerifyCodePojo {
 	@ApiModelProperty(value="手机号",name="phone",example="",required=true)
 	private String phone;
-	@ApiModelProperty(value="验证码类型(register,login,forgetpassword,transfer)",name="type",example="",required=true)
+	@ApiModelProperty(value="验证码类型(register,login,forgetpassword,transfer,invite)",name="type",example="",required=true)
 	private String type;
 	/**
 	 * @return the phone

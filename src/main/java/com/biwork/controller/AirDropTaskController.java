@@ -80,6 +80,7 @@ public class AirDropTaskController {
 		String title =req.getTitle()==null||"".equals(req.getTitle())?null:req.getTitle();
 		String remark =req.getRemark()==null||"".equals(req.getRemark())?null:req.getRemark();
 		String bannerUrl=req.getBannerUrl()==null||"".equals(req.getBannerUrl())?null:req.getBannerUrl();
+		String needAttach=req.getNeedAttach()==null||"".equals(req.getNeedAttach())?null:req.getNeedAttach();
 		String type=req.getType();
 		if(StringUtils.isBlank(teamId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
@@ -117,9 +118,14 @@ public class AirDropTaskController {
 				  resp.setRetMsg("活动banner不能为空");
 				  return resp;
 			}
-			if(!ValidateUtil.isUrl(bannerUrl)){
+			if(!ValidateUtil.isIMG(bannerUrl)){
 				  resp.setRetCode(Constants.PARAMETER_CODE);
 				  resp.setRetMsg("活动banner格式错误");
+				  return resp;
+			}
+			if(StringUtils.isBlank(needAttach)){
+				  resp.setRetCode(Constants.PARAMETER_CODE);
+				  resp.setRetMsg("需要上传附件不能为空");
 				  return resp;
 			}
 		}
@@ -127,7 +133,7 @@ public class AirDropTaskController {
 		
 		
 		try {
-			 taskId= airDropTaskService.addTask(teamId, up.getUserid(), name, endTime, title, remark, bannerUrl, type);
+			 taskId= airDropTaskService.addTask(teamId, up.getUserid(), name, endTime, title, remark,needAttach, bannerUrl, type);
 			
 		}
 		catch(BusiException e){
@@ -180,6 +186,7 @@ public class AirDropTaskController {
 		String title =req.getTitle();
 		String remark =req.getRemark();
 		String bannerUrl=req.getBannerUrl();
+		String needAttach=req.getNeedAttach();
 		if(StringUtils.isBlank(taskId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("活动id不能为空");
@@ -205,18 +212,24 @@ public class AirDropTaskController {
 			  resp.setRetMsg("活动备注不能为空");
 			  return resp;
 		}
+		if(StringUtils.isBlank(needAttach)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("是否需要附件");
+			  return resp;
+		}
 		if(StringUtils.isBlank(bannerUrl)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("活动banner不能为空");
 			  return resp;
 		}
-		if(!ValidateUtil.isUrl(bannerUrl)){
+		
+		if(!ValidateUtil.isIMG(bannerUrl)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("活动banner格式错误");
 			  return resp;
 		}
 		try {
-			  airDropTaskService.editTask(taskId, up.getUserid(), name, endTime, title, remark, bannerUrl);
+			  airDropTaskService.editTask(taskId, up.getUserid(), name, endTime, title, remark,needAttach, bannerUrl);
 			
 		}
 		catch(BusiException e){
@@ -313,6 +326,7 @@ public class AirDropTaskController {
 		up=(UserPojo) request.getSession().getAttribute("User");
 		String address=req.getAddress();
 		String taskToken=req.getTaskToken();
+		String attachUrl=req.getAttachUrl();
 		String taskId = null;
 		try {
 			taskId = AESUtil.AESDncode(PropertiesUtil.getProperty("aeskey"), taskToken);
@@ -332,7 +346,7 @@ public class AirDropTaskController {
 			  return resp;
 		}
 		try {
-			addressId= airDropTaskService.addAddress(taskId, address);
+			addressId= airDropTaskService.addAddress(taskId, address,attachUrl);
 			
 		}
 		catch(BusiException e){

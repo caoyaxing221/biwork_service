@@ -14,7 +14,7 @@ public class Version {
     private String updatedescription;
 
     private String size;
-
+    private Integer forceUpdate;
     public Integer getId() {
         return id;
     }
@@ -70,4 +70,12 @@ public class Version {
     public void setSize(String size) {
         this.size = size == null ? null : size.trim();
     }
+
+	public Integer getForceUpdate() {
+		return forceUpdate;
+	}
+
+	public void setForceUpdate(Integer forceUpdate) {
+		this.forceUpdate = forceUpdate;
+	}
 }

@@ -36,7 +36,7 @@
     select 
     <include refid="Base_Column_List" />
     from member_invite
-    where team_id= #{teamId,jdbcType=INTEGER} and state=0
+    where team_id= #{teamId,jdbcType=INTEGER}  and( state =0 or state=1)
     <if test="inviterId != null">
        and  inviter_id = #{inviterId,jdbcType=VARCHAR}
      </if>

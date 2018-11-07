@@ -16,6 +16,7 @@
      <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="default_team_id" jdbcType="INTEGER" property="defaultTeamId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="token" jdbcType="VARCHAR" property="uuid" />
     <collection property="createTeams" ofType="com.biwork.vo.TeamVo"  column="id" select="com.biwork.mapper.TeamMapper.selectByCreateUserId">
          
     </collection>
@@ -57,7 +58,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.biwork.entity.User">
+  <insert id="insertSelective" parameterType="com.biwork.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

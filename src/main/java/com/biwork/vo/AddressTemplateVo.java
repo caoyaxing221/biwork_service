@@ -1,10 +1,10 @@
 package com.biwork.vo;
 
-public class FlowListVo {
+public class AddressTemplateVo {
 	String id;
 	String name;
-	String isBatch;
-	String visibleAll;
+	String state;
+	String addressMsg;
 	/**
 	 * @return the id
 	 */
@@ -29,28 +29,31 @@ public class FlowListVo {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 	/**
-	 * @return the isBatch
+	 * @return the state
 	 */
-	public String getIsBatch() {
-		return isBatch;
+	public String getState() {
+		return state;
 	}
 	/**
-	 * @param isBatch the isBatch to set
+	 * @param state the state to set
 	 */
-	public void setIsBatch(String isBatch) {
-		this.isBatch = isBatch;
+	public void setState(String state) {
+		this.state = state;
 	}
 	/**
-	 * @return the visibleAll
+	 * @return the addressMsg
 	 */
-	public String getVisibleAll() {
-		return visibleAll;
+	public String getAddressMsg() {
+		return addressMsg;
 	}
 	/**
-	 * @param visibleAll the visibleAll to set
+	 * @param addressMsg the addressMsg to set
 	 */
-	public void setVisibleAll(String visibleAll) {
-		this.visibleAll = visibleAll;
+	public void setAddressMsg(String addressMsg) {
+		this.addressMsg = addressMsg;
 	}
+	
 }

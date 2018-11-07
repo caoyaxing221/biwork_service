@@ -10,6 +10,7 @@
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+      <result column="need_attach" jdbcType="INTEGER" property="needAttach" />
     <result column="team_id" jdbcType="INTEGER" property="teamId" />
     <result column="banner_url" jdbcType="VARCHAR" property="bannerUrl" />
     <result column="create_userid" jdbcType="VARCHAR" property="createUserid" />
@@ -21,7 +22,7 @@
 		
     </sql>
   <sql id="Base_Column_List">
-    id, name, inserttime, updatetime, endtime, state, title, remark,banner_url,team_id,create_userid,type
+    id, name, inserttime, updatetime, endtime, state, title, remark,need_attach,banner_url,team_id,create_userid,type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -48,9 +49,9 @@
       </if>        ) count
 	from (
 	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
-	,endtime as endTime,state,type
+	,DATE_FORMAT(endtime,'%Y-%m-%d %h:%i:%s') as endTime, TIMESTAMPDIFF(SECOND,now(),endtime) as leftSeconds,state,type
 	from airdrop_task a 
-	where  a.create_userid=#{userId,jdbcType=INTEGER} and a.team_id=#{teamId,jdbcType=INTEGER} 
+	where  <!-- a.create_userid=#{userId,jdbcType=INTEGER} and --> a.team_id=#{teamId,jdbcType=INTEGER} 
 	 <if test="type != null">
         and a.type=#{type,jdbcType=INTEGER}
       </if> 
@@ -59,7 +60,7 @@
   </select>
   <select id="selectByTaskId"  resultType="com.biwork.vo.TaskVo">
   	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
-	,endtime as endTime,state,type,title,banner_url as bannerUrl,remark
+	,DATE_FORMAT(endtime,'%Y-%m-%d %h:%i:%s') as endTime,state,type,title,banner_url as bannerUrl,remark,need_attach as needAttach
 	from airdrop_task a 
 	where   <if test="userId != null"> a.create_userid=#{userId,jdbcType=INTEGER} and  </if> id=#{taskId,jdbcType=INTEGER} 
   </select>
@@ -102,6 +103,9 @@
       <if test="remark != null">
         remark,
       </if>
+       <if test="needAttach != null">
+        need_attach,
+      </if>
       <if test="bannerUrl != null">
         banner_url,
       </if>
@@ -140,6 +144,9 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
+       <if test="needAttach != null">
+        #{needAttach,jdbcType=INTEGER},
+      </if>
        <if test="bannerUrl != null">
         #{bannerUrl,jdbcType=VARCHAR},
       </if>
@@ -177,6 +184,9 @@
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
+      </if>
+       <if test="needAttach != null">
+        need_attach=#{needAttach,jdbcType=INTEGER},
       </if>
       <if test="bannerUrl != null">
         banner_url = #{bannerUrl,jdbcType=VARCHAR},

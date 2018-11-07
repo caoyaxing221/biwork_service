@@ -56,6 +56,11 @@ public class ValidateUtil {
      * 正则表达式：验证日期 
      */
     public static final String REGEX_DATETIME = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[13579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
+    
+    /**
+     * 正则表达式：验证图片链接 
+     */
+    public static final String REGEX_IMG="(?i)\\.(gif|png|jpe?g)";
     /**
      * 校验用户名
      * 
@@ -172,7 +177,7 @@ public class ValidateUtil {
     }
     public static void main(String[] args) {
         String username = "2018-09-02";
-        System.out.println(ValidateUtil.isDateTime(username));
+        System.out.println(ValidateUtil.isIMG("http://10.23.1.99:8988/static/img/201811051139164848113.exe"));
        // System.out.println(ValidateUtil.isChinese(username));
     }
   //金额验证  
@@ -182,5 +187,20 @@ public class ValidateUtil {
     //时间验证  
     public static boolean isDateTime(String str){   
         return  Pattern.matches(REGEX_DATETIME,str);
+     } 
+  //图片链接验证  
+    public static boolean isIMG(String str){   
+    	String type;
+    	  type=str.indexOf(".")!=-1?str.substring(str.lastIndexOf(".")+1, str.length()):null;
+          if (type!=null) {// 判断文件类型是否为空
+              if ("GIF".equals(type.toUpperCase())||"PNG".equals(type.toUpperCase())||"JPG".equals(type.toUpperCase())) {
+            	 return true;
+              }else {
+            	 return false;
+                  
+              }
+          }else{
+        	  return false;
+          }
      } 
 }

@@ -43,7 +43,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 	@Autowired
 	private AirdropAddressMapper airdropAddressMapper;
 	@Override
-	public int addTask(String teamId,String userId, String name, String endTime, String title, String remark,String bannerUrl,String type) throws ParseException {
+	public int addTask(String teamId,String userId, String name, String endTime, String title, String remark,String needAttach,String bannerUrl,String type) throws ParseException {
 		AirdropTask taskDb = airdropTaskMapper.selectByName(name, Integer.parseInt(teamId));
 		if(null!=taskDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.AIRDROP_ALREADY_EXISTS);
@@ -57,6 +57,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		task.setTitle(title);
 		task.setCreateUserid(Integer.parseInt(userId));
 		task.setType(Integer.parseInt(type));
+		task.setNeedAttach(Integer.parseInt(needAttach));
 		airdropTaskMapper.insertSelective(task);
 		int taskId=task.getId();
 		
@@ -64,7 +65,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		return taskId;
 	}
 	@Override
-	public boolean editTask(String taskId,String userId, String name, String endTime, String title, String remark,String bannerUrl) throws ParseException {
+	public boolean editTask(String taskId,String userId, String name, String endTime, String title, String remark,String needAttach,String bannerUrl) throws ParseException {
 		AirdropTask taskDb = airdropTaskMapper.selectByPrimaryKey(Integer.parseInt(taskId));
 		if(null==taskDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
@@ -78,6 +79,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		task.setName(name);
 		task.setBannerUrl(bannerUrl);
 		task.setRemark(remark);
+		task.setNeedAttach(Integer.parseInt(needAttach));
 		task.setTitle(title);
 		task.setUpdatetime(new Date());
 		airdropTaskMapper.updateByPrimaryKeySelective(task);
@@ -86,12 +88,13 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 	@Override
 	public List<TaskListVo> queryTaskList(String teamId,String userId,String type,String fetch,String offset) {
 		List<TaskListVo> taskList=airdropTaskMapper.selectByTeamId(Integer.parseInt(teamId),Integer.parseInt(userId)
-				,Integer.parseInt(fetch),Integer.parseInt(offset),null==type?null:Integer.parseInt(type));
+				,Integer.parseInt(fetch),Integer.parseInt(offset),(null==type||"".equals(type))?null:Integer.parseInt(type));
 		return taskList;
 	}
 	@Override
 	public TaskVo queryTaskInfo(String taskId,String userId) {
-		TaskVo task=airdropTaskMapper.selectByTaskId(Integer.parseInt(taskId),Integer.parseInt(userId));
+//		TaskVo task=airdropTaskMapper.selectByTaskId(Integer.parseInt(taskId),Integer.parseInt(userId));
+		TaskVo task=airdropTaskMapper.selectByTaskId(Integer.parseInt(taskId),null);
 		return task;
 	}
 	@Override
@@ -104,7 +107,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		return addressList;
 	}
 	@Override
-	public int addAddress(String taskId,String address) {
+	public int addAddress(String taskId,String address,String attachUrl) {
 		TaskVo task=airdropTaskMapper.selectByTaskId(Integer.parseInt(taskId),null);
 		if(null==task){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
@@ -116,6 +119,7 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		AirdropAddress addr=new AirdropAddress();
 		addr.setAddress(address);
 		addr.setTaskid(Integer.parseInt(taskId));
+		addr.setAttachUrl(attachUrl);
 		airdropAddressMapper.insertSelective(addr);
 		return addr.getId();
 		 
