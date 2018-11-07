@@ -36,7 +36,7 @@
   </select>
   
    <select id="queryCoinInfoAll"   resultType="com.biwork.vo.CoinInfoVo">
-	   select id,coin_name as coinName,coin_mark as coinMark from coin_info where state=0 order by coin_mark asc
+	   select id,coin_name as coinName,coin_mark as coinMark, coin_rate_id as coinRateId, coin_img_url as coinImgUrl from coin_info where state= 0 order by coin_mark asc
 	  
   </select>
 </mapper>

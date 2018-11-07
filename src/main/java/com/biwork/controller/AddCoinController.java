@@ -125,11 +125,11 @@ public class AddCoinController {
 		}
 		return resp;
 	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/coin_queryCoinAll", method=RequestMethod.GET, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "查询全部币种", notes = "查询全部币种",httpMethod = "GET")
 	public RespPojo queryCoinAll(HttpServletRequest request ){
-		
 		RespPojo resp=new RespPojo();
 		List<CoinInfoVo> coinInfo;  
 		try {

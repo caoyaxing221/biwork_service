@@ -1,6 +1,5 @@
 package com.biwork.service.Impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import com.biwork.mapper.AddCoinMapper;
 public class AddCoinServiceImpl implements AddCoinService{
 	String rsp = "";
 	static Logger log = LoggerFactory.getLogger(AddCoinService.class);
+	
 	@Autowired
 	private AddCoinMapper addCoinMapper;
 	private static final String LIKE_QUERY_URL = "https://etherscan.io/searchHandler?term=";
@@ -33,6 +33,7 @@ public class AddCoinServiceImpl implements AddCoinService{
 		}
 		return rsp;
 	}
+	
 	public List<CoinInfoVo> queryCoinInfoAll() throws Exception {
 		return addCoinMapper.queryCoinInfoAll();
 	}
@@ -41,5 +42,4 @@ public class AddCoinServiceImpl implements AddCoinService{
 		log.info("查询结果：" + addCoinMapper.queryCoinInfo(coinName, coinMark, contractAddress));
 		return addCoinMapper.queryCoinInfo(coinName, coinMark, contractAddress);
 	}
-
 }
