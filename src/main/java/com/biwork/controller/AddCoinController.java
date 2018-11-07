@@ -82,19 +82,22 @@ public class AddCoinController {
 		return resp;
 	}
 	
-	
 	@ResponseBody
 	@RequestMapping(value = "/coin_queryCoinInfo", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
 	@ApiOperation(value = "模糊查询币种", notes = "根据输入模糊查询币种",httpMethod = "POST")
 	public RespPojo queryCoinInfo(HttpServletRequest request, @RequestBody 
 			@ApiParam(name="模糊查询币种",value="传入json格式",required=true) com.biwork.po.request.AddCoinPojo addCoinPojo){
 		logger.info("---根据输入模糊查询币种---");
-		
 		com.biwork.po.AddCoinPojo addCoinPo =new com.biwork.po.AddCoinPojo();
 		RespPojo resp=new RespPojo();
 		String queryMark = addCoinPojo.getSearchMark();
 		String queryName = addCoinPojo.getLikeQueryName();
 		String contractAddress = addCoinPojo.getContractAddress();
+		if(StringUtils.isBlank(queryMark) || StringUtils.isBlank(queryName) || StringUtils.isBlank(contractAddress)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("参数为空,请重检查并输入");
+			  return resp;
+		}
 		List<AddCoin> coinInfo;  
 		try {
 			coinInfo = addCoinService.queryCoinInfo(queryMark, queryName, contractAddress);

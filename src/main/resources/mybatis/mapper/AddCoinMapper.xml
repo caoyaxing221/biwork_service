@@ -5,15 +5,17 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="coin_name" jdbcType="VARCHAR" property="coinName" />
     <result column="coin_mark" jdbcType="VARCHAR" property="coinMark" />
-    <result column="gas_limit" jdbcType="VARCHAR" property="gasLimit" />
-    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" />
+    <result column="bip44_num" jdbcType="INTEGER" property="bip44Num" />
+    <result column="coin_rate_id" jdbcType="VARCHAR" property="coinRateId" />
+    <result column="coin_img_url" jdbcType="VARCHAR" property="coinImgUrl" />
+    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" /> 
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="inserttime" jdbcType="TIMESTAMP" property="inserttime" />
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
   </resultMap>
     
   <sql id="Base_Column_List">
-    id, coin_name, coin_mark, contract_address
+     id, coin_name, coin_mark, bip44_num, coin_rate_id, coin_img_url, contract_address
   </sql>
  
    <select id="queryCoinInfo"  resultMap="BaseResultMap">
