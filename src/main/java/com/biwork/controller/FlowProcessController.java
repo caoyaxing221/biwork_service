@@ -887,11 +887,11 @@ public class FlowProcessController {
 			  resp.setRetMsg("未选择入账部门");
 			  return resp;
 		}
-		if(StringUtils.isBlank(receiver)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("未选择收款人");
-			  return resp;
-		}
+//		if(StringUtils.isBlank(receiver)){
+//			  resp.setRetCode(Constants.PARAMETER_CODE);
+//			  resp.setRetMsg("未选择收款人");
+//			  return resp;
+//		}
 		if(null==receiverMsg){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未提交地址信息");
