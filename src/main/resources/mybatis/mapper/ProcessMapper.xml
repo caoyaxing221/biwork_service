@@ -311,9 +311,7 @@
        <if test="airDropTaskId != null">
         #{airDropTaskId,jdbcType=LONGVARCHAR},
       </if>
-       <if test="airDropTaskId != null">
-        #{airDropTaskId,jdbcType=LONGVARCHAR},
-      </if>
+      
        <if test="isBatchTranser != null">
         #{isBatchTranser,jdbcType=INTEGER},
       </if>
