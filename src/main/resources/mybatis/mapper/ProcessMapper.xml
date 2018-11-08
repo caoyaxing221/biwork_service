@@ -252,9 +252,7 @@
       <if test="airDropTaskId != null">
         airdroptask_id,
       </if>
-       <if test="airDropTaskId != null">
-        airdroptask_id,
-      </if> <if test="isBatchTranser != null">
+      <if test="isBatchTranser != null">
         is_batch_transer,
       </if>
     </trim>

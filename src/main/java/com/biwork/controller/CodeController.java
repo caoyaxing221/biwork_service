@@ -39,12 +39,11 @@ public class CodeController {
 		HttpSession session = req.getSession(); 
 		// 取得随机字符串放入Session中
 		session.setAttribute("RANDOMCODE", rdnu.getString());
-//		System.out.println(session.getAttribute("RANDOMCODE"));
+		System.out.println(session.getAttribute("RANDOMCODE"));
 		// 禁止图像缓存。  
         resp.setHeader("Pragma", "no-cache"); 
         resp.setHeader("Cache-Control", "no-cache"); 
         resp.setDateHeader("Expires", 0); 
- 
         resp.setContentType("image/jpeg"); 
  
         // 将图像输出到Servlet输出流中。  

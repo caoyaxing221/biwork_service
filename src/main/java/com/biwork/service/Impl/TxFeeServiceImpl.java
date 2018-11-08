@@ -47,10 +47,12 @@ public class TxFeeServiceImpl implements TxFeeService {
 	
 	public String getBitCoinFee() throws Exception {
 		try {
+			System.out.println("开始获取比特币手续费");
 			bitCoinFee = HttpUtil.testGet(BITCOIN_RECOMMENT);
 		} catch (Exception e) {
 			throw new BusiException(Integer.toString(e.hashCode()), e.getMessage());
 		}
+		System.out.println("bitCoinFee =" + bitCoinFee);
 		return bitCoinFee;
 	}
 

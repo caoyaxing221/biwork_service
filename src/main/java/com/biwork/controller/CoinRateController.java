@@ -47,6 +47,9 @@ private Logger logger = LoggerFactory.getLogger(getClass());
 		List<String> coinRateIdList = new ArrayList<>();
 		String coinRateMark = coinRatePojo.getCoinRateMark();
 		coinRateIdList = coinRatePojo.getCoinRateIdList();
+		System.out.println("coinRateMark" + coinRateMark);
+		System.out.println("coinRateIdList = " + coinRateIdList);
+		System.out.println("coinRateIdList =" + coinRateIdList.size());
 		RespPojo resp=new RespPojo();
 		if(StringUtils.isBlank(coinRateMark) || coinRateIdList.size() == 0){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
@@ -57,12 +60,12 @@ private Logger logger = LoggerFactory.getLogger(getClass());
 		try {
 			coinRate = coinRateService.getAllCoinRate(coinRateMark, coinRateIdList);
 		} catch (BusiException e) {
-			logger.error("获取数字货币的汇率", e);
+			logger.error("获取数字货币的汇率业务异常", e);
 			resp.setRetCode(e.getCode());
 			resp.setRetMsg(e.getMessage());
 			return resp;
 		} catch (Exception e) {
-			logger.error("获取数字货币的汇率", e);
+			logger.error("获取数字货币的汇率抛出异常", e);
 			resp.setRetCode(Constants.FAIL_CODE);
 			resp.setRetMsg(Constants.FAIL_MESSAGE);
 			return resp;

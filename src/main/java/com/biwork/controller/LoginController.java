@@ -546,6 +546,7 @@ public class LoginController {
 			  resp.setRetMsg("图形验证码超时");
 			  return resp;
 		}
+		
 		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
 		String imgCode=req.getImgCode();
 		String verifyCode=req.getVerifyCode();
