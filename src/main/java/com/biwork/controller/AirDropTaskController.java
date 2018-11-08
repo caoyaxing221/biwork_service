@@ -309,6 +309,15 @@ public class AirDropTaskController {
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 
 		 rtnMap.put("task", task);
+		 try {
+			task.setToken(AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), String.valueOf(task.getId())));
+		} catch (Exception e) {
+			logger.error("查询空投活动异常{}",e);
+			  
+			  resp.setRetCode(Constants.FAIL_CODE);
+			  resp.setRetMsg(Constants.FAIL_MESSAGE);
+			  return resp;
+		}
 		 resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		 resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		 resp.setData(rtnMap);
@@ -431,7 +440,17 @@ public class AirDropTaskController {
 			  return resp;
 		}
 		
-		
+		for(int i=0;i<task.size();i++){
+			 try {
+					task.get(i).setToken(AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), String.valueOf(task.get(i).getId())));
+				} catch (Exception e) {
+					logger.error("查询空投活动异常{}",e);
+					  
+					  resp.setRetCode(Constants.FAIL_CODE);
+					  resp.setRetMsg(Constants.FAIL_MESSAGE);
+					  return resp;
+				}
+		}
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 

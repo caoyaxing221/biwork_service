@@ -61,7 +61,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String code=DayuUtil.getRandomNumber(4);
+		String code=DayuUtil.getRandomNumber(6);
 		VerifyCode vCode=new VerifyCode();
 		vCode.setPhone(phone);
 		vCode.setCode(code);

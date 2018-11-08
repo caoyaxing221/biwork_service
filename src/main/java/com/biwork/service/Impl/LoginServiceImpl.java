@@ -23,7 +23,6 @@ import com.biwork.util.Constants;
 import com.biwork.util.PropertiesUtil;
 import com.biwork.util.UidUtil;
 import com.biwork.vo.MemberVo;
-import com.taobao.api.internal.toplink.embedded.websocket.util.StringUtil;
 
 
 

@@ -9,6 +9,7 @@ public class TaskListVo {
 	String state;
 	String type;
 	String count;
+	String token;
 	/**
 	 * @return the id
 	 */
@@ -104,5 +105,17 @@ public class TaskListVo {
 	 */
 	public void setCount(String count) {
 		this.count = count;
+	}
+	/**
+	 * @return the token
+	 */
+	public String getToken() {
+		return token;
+	}
+	/**
+	 * @param token the token to set
+	 */
+	public void setToken(String token) {
+		this.token = token;
 	}
 }
