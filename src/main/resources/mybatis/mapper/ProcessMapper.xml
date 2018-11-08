@@ -144,9 +144,9 @@
   </select>
   <select id="getApproveProcessList" parameterType="java.lang.Integer" resultMap="ProcessListMap">
     
-		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process a  JOIN  (select * from process_node where approver_id=#{userId,jdbcType=INTEGER} 
+		select  (@rowNum:=@rowNum+1) rm ,t.*,(select count(1) from process a  JOIN  (select process_id from process_node where approver_id=#{userId,jdbcType=INTEGER} 
 		and((state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER} and state in(-1,1) ))
-		 limit 1 )f
+		 GROUP BY process_id )f
 		on a.id=f.process_id  
 		where a.state in(0,1,-1) and a.team_id=#{teamId,jdbcType=INTEGER})  count  
 
@@ -161,9 +161,9 @@
 	
 		join user e
 		on a.submitter_id =e.id
-		 JOIN (select * from process_node x where approver_id=#{userId,jdbcType=INTEGER} and 
+		 JOIN (select process_id from process_node x where approver_id=#{userId,jdbcType=INTEGER} and 
 		 ((state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER} and state in(-1,1) ))
-		 limit 1 )f
+		GROUP BY process_id  )f
 		on a.id=f.process_id    
 		   where a.state in(0,1,-1) and a.team_id=#{teamId,jdbcType=INTEGER} 
 		 order by a.inserttime desc  ) t,(SELECT @rowNum:=0) b 
