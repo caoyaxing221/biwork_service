@@ -18,6 +18,7 @@ import com.biwork.mapper.MemberMapper;
 import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.TeamMapper;
 import com.biwork.mapper.UserMapper;
+import com.biwork.po.TeamSeed;
 import com.biwork.service.TeamService;
 import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
@@ -217,6 +218,11 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public  List<TeamVo> queryTeamSize() {
 		return teamMapper.selectTeamSize();
+	}
+	@Override
+	public  int updateSeedByTeamId(TeamSeed teamSeed) {
+		 teamMapper.updateSeedByTeamId(teamSeed);
+		 return teamSeed.getApproveNoSeed();
 	}
 	@Override
 	public boolean setDefaultTeam(String teamId,String userId) {

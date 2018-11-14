@@ -80,7 +80,7 @@ public RespPojo upLoadLocal(String base64,HttpServletRequest request) {
             + (new Random().nextInt(9000) % (9000 - 1000 + 1) + 1000)
             + ".png";
     // 生成文件路径
-    String filename =request.getSession().getServletContext().getRealPath("/")+ PropertiesUtil.getProperty("uploadPath") + files;     
+    String filename =request.getSession().getServletContext().getRealPath("/").replace("biwork_service", "")+ PropertiesUtil.getProperty("uploadPath") + files;     
     try {
         // 生成文件         
         File imageFile = new File(filename);

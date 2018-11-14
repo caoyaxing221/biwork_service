@@ -152,6 +152,19 @@
       </if>
     </trim>
   </insert>
+   <update id="updateSeedByTeamId" parameterType="com.biwork.po.TeamSeed">
+ <selectKey  keyColumn="approve_no_seed" keyProperty="approveNoSeed" resultType='int' order='AFTER'>
+            SELECT
+            (select approve_no_seed FROM team WHERE
+             id = #{id})approve_no_seed
+            from DUAL
+  </selectKey>
+  update team set approve_no_seed=(
+    CASE approve_no_seed WHEN 999 THEN 1  
+    ELSE approve_no_seed+1  
+    END) where id=#{id,jdbcType=INTEGER}       
+  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.Team">
     update team
     <set>

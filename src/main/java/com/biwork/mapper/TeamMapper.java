@@ -3,6 +3,7 @@ package com.biwork.mapper;
 import java.util.List;
 
 import com.biwork.entity.Team;
+import com.biwork.po.TeamSeed;
 import com.biwork.vo.TeamInfoVo;
 import com.biwork.vo.TeamVo;
 
@@ -24,4 +25,6 @@ public interface TeamMapper {
     int updateByPrimaryKeySelective(Team record);
 
     int updateByPrimaryKey(Team record);
+    
+    int updateSeedByTeamId(TeamSeed teamSeed);
 }

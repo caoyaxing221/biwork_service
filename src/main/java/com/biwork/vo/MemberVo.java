@@ -7,6 +7,7 @@ public class MemberVo {
 	private String inviterId;
 	private String phone;
 	private String userId;
+	private Integer state;
 	public String getId() {
 		return id;
 	}
@@ -30,6 +31,18 @@ public class MemberVo {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	/**
+	 * @return the state
+	 */
+	public Integer getState() {
+		return state;
+	}
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(Integer state) {
+		this.state = state;
 	}
 	/**
 	 * @return the name

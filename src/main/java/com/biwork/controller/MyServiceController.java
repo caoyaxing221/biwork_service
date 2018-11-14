@@ -18,10 +18,13 @@ import com.biwork.entity.Service;
 import com.biwork.entity.Version;
 import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
+import com.biwork.po.TeamSeed;
 import com.biwork.po.UserPojo;
 import com.biwork.service.MyService;
+import com.biwork.service.TeamService;
 import com.biwork.util.Constants;
 import com.biwork.util.IDWorker;
+import com.biwork.util.TimeUtils;
 import com.biwork.vo.MeVo;
 import com.biwork.vo.TeamVo;
 
@@ -47,7 +50,8 @@ public class MyServiceController {
 	
 	@Autowired
 	MyService myService;
-	
+	@Autowired
+	TeamService teamService;
 	
 	@ResponseBody
 	@RequestMapping("/query")
@@ -214,15 +218,28 @@ public class MyServiceController {
 	@ResponseBody
 	@RequestMapping("/getApproveNo")
 	@ApiOperation(value = "生成审批编号", notes = "生成审批编号",httpMethod = "GET")
-
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "teamId",value = "团队id", required = true, paramType = "query")
+	})
 	public RespPojo getApproveNo(HttpServletRequest request){
 		
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		String approveNo="";
 		RespPojo resp=new RespPojo();
+		String teamId=request.getParameter("teamId");
+		
+		if(StringUtils.isBlank(teamId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("团队id不能为空");
+			  return resp;
+		}
+		Integer seed=0;
 		try {
-			approveNo=IDWorker.nextID("");
+//			approveNo=IDWorker.nextID("");
+			TeamSeed td =new TeamSeed();
+			td.setId(Integer.parseInt(teamId));
+			seed=teamService.updateSeedByTeamId(td);
 		}
 		catch (Exception e) {
 			  logger.error("生成审批编号{}",e);
@@ -231,7 +248,7 @@ public class MyServiceController {
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;
 		}
-		
+		approveNo=new StringBuilder().append(TimeUtils.getDate8()).append(String.format("%03d", seed)).toString();
 		
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		rtnMap.put("approveNo", approveNo);

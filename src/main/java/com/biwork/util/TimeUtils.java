@@ -126,7 +126,7 @@ public class TimeUtils {
 		     
 		 } 
 	 public static void main(String[] args) throws ParseException {
-		System.out.println(new Date().getTime());  
+		System.out.println(getDate8());  
 	    }
 	 
 	 

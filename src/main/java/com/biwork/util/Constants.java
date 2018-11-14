@@ -24,7 +24,8 @@ public class Constants {
   public final static String INVITE_ALREADY_EXISTS="无法重复邀请";
   public final static String RECORDS_NOT_FOUND="未找到记录";
   public final static String CAN_NOT_APPROVE="您无法审核";
-  public static final String ACCOUNT_NOT_FOUND="账户不存在";
+  public static final String ACCOUNT_NOT_FOUND="账户不存在，请注册";
+  public static final String PASSWORD_NOT_FOUND="账户和密码信息错误";
   public static final String ACCOUNT_MAY_NOT_FOUND="账户不存在,或密码错误";
   public static final String ACCOUNT_AlREAD_EXISTS="账户已存在";
   public static final String FLOW_ALREADY_EXISTS = "无法创建同名审批流程";
