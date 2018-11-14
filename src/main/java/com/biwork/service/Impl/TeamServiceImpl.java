@@ -64,10 +64,11 @@ public class TeamServiceImpl implements TeamService {
 		User userDb = userMapper.selectByPrimaryKey(Integer.parseInt(userId));
 		Member member=new Member();
 		member.setInviterId(null);
-		member.setName(userDb.getName());
+		member.setName(adminName);
 		member.setPhone(userDb.getPhone());
 		member.setTeamId(teamId);
 		member.setUserId(Integer.parseInt(userId));
+		member.setInviterId(Integer.parseInt(userId));
 		memberMapper.insertSelective(member);
 		//更新管理员姓名//设为默认团队
 		User user=  new User();
