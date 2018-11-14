@@ -12,6 +12,8 @@ public class  ReceiverMsgPojo {
 	private String address;
 	@ApiModelProperty(value="数量",name="amount",example="",required=true)
 	private String amount;
+	@ApiModelProperty(value="备注",name="remark",example="",required=true)
+	private String remark;
 	
 	/**
 	 * @return the address
@@ -36,6 +38,18 @@ public class  ReceiverMsgPojo {
 	 */
 	public void setAmount(String amount) {
 		this.amount = amount;
+	}
+	/**
+	 * @return the remark
+	 */
+	public String getRemark() {
+		return remark;
+	}
+	/**
+	 * @param remark the remark to set
+	 */
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 	
 

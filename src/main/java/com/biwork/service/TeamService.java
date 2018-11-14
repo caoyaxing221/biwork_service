@@ -3,6 +3,7 @@ package com.biwork.service;
 import java.util.List;
 
 import com.biwork.entity.Team;
+import com.biwork.po.TeamSeed;
 import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
 import com.biwork.vo.TeamInfoVo;
@@ -23,4 +24,5 @@ public interface TeamService {
 	List<TeamVo> queryTeamSize();
 	List<InviteVo> queryInviteList(String userId);
 	String getInviteCode(String teamId, String userId);
+	int updateSeedByTeamId(TeamSeed teamSeed);
 }

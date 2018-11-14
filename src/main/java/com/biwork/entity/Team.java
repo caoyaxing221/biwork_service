@@ -22,6 +22,8 @@ public class Team {
     private String inviteCode;
 
     private Integer createUserId;
+    
+    private Integer approveNoSeed;
 
     public Integer getId() {
         return id;
@@ -102,4 +104,18 @@ public class Team {
     public void setCreateUserId(Integer createUserId) {
         this.createUserId = createUserId;
     }
+
+	/**
+	 * @return the approveNoSeed
+	 */
+	public Integer getApproveNoSeed() {
+		return approveNoSeed;
+	}
+
+	/**
+	 * @param approveNoSeed the approveNoSeed to set
+	 */
+	public void setApproveNoSeed(Integer approveNoSeed) {
+		this.approveNoSeed = approveNoSeed;
+	}
 }

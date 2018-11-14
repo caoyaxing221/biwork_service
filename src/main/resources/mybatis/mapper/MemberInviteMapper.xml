@@ -16,6 +16,7 @@
 	   <result column="inviter_id" jdbcType="INTEGER" property="inviterId" />
 	   <result column="name" jdbcType="VARCHAR" property="name" />
 	   <result column="phone" jdbcType="VARCHAR" property="phone" />
+	   <result column="state" jdbcType="INTEGER" property="state" />
   </resultMap>
    <resultMap id="InviteVo" type="com.biwork.vo.InviteVo">
       <id column="id" jdbcType="INTEGER" property="id" />

@@ -44,12 +44,14 @@ public class LoginServiceImpl implements LoginService {
 		 
 	    
 	    // 查询用户id
-		User account = accoutMapper.selectByPhonePassword(phone,password);
+		User account = accoutMapper.selectByPhonePassword(phone,null);
 		if(account==null){
-	    	throw new BusiException(Constants.FAIL_CODE,Constants.ACCOUNT_MAY_NOT_FOUND);
+	    	throw new BusiException(Constants.FAIL_CODE,Constants.ACCOUNT_NOT_FOUND);
 	    }
 	    
-	    
+		if(!password.equals(account.getPassword())){
+	    	throw new BusiException(Constants.FAIL_CODE,Constants.PASSWORD_NOT_FOUND);
+	    }
 	   
 	    
 	    
