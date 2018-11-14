@@ -64,7 +64,7 @@ public class TeamServiceImpl implements TeamService {
 		User userDb = userMapper.selectByPrimaryKey(Integer.parseInt(userId));
 		Member member=new Member();
 		member.setInviterId(null);
-		member.setName(userDb.getName());
+		member.setName(adminName);
 		member.setPhone(userDb.getPhone());
 		member.setTeamId(teamId);
 		member.setUserId(Integer.parseInt(userId));
