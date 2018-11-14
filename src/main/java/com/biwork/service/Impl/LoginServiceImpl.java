@@ -115,9 +115,9 @@ public class LoginServiceImpl implements LoginService {
 	public boolean register(String phone, String password) throws Exception{
 		// 查询用户id
 		User account = accoutMapper.selectByPhonePassword(phone,null);
-	    if(account!=null&&account.getPassword()!=null){
-	    	throw new BusiException(Constants.FAIL_CODE,Constants.ACCOUNT_AlREAD_EXISTS);
-	    }
+//	    if(account!=null&&account.getPassword()!=null){
+//	    	throw new BusiException(Constants.FAIL_CODE,Constants.ACCOUNT_AlREAD_EXISTS);
+//	    }
 	    
 	  
 	   
