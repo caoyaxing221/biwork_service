@@ -25,6 +25,7 @@ import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.UserPojo;
 import com.biwork.po.request.AdminLoginPojo;
+import com.biwork.po.request.CheckVerifyCodePojo;
 import com.biwork.po.request.GetVerifyCodePojo;
 import com.biwork.po.request.RegisterFirstPojo;
 import com.biwork.po.request.RegisterSecondPojo;
@@ -446,6 +447,68 @@ public class LoginController {
 		
 		
 	}	
+	//短信验证码校验
+	
+		@ResponseBody
+		@RequestMapping("/checkVerifyCode")
+		@ApiOperation(value = "校验验证码", notes = "校验验证码",httpMethod = "POST")
+		
+		public RespPojo checkVerifyCode(HttpServletRequest request,@RequestBody
+				@ApiParam(name="校验验证码对象",value="传入json格式",required=true) CheckVerifyCodePojo req) throws Exception{
+			String phone= req.getPhone();
+			String type=req.getType();
+			String code=req.getVerifyCode();
+			RespPojo resp=new RespPojo();
+			
+			
+			if(StringUtils.isBlank(phone)){
+				  resp.setRetCode(Constants.PARAMETER_CODE);
+				  resp.setRetMsg("手机号不能为空");
+				  return resp;
+			}
+			if(!ValidateUtil.isMobile(phone))
+			{
+				  resp.setRetCode(Constants.PARAMETER_CODE);
+				  resp.setRetMsg("手机号格式错误");
+				  return resp;
+			}
+			//register 注册 forgetpassword 找回密码 transfer 交易  login 登录
+			if(StringUtils.isBlank(type)){
+				  resp.setRetCode(Constants.PARAMETER_CODE);
+				  resp.setRetMsg("验证码类型不能为空");
+				  return resp;
+			}
+			if(StringUtils.isBlank(code)){
+				  resp.setRetCode(Constants.PARAMETER_CODE);
+				  resp.setRetMsg("验证码不能为空");
+				  return resp;
+			}
+			
+			
+			try {
+				 verifyCodeService.verifyCode(phone, code, type);
+			}catch(BusiException e){
+				 
+				  
+				  resp.setRetCode(e.getCode());
+				  resp.setRetMsg(e.getMessage());
+				  return resp;
+			}
+			catch (Exception e) {
+				  logger.error("验证码校验异常{}",e);
+				  
+				  resp.setRetCode(Constants.FAIL_CODE);
+				  resp.setRetMsg(Constants.FAIL_MESSAGE);
+				  return resp;
+			}
+		
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			
+			return resp;
+			
+			
+		}
 	//找回密码
 
 	@ResponseBody
