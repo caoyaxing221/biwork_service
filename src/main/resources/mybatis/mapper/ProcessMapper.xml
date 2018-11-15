@@ -97,7 +97,7 @@
 		b.name as payCategory,cause,
 		c.name as enterDepartment,a.coin_mark as coinMark,
 		receiver,receiver_msg as receiverMsg,
-		a.remark,attach_url as attachUrl,DATE_FORMAT(a.inserttime,'%Y-%m-%d %h:%i:%s')  as commitTime ,
+		a.remark,attach_url as attachUrl,DATE_FORMAT(a.inserttime,'%Y-%m-%d %H:%i:%s')  as commitTime ,
 		a.state,case when  f.approver_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canApprove,
 		case when  a.submitter_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canCancel,
 		h.name as airDropTaskName,airdroptask_id

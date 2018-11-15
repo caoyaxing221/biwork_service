@@ -49,7 +49,7 @@
       </if>        ) count
 	from (
 	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
-	,DATE_FORMAT(endtime,'%Y-%m-%d %h:%i:%s') as endTime, TIMESTAMPDIFF(SECOND,now(),endtime) as leftSeconds,state,type
+	,DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') as endTime, TIMESTAMPDIFF(SECOND,now(),endtime) as leftSeconds,state,type
 	from airdrop_task a 
 	where  <!-- a.create_userid=#{userId,jdbcType=INTEGER} and --> a.team_id=#{teamId,jdbcType=INTEGER} 
 	 <if test="type != null">
@@ -60,7 +60,7 @@
   </select>
   <select id="selectByTaskId"  resultType="com.biwork.vo.TaskVo">
   	select a.id,a.name,IFNULL((select count(1)  from airdrop_address where taskid=a.id),0) as addressCount
-	,DATE_FORMAT(endtime,'%Y-%m-%d %h:%i:%s') as endTime,state,type,title,banner_url as bannerUrl,remark,need_attach as needAttach
+	,DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') as endTime,state,type,title,banner_url as bannerUrl,remark,need_attach as needAttach
 	from airdrop_task a 
 	where   <if test="userId != null"> a.create_userid=#{userId,jdbcType=INTEGER} and  </if> id=#{taskId,jdbcType=INTEGER} 
   </select>
