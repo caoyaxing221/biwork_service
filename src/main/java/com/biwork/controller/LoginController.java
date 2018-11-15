@@ -174,20 +174,20 @@ public class LoginController {
 		String phone= userLoginPojo.getPhone();
 //		String password = phone.substring(5, 11);
 		String verifyCode=userLoginPojo.getVerifyCode();
-		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=userLoginPojo.getImgCode();
+//		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+//		String imgCode=userLoginPojo.getImgCode();
 		String inviteCode="";
 		String name ="";
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
 		RespPojo resp=new RespPojo();
-		
-		if(!imageCode.equalsIgnoreCase(imgCode)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("图形验证码错误");
-			  return resp;
-		}
+//		
+//		if(!imageCode.equalsIgnoreCase(imgCode)){
+//			  resp.setRetCode(Constants.PARAMETER_CODE);
+//			  resp.setRetMsg("图形验证码错误");
+//			  return resp;
+//		}
 		if(StringUtils.isBlank(phone)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("手机号不能为空");
@@ -285,24 +285,24 @@ public class LoginController {
 		String password=adminLoginPojo.getPassword();
 		RespPojo resp=new RespPojo();
 //		System.out.println(request.getSession().getAttribute("RANDOMCODE"));
-		if(null==request.getSession().getAttribute("RANDOMCODE")){
-			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
-			  resp.setRetMsg("图形验证码超时");
-			  return resp;
-		}
-		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=adminLoginPojo.getImgCode();
+//		if(null==request.getSession().getAttribute("RANDOMCODE")){
+//			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
+//			  resp.setRetMsg("图形验证码超时");
+//			  return resp;
+//		}
+//		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+//		String imgCode=adminLoginPojo.getImgCode();
 		UserPojo up=new UserPojo();
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
 		
 		
-		if(!imageCode.equalsIgnoreCase(imgCode)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("图形验证码错误");
-			  return resp;
-		}
-		
+//		if(!imageCode.equalsIgnoreCase(imgCode)){
+//			  resp.setRetCode(Constants.PARAMETER_CODE);
+//			  resp.setRetMsg("图形验证码错误");
+//			  return resp;
+//		}
+//		
 		if(StringUtils.isBlank(phone)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("手机号不能为空");
@@ -541,22 +541,22 @@ public class LoginController {
 			@ApiParam(name="登录对象",value="传入json格式",required=true) RegisterFirstPojo req){
 		RespPojo resp=new RespPojo();
 		String phone= req.getPhone();
-		if(null==request.getSession().getAttribute("RANDOMCODE")){
-			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
-			  resp.setRetMsg("图形验证码超时");
-			  return resp;
-		}
-		
-		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
-		String imgCode=req.getImgCode();
+//		if(null==request.getSession().getAttribute("RANDOMCODE")){
+//			  resp.setRetCode(Constants.IMGCODEEXPIRE_CODE);
+//			  resp.setRetMsg("图形验证码超时");
+//			  return resp;
+//		}
+//		
+//		String imageCode=request.getSession().getAttribute("RANDOMCODE").toString();
+//		String imgCode=req.getImgCode();
 		String verifyCode=req.getVerifyCode();
 		
 		
-		if(!imageCode.equalsIgnoreCase(imgCode)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("图形验证码错误");
-			  return resp;
-		}
+//		if(!imageCode.equalsIgnoreCase(imgCode)){
+//			  resp.setRetCode(Constants.PARAMETER_CODE);
+//			  resp.setRetMsg("图形验证码错误");
+//			  return resp;
+//		}
 		
 		
 		if(StringUtils.isBlank(phone)){
