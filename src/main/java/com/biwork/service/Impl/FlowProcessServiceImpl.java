@@ -244,7 +244,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 			Integer currentNode=Integer.parseInt(processdb.getCurrentNode());
 			
 			List<ProcessNodeVo> processNodeVo=processdb.getProcessNode();
-			int i=0;
+//			int i=0;
 //			for( i=0;i<processNodeVo.size();i++){
 //				if(processNodeVo.get(i).getApproverId().equals(userId)){
 //					break;
@@ -268,17 +268,24 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 			processNode.setState(dealFlag);
 			processNodeMapper.updateByPrimaryKeySelective(processNode);
 			//最后一个审核的为管理员
-			if(i==processNodeVo.size()&&dealFlag==1){
+			if(dealFlag==1){
 				process.setId(Integer.parseInt(processdb.getId()));
 				process.setUpdatetime(new Date());
-				process.setState(dealFlag);
-				processMapper.updateByPrimaryKeySelective(process);
-			}else if(dealFlag==1){
-				process.setCurrentNode(currentNode+1);
-				process.setId(Integer.parseInt(processdb.getId()));
-				process.setUpdatetime(new Date());
+				
+				if(currentNode==processNodeVo.size()){
+					process.setState(dealFlag);
+					
+				}else{
+					process.setCurrentNode(currentNode+1);
+				}
 				processMapper.updateByPrimaryKeySelective(process);
 			}
+//				else if(dealFlag==1){
+//				process.setCurrentNode(currentNode+1);
+//				process.setId(Integer.parseInt(processdb.getId()));
+//				process.setUpdatetime(new Date());
+//				processMapper.updateByPrimaryKeySelective(process);
+//			}
 			
 		}
 		if(dealFlag==-2||dealFlag==-1){
