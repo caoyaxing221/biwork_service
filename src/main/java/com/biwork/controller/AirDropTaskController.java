@@ -287,7 +287,7 @@ public class AirDropTaskController {
 		
 		
 		try {
-			  task=airDropTaskService.queryTaskInfo(taskId, up.getUserid());
+			  task=airDropTaskService.queryTaskInfo(taskId, null);
 			
 		}
 		catch(BusiException e){
