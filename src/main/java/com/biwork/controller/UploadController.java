@@ -46,7 +46,7 @@ public class UploadController extends BaseController {
 			@ApiParam(name="图片base64",value="传入json格式",required=true) UploadPhotoPojo req,
       HttpServletResponse response) {
     String base64 = req.getPicUrl();
-    logger.info("上传上来的base64数据: {}",base64);
+//    logger.info("上传上来的base64数据: {}",base64);
     RespPojo result = uploadService.upLoadLocal(base64, request);
     return result;
   }

@@ -1,5 +1,6 @@
 package com.biwork.service.Impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -384,9 +385,10 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	@Override
 	public List<FlowListVo> queryUseFlows(String teamId, String userId) {
 		MemberVo memberDb = memberMapper.selectByTeamIdUseId(Integer.parseInt(teamId), userId);
-//		if( null==memberDb){
+		if( null==memberDb){
 //			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
-//		}
+			return Collections.emptyList();
+		}
 		return flowMapper.getUseFlowList(Integer.parseInt(userId), Integer.parseInt(teamId));
 	}
 	@Override
