@@ -272,6 +272,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 				process.setId(Integer.parseInt(processdb.getId()));
 				process.setUpdatetime(new Date());
 				
+
 				if(currentNode==processNodeVo.size()){
 					process.setState(dealFlag);
 					
