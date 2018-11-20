@@ -20,6 +20,8 @@ public class  EditFlowPojo {
 	private String authList;
 	@ApiModelProperty(value="审核账号列表(成员id用竖线隔开,先后顺序即为审核顺序)",name="nodeList",example="",required=true)
 	private String nodeList;
+	@ApiModelProperty(value="使用模板编号",name="templateNo",example="",required=false)
+	private String templateNo;
 	/**
 	 * @return the teamId
 	 */
@@ -91,6 +93,18 @@ public class  EditFlowPojo {
 	 */
 	public void setNodeList(String nodeList) {
 		this.nodeList = nodeList;
+	}
+	/**
+	 * @return the templateNo
+	 */
+	public String getTemplateNo() {
+		return templateNo;
+	}
+	/**
+	 * @param templateNo the templateNo to set
+	 */
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
 	}
 	
 	

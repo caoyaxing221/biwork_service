@@ -26,6 +26,7 @@ public class ProcessVo {
 	private String airDropTaskName;
 	private String currentNode;
 	private String waitSeconds;
+	private String templateNo;
 	/**
 	 * @return the id
 	 */
@@ -272,6 +273,12 @@ public class ProcessVo {
 	 */
 	public void setWaitSeconds(String waitSeconds) {
 		this.waitSeconds = waitSeconds;
+	}
+	public String getTemplateNo() {
+		return templateNo;
+	}
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
 	}
 	
 }

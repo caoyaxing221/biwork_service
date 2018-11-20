@@ -30,6 +30,8 @@ public class Process {
     private Date finishtime;
     
     private Integer isBatchTranser;
+    
+    private Integer templateNo;
 
     public Integer getId() {
         return id;
@@ -149,5 +151,13 @@ public class Process {
 	 */
 	public void setIsBatchTranser(Integer isBatchTranser) {
 		this.isBatchTranser = isBatchTranser;
+	}
+
+	public Integer getTemplateNo() {
+		return templateNo;
+	}
+
+	public void setTemplateNo(Integer templateNo) {
+		this.templateNo = templateNo;
 	}
 }

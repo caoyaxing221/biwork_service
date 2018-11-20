@@ -12,11 +12,13 @@
     <result column="inserttime" jdbcType="TIMESTAMP" property="inserttime" />
     <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="template_no" jdbcType="INTEGER" property="templateNo" />
   </resultMap>
    <resultMap id="FlowInfoMap" type="com.biwork.vo.FlowVo">
     <id column="id" jdbcType="INTEGER" property="flowId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="visible_all" jdbcType="INTEGER" property="visibleAll" />
+    <result column="template_no" jdbcType="INTEGER" property="templateNo" />
     <collection property="authList" ofType="com.biwork.vo.TeamVo"  column="id" select="com.biwork.mapper.FlowAuthorityMapper.selectByFlowId">
          
     </collection>
@@ -28,11 +30,12 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
      <result column="is_batch_transer" jdbcType="INTEGER" property="isBatch" />   
-    <result column="visible_all" jdbcType="INTEGER" property="visibleAll" />   
+    <result column="visible_all" jdbcType="INTEGER" property="visibleAll" />  
+    <result column="template_no" jdbcType="INTEGER" property="templateNo" /> 
   </resultMap>
   <sql id="Base_Column_List">
     id, name, node_num, visible_all, is_batch_transer, team_id, state, inserttime, updatetime, 
-    create_user_id
+    create_user_id,template_no
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -139,6 +142,9 @@
       <if test="createUserId != null">
         create_user_id,
       </if>
+      <if test="templateNo != null">
+        template_no,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -171,6 +177,9 @@
       <if test="createUserId != null">
         #{createUserId,jdbcType=INTEGER},
       </if>
+       <if test="templateNo != null">
+        #{templateNo,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.Flow">
@@ -202,6 +211,9 @@
       </if>
       <if test="createUserId != null">
         create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="templateNo != null">
+        template_no = #{templateNo,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

@@ -32,6 +32,8 @@ public class  CommitProcessPojo {
 	private String remark;
 	@ApiModelProperty(value="附件链接",name="attachUrl",example="",required=false)
 	private String attachUrl;
+	@ApiModelProperty(value="使用模板编号",name="templateNo",example="",required=false)
+	private String templateNo;
 	/**
 	 * @return the flowId
 	 */
@@ -165,6 +167,18 @@ public class  CommitProcessPojo {
 	 */
 	public void setAttachUrl(String attachUrl) {
 		this.attachUrl = attachUrl;
+	}
+	/**
+	 * @return the templateNo
+	 */
+	public String getTemplateNo() {
+		return templateNo;
+	}
+	/**
+	 * @param templateNo the templateNo to set
+	 */
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
 	}
 	
 	

@@ -114,7 +114,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	}
 	@Override
 	public int addFlow(String teamId, String name, String isBatch, String visibleAll, String authList, String nodeList,
-			String userId) {
+			String userId,String templateNo) {
 		int flowId=0;
 		Team teamDb = teamMapper.selectByPrimaryKey(Integer.parseInt(teamId));
 		if(null==teamDb){
@@ -137,6 +137,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		flow.setTeamId(Integer.parseInt(teamId));
 		flow.setVisibleAll(Integer.parseInt(visibleAll));
 		flow.setNodeNum(nodeArr.length+1);
+		flow.setTemplateNo(Integer.parseInt(templateNo));
 		flowMapper.insertSelective(flow);
 		flowId=flow.getId();
 		if(Integer.parseInt(visibleAll)==0){
@@ -170,7 +171,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	public int commitProcess(String userId,String flowId, String applicationNumber, String coinMark,
 			String cause, String departmentId, String categoryId,
 			List<ReceiverMsgPojo> receiverMsg,String receiver,String remark,String attachUrl
-			,String airDropTaskId) {
+			,String airDropTaskId,String templateNo) {
 		int processId=0;
 		if(null!=airDropTaskId&&!"".equals(airDropTaskId)){
 			AirdropTask taskDB = airdropTaskMapper.selectByPrimaryKey(Integer.parseInt(airDropTaskId));
@@ -216,6 +217,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		process.setRemark(remark);
 		process.setAirDropTaskId(airDropTaskId);
 		process.setIsBatchTranser(flowDb.getIsBatchTranser());
+		process.setTemplateNo(Integer.parseInt(templateNo));
 		processMapper.insertSelective(process);
 		processId=process.getId();
 		processMapper.insertNodes(processId, Integer.parseInt(flowId));
@@ -301,7 +303,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	}
 	@Override
 	public boolean editFlow(String flowId, String name, String isBatch, String visibleAll, String authList,
-			String nodeList, String userId) {
+			String nodeList, String userId,String templateNo) {
 		Flow flowdb=flowMapper.selectByPrimaryKey(Integer.parseInt(flowId));
 		if(null==flowdb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
@@ -327,6 +329,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		flow.setVisibleAll(Integer.parseInt(visibleAll));
 		flow.setNodeNum(nodeArr.length+1);
 		flow.setUpdatetime(new Date());
+		flow.setTemplateNo(Integer.parseInt(templateNo));
 		flowMapper.updateByPrimaryKeySelective(flow);
 		if(Integer.parseInt(visibleAll)==0){
 			for(int i=0;i<authArr.length;i++){

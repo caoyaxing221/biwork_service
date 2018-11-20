@@ -258,6 +258,7 @@ public class FlowProcessController {
 		String authList=req.getAuthList();
 		String nodeList=req.getNodeList();
 		String userId=up.getUserid();
+		String templateNo=StringUtils.isBlank(req.getTemplateNo())?"0":req.getTemplateNo();
 		if(StringUtils.isBlank(teamId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择创建流程团队");
@@ -291,7 +292,7 @@ public class FlowProcessController {
 		
 		try {
 			 flowId=flowProcessService.addFlow(teamId, name, isBatch, visibleAll, 
-					 authList, nodeList, userId);
+					 authList, nodeList, userId,templateNo);
 		}
 		catch(BusiException e){
 			  
@@ -337,6 +338,7 @@ public class FlowProcessController {
 		String authList=req.getAuthList();
 		String nodeList=req.getNodeList();
 		String userId=up.getUserid();
+		String templateNo=StringUtils.isBlank(req.getTemplateNo())?"0":req.getTemplateNo();
 		if(StringUtils.isBlank(flowId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择编辑流程");
@@ -370,7 +372,7 @@ public class FlowProcessController {
 		
 		try {
 			  flowProcessService.editFlow(flowId, name, isBatch, visibleAll,
-					  authList, nodeList, userId);
+					  authList, nodeList, userId,templateNo);
 			
 		}
 		catch(BusiException e){
@@ -861,6 +863,7 @@ public class FlowProcessController {
 		String remark = req.getRemark();
 		String userId=up.getUserid();
 		String airDropTaskId=null==req.getAirDropTaskId()||"".equals(req.getAirDropTaskId())?null:req.getAirDropTaskId();
+		String templateNo=StringUtils.isBlank(req.getTemplateNo())?"0":req.getTemplateNo();
 		if(StringUtils.isBlank(flowId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择流程");
@@ -899,7 +902,7 @@ public class FlowProcessController {
 		}
 		try {
 			processId=flowProcessService.commitProcess(userId, flowId, applicationNumber, coinMark,
-					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId);
+					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId,templateNo);
 		}
 		catch(BusiException e){
 			  

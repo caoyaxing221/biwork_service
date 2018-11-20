@@ -22,6 +22,8 @@ public class Flow {
     private Date updatetime;
 
     private Integer createUserId;
+    
+    private Integer templateNo;
 
     public Integer getId() {
         return id;
@@ -102,4 +104,12 @@ public class Flow {
     public void setCreateUserId(Integer createUserId) {
         this.createUserId = createUserId;
     }
+
+	public Integer getTemplateNo() {
+		return templateNo;
+	}
+
+	public void setTemplateNo(Integer templateNo) {
+		this.templateNo = templateNo;
+	}
 }

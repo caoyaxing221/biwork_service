@@ -8,6 +8,7 @@ public class FlowVo {
 	private Integer flowId;
 	private String name;
 	private String visibleAll;
+	private Integer templateNo;
 	private List<TeamVo> authList;
 	private List<TeamVo> nodeList;
 	/**
@@ -69,6 +70,12 @@ public class FlowVo {
 	 */
 	public void setNodeList(List<TeamVo> nodeList) {
 		this.nodeList = nodeList;
+	}
+	public Integer getTemplateNo() {
+		return templateNo;
+	}
+	public void setTemplateNo(Integer templateNo) {
+		this.templateNo = templateNo;
 	}
 	
 	

@@ -11,8 +11,10 @@ import com.biwork.vo.ProcessListVo;
 import com.biwork.vo.ProcessVo;
 
 public interface FlowProcessService {	 
-	int addFlow(String teamId ,String name,String isBatch,String visibleAll,String authList,String nodeList,String userId);
-	boolean editFlow(String flowId ,String name,String isBatch,String visibleAll,String authList,String nodeList,String userId);
+	int addFlow(String teamId ,String name,String isBatch,String visibleAll,String authList,String nodeList,String userId
+			,String templateNo);
+	boolean editFlow(String flowId ,String name,String isBatch,String visibleAll,String authList,String nodeList,String userId
+			,String templateNo);
 	List<FlowListVo> queryFlows(String teamId,String userId);
 	List<FlowListVo> queryUseFlows(String teamId,String userId);
 	boolean delFlow(String flowId,String userId);
@@ -20,7 +22,7 @@ public interface FlowProcessService {
 	FlowVo queryUseFlowById(String flowId, String userId);
 	int commitProcess(String userId, String flowId, String applicationNumber, String coinMark, String cause,
 			String departmentId, String categoryId,List<ReceiverMsgPojo> receiverMsg, String receiver, String remark,
-			String attachUrl,String airDropTaskId);
+			String attachUrl,String airDropTaskId,String templateNo);
 	ProcessVo queryProcessById(String processId, String userId);
 	boolean dealProcess(String userId, String processId, Integer dealFlag);
 	List<ProcessListVo> queryProcess(String teamId, String userId, String fetch, String offset);

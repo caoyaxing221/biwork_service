@@ -5,6 +5,7 @@ public class FlowListVo {
 	String name;
 	String isBatch;
 	String visibleAll;
+	String templateNo;
 	/**
 	 * @return the id
 	 */
@@ -52,5 +53,17 @@ public class FlowListVo {
 	 */
 	public void setVisibleAll(String visibleAll) {
 		this.visibleAll = visibleAll;
+	}
+	/**
+	 * @return the templateNo
+	 */
+	public String getTemplateNo() {
+		return templateNo;
+	}
+	/**
+	 * @param templateNo the templateNo to set
+	 */
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
 	}
 }

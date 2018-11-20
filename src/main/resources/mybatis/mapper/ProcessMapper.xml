@@ -26,6 +26,7 @@
     <result column="attach_url" jdbcType="LONGVARCHAR" property="attachUrl" />
     <result column="airdroptask_id" jdbcType="VARCHAR" property="airDropTaskId" />
     <result column="is_batch_transer" jdbcType="INTEGER" property="isBatchTranser" />
+    <result column="template_no" jdbcType="INTEGER" property="templateNo" />
   </resultMap>
    <resultMap id="ProcessInfoMap" type="com.biwork.vo.ProcessVo">
     <id column="id" jdbcType="INTEGER" property="id" />
@@ -48,6 +49,7 @@
 	<result property="airDropTaskName" column="airDropTaskName"/>
 	 <result property="currentNode" column="current_node"/>
 	 <result property="waitSeconds" column="waitSeconds"/>
+	 <result column="template_no" jdbcType="VARCHAR" property="templateNo" />
     <collection property="processNode" ofType="com.biwork.vo.ProcessNodeVo"  column="id" select="com.biwork.mapper.ProcessNodeMapper.selectByProcessId">
          
     </collection>
@@ -62,6 +64,7 @@
      <result column="state" jdbcType="VARCHAR" property="state" />
      <result column="count" jdbcType="VARCHAR" property="count" />
      <result column="isBatchTranser" jdbcType="VARCHAR" property="isBatchTranser" />
+     <result column="template_no" jdbcType="VARCHAR" property="templateNo" />
     </resultMap>
      <sql id="page_val">
    <if test="fetch!=null">limit #{fetch,jdbcType=INTEGER} </if>
@@ -70,7 +73,7 @@
     </sql>
   <sql id="Base_Column_List">
     id, team_id, submitter_id, application_number, coin_mark, department_id, category_id, 
-    receiver, current_node, state, inserttime, updatetime, finishtime,is_batch_transer
+    receiver, current_node, state, inserttime, updatetime, finishtime,is_batch_transer,template_no
   </sql>
   <sql id="Blob_Column_List">
     cause, receiver_msg, remark, attach_url,airdroptask_id
@@ -101,7 +104,7 @@
 		a.state,case when  f.approver_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canApprove,
 		case when  a.submitter_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canCancel,
 		h.name as airDropTaskName,airdroptask_id
-		 ,TIMESTAMPDIFF(SECOND,IFNULL(a.updatetime,a.inserttime),now()) as waitSeconds,current_node
+		 ,TIMESTAMPDIFF(SECOND,IFNULL(a.updatetime,a.inserttime),now()) as waitSeconds,current_node,template_no
 		from process a
 		join approval_category b
 		on a.category_id =b.id
@@ -129,7 +132,7 @@
 		a.coin_mark as coinMark,
 	 	 receiver_msg as receiverMsg,
 		a.inserttime as commitTime ,
-		a.state,a.is_batch_transer as isBatchTranser
+		a.state,a.is_batch_transer as isBatchTranser,template_no
 		from process a 
 	
 		
@@ -155,7 +158,7 @@
 		a.coin_mark as coinMark,
 	 	 receiver_msg as receiverMsg,
 		a.inserttime as commitTime ,
-		a.state,a.is_batch_transer as isBatchTranser
+		a.state,a.is_batch_transer as isBatchTranser,template_no
 		from process a 
 	
 	
@@ -255,6 +258,9 @@
       <if test="isBatchTranser != null">
         is_batch_transer,
       </if>
+      <if test="templateNo != null">
+        template_no,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -315,6 +321,9 @@
        <if test="isBatchTranser != null">
         #{isBatchTranser,jdbcType=INTEGER},
       </if>
+      <if test="templateNo != null">
+        #{templateNo,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.ProcessWithBLOBs">
@@ -373,6 +382,9 @@
       </if>
        <if test="isBatchTranser != null">
         is_batch_transer = #{isBatchTranser,jdbcType=INTEGER},
+      </if>
+      <if test="templateNo != null">
+        template_no = #{templateNo,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

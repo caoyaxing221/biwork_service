@@ -11,6 +11,7 @@ public class ProcessListVo {
 	private String state;
 	private String count;
 	private String isBatchTranser;
+	private String templateNo;
 	/**
 	 * @return the id
 	 */
@@ -101,6 +102,12 @@ public class ProcessListVo {
 	 */
 	public void setIsBatchTranser(String isBatchTranser) {
 		this.isBatchTranser = isBatchTranser;
+	}
+	public String getTemplateNo() {
+		return templateNo;
+	}
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
 	}
 	
 }
