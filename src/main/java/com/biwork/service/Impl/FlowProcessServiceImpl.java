@@ -151,6 +151,10 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 				fA.setUserId(Integer.parseInt(cUserid));
 				flowAuthorityMapper.insertSelective(fA);
 			}
+			FlowAuthority fA=new FlowAuthority();
+			fA.setFlowId(flowId);
+			fA.setUserId(Integer.parseInt(userId));
+			flowAuthorityMapper.insertSelective(fA);
 		}
 		int j=0;
 		for( j=0;j<nodeArr.length;j++){
