@@ -127,7 +127,10 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		if(null!=flowVo){
 			throw new BusiException(Constants.FAIL_CODE,Constants.FLOW_ALREADY_EXISTS);
 		}
-		String []authArr=authList.split("\\|");
+		String []authArr = null;
+		if(Integer.parseInt(visibleAll)==0){
+			authArr=authList.split("\\|");
+		}
 		String []nodeArr=nodeList.split("\\|");
 		String cUserid="";
 		Flow flow =new Flow();
