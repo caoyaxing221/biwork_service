@@ -864,6 +864,7 @@ public class FlowProcessController {
 		String userId=up.getUserid();
 		String airDropTaskId=null==req.getAirDropTaskId()||"".equals(req.getAirDropTaskId())?null:req.getAirDropTaskId();
 		String templateNo=StringUtils.isBlank(req.getTemplateNo())?"0":req.getTemplateNo();
+		String coinRateId=req.getCoinRateId();
 		if(StringUtils.isBlank(flowId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择流程");
@@ -885,6 +886,11 @@ public class FlowProcessController {
 			  resp.setRetMsg("未选择币种");
 			  return resp;
 		}
+		if(StringUtils.isBlank(coinRateId)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("未选择币种");
+			  return resp;
+		}
 		if(StringUtils.isBlank(departmentId)){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("未选择入账部门");
@@ -902,7 +908,7 @@ public class FlowProcessController {
 		}
 		try {
 			processId=flowProcessService.commitProcess(userId, flowId, applicationNumber, coinMark,
-					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId,templateNo);
+					cause, departmentId, categoryId, receiverMsg, receiver, remark, attachUrl,airDropTaskId,templateNo,coinRateId);
 		}
 		catch(BusiException e){
 			  
