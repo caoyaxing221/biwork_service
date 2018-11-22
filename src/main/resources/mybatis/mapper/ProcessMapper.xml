@@ -171,7 +171,7 @@
 		GROUP BY process_id  )f
 		on a.id=f.process_id    
 		   where a.state in(0,1,-1) and a.team_id=#{teamId,jdbcType=INTEGER}
-		   and((state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER})) 
+		   and((a.state=0 and 0=#{state,jdbcType=INTEGER} ) or (1=#{state,jdbcType=INTEGER})) 
 		 order by a.inserttime desc  ) t,(SELECT @rowNum:=0) b 
 
 		 
