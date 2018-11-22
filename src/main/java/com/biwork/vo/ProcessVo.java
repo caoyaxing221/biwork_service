@@ -13,7 +13,6 @@ public class ProcessVo {
 	private String cause;
 	private String enterDepartment;
 	private String coinMark;
-	private String coinRateId;
 	private String receiver;
 	private String receiverMsg;
 	private String remark;
@@ -118,18 +117,6 @@ public class ProcessVo {
 	 */
 	public void setCoinMark(String coinMark) {
 		this.coinMark = coinMark;
-	}
-	/**
-	 * @return the coinRateId
-	 */
-	public String getCoinRateId() {
-		return coinRateId;
-	}
-	/**
-	 * @param coinRateId the coinRateId to set
-	 */
-	public void setCoinRateId(String coinRateId) {
-		this.coinRateId = coinRateId;
 	}
 	/**
 	 * @return the receiver

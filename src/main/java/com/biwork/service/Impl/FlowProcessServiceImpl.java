@@ -178,7 +178,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	public int commitProcess(String userId,String flowId, String applicationNumber, String coinMark,
 			String cause, String departmentId, String categoryId,
 			List<ReceiverMsgPojo> receiverMsg,String receiver,String remark,String attachUrl
-			,String airDropTaskId,String templateNo,String coinRateId) {
+			,String airDropTaskId,String templateNo) {
 		int processId=0;
 		if(null!=airDropTaskId&&!"".equals(airDropTaskId)){
 			AirdropTask taskDB = airdropTaskMapper.selectByPrimaryKey(Integer.parseInt(airDropTaskId));
@@ -212,8 +212,7 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		ProcessWithBLOBs process =new ProcessWithBLOBs();
 		process.setApplicationNumber(applicationNumber);
 		process.setCategoryId(Integer.parseInt(categoryId));
-		process.setCoinMark(coinMark);
-		process.setCoinRateId(coinRateId);
+		process.setCoinMark(coinMark);;
 		process.setCurrentNode(1);
 		process.setDepartmentId(Integer.parseInt(departmentId));
 		process.setReceiver(receiver);

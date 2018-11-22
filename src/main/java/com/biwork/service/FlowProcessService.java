@@ -22,7 +22,7 @@ public interface FlowProcessService {
 	FlowVo queryUseFlowById(String flowId, String userId);
 	int commitProcess(String userId, String flowId, String applicationNumber, String coinMark, String cause,
 			String departmentId, String categoryId,List<ReceiverMsgPojo> receiverMsg, String receiver, String remark,
-			String attachUrl,String airDropTaskId,String templateNo,String coinRateId);
+			String attachUrl,String airDropTaskId,String templateNo);
 	ProcessVo queryProcessById(String processId, String userId);
 	boolean dealProcess(String userId, String processId, Integer dealFlag);
 	List<ProcessListVo> queryProcess(String teamId, String userId, String fetch, String offset);

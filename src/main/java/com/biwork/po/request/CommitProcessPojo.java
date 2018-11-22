@@ -16,8 +16,6 @@ public class  CommitProcessPojo {
 	private String applicationNumber;
 	@ApiModelProperty(value="支付币种",name="coinMark",example="",required=true)
 	private String coinMark;
-	@ApiModelProperty(value="币价id",name="coinRateId",example="",required=false)
-	private String coinRateId;
 	@ApiModelProperty(value="事由",name="cause",example="",required=true)
 	private String cause;
 	@ApiModelProperty(value="入账部门",name="departmentId",example="",required=true)
@@ -72,18 +70,6 @@ public class  CommitProcessPojo {
 	 */
 	public void setCoinMark(String coinMark) {
 		this.coinMark = coinMark;
-	}
-	/**
-	 * @return the coinRateId
-	 */
-	public String getCoinRateId() {
-		return coinRateId;
-	}
-	/**
-	 * @param coinRateId the coinRateId to set
-	 */
-	public void setCoinRateId(String coinRateId) {
-		this.coinRateId = coinRateId;
 	}
 	/**
 	 * @return the cause

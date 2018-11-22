@@ -26,7 +26,7 @@
     <task:scheduler id="myScheduler" pool-size="10"/> 
 	<context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true" />  
 	<context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true"  />   
-	<!-- <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"  /> -->
+	
 
 	<!-- 数据源c3p0 -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close" >
@@ -85,25 +85,7 @@
 		<!-- <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" /> -->
 	</bean> 
 	
-	<!-- <bean id="redisHttpSessionConfiguration"
-	      class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
-	    <property name="maxInactiveIntervalInSeconds" value="${redis_maxSessionInactiveSeconds}"/>
-	</bean>
-	Spring session使用redis  
-	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-	    <property name="maxTotal" value="${redis_maxTotal}" />
-	    <property name="maxIdle" value="${redis_maxIdle}" />
-	</bean>
-	
-	<bean id="jedisConnectionFactory"
-	      class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
-	    <property name="hostName" value="${redis_hostname}"/>
-	    <property name="port" value="${redis_port}"/>
-	    <property name="password" value="${redis_pwd}" />
-	    <property name="timeout" value="${redis_timeout}"/>
-	    <property name="usePool" value="${redis_usePool}"/>
-	    <property name="poolConfig" ref="jedisPoolConfig"/>
-	</bean> -->
+
         
         <!--避免IE执行AJAX时，返回JSON出现下载文件 -->  
         <bean id="mappingJacksonHttpMessageConverter"  

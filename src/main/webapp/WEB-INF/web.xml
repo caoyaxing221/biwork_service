@@ -33,27 +33,8 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
 	<!--filter.listener,servlet,and servlet-mapping等元素要在session-config之前-->  
     <session-config>  
          <session-timeout>15 </session-timeout>  
-    </session-config> 
-     <!-- <filter>
-    <filter-name>springSessionRepositoryFilter</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>springSessionRepositoryFilter</filter-name>
-	    <url-pattern>/*</url-pattern>
-	</filter-mapping>  --> 
-	
+    </session-config>  
     <!-- 字符集过滤器 -->  
-    <!--CORS 跨域资源访问-->
-    <filter>
-    <filter-name>cros</filter-name>
-    <filter-class>com.biwork.common.CORSFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>cros</filter-name>
-	    <url-pattern>/*</url-pattern>
-	</filter-mapping>
-
     <filter>  
         <filter-name>encodingFilter</filter-name>  
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
@@ -66,12 +47,10 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
             <param-value>true</param-value>  
         </init-param>  
     </filter>  
-   
     <filter-mapping>  
         <filter-name>encodingFilter</filter-name>  
         <url-pattern>/*</url-pattern>  
-    </filter-mapping>
-   
+    </filter-mapping> 
 	<welcome-file-list>
 		<welcome-file>/index.html</welcome-file>
 	</welcome-file-list>

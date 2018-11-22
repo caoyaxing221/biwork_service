@@ -7,7 +7,6 @@
     <result column="submitter_id" jdbcType="INTEGER" property="submitterId" />
     <result column="application_number" jdbcType="VARCHAR" property="applicationNumber" />
     <result column="coin_mark" jdbcType="VARCHAR" property="coinMark" />
-    <result column="coin_rate_id" jdbcType="VARCHAR" property="coinRateId" />
     <result column="department_id" jdbcType="INTEGER" property="departmentId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="receiver" jdbcType="VARCHAR" property="receiver" />
@@ -38,7 +37,6 @@
      <result column="cause" jdbcType="VARCHAR" property="cause" />
      <result column="enterDepartment" jdbcType="VARCHAR" property="enterDepartment" />
      <result column="coinMark" jdbcType="VARCHAR" property="coinMark" />
-     <result column="coin_rate_id" jdbcType="VARCHAR" property="coinRateId" />
      <result column="receiver" jdbcType="VARCHAR" property="receiver" />
      <result column="receiverMsg" jdbcType="VARCHAR" property="receiverMsg" />
      <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -74,7 +72,7 @@
 		
     </sql>
   <sql id="Base_Column_List">
-    id, team_id, submitter_id, application_number, coin_mark,coin_rate_id department_id, category_id, 
+    id, team_id, submitter_id, application_number, coin_mark, department_id, category_id, 
     receiver, current_node, state, inserttime, updatetime, finishtime,is_batch_transer,template_no
   </sql>
   <sql id="Blob_Column_List">
@@ -100,7 +98,7 @@
     
 		select a.id,submitter_id,e.name as submitterName,a.application_number as applicationNo,
 		b.name as payCategory,cause,
-		c.name as enterDepartment,a.coin_mark as coinMark,a.coin_rate_id
+		c.name as enterDepartment,a.coin_mark as coinMark,
 		receiver,receiver_msg as receiverMsg,
 		a.remark,attach_url as attachUrl,DATE_FORMAT(a.inserttime,'%Y-%m-%d %H:%i:%s')  as commitTime ,
 		a.state,case when  f.approver_id =#{userId,jdbcType=INTEGER} and a.state=0 then 1 else 0 end as canApprove,
@@ -218,9 +216,6 @@
       <if test="coinMark != null">
         coin_mark,
       </if>
-       <if test="coinRateId != null">
-        coin_rate_id,
-      </if>
       <if test="departmentId != null">
         department_id,
       </if>
@@ -282,9 +277,6 @@
       </if>
       <if test="coinMark != null">
         #{coinMark,jdbcType=VARCHAR},
-      </if>
-      <if test="coinRateId != null">
-        #{coinRateId,jdbcType=VARCHAR},
       </if>
       <if test="departmentId != null">
         #{departmentId,jdbcType=INTEGER},
@@ -348,9 +340,6 @@
       </if>
       <if test="coinMark != null">
         coin_mark = #{coinMark,jdbcType=VARCHAR},
-      </if>
-       <if test="coinRateId != null">
-        coin_rate_id = #{coinRateId,jdbcType=VARCHAR},
       </if>
       <if test="departmentId != null">
         department_id = #{departmentId,jdbcType=INTEGER},
