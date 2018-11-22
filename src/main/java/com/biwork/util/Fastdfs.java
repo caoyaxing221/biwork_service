@@ -229,14 +229,17 @@ public class Fastdfs {
 		// 快惠卡
 		String urlFront = Fastdfs.upload2(fileByte);
 		System.out.println(urlFront);*/
-		String aa=Fastdfs.upload("http://pic13.photophoto.cn/20091109/0034034824143467_b.jpg");
-		System.out.println(aa);
-		ClassPathResource cpr = new ClassPathResource("fdfs_client.conf");
-		ClientGlobal.init(cpr.getClassLoader().getResource("fdfs_client.conf").getPath());
+//		String aa=Fastdfs.upload("http://pic13.photophoto.cn/20091109/0034034824143467_b.jpg");
+//		System.out.println(aa);
+//		ClassPathResource cpr = new ClassPathResource("fdfs_client.conf");
+//		ClientGlobal.init(cpr.getClassLoader().getResource("fdfs_client.conf").getPath());
 //		File file = new File("E:/111.jpg");
 //		byte[] fileByte =Base64Util.getFileByte(file);
 //		String s = Base64Util.byteToBase64Encoding(fileByte);
 //		System.out.println(s);
+		String aa=Base64Util.byteToBase64Encoding(
+				Fastdfs.Image2Base64("https://etherscan.io/token/images/iost_28.png"));
+		System.out.println(aa);
 
 	}
 }

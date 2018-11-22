@@ -12,6 +12,8 @@ public class Process {
     private String applicationNumber;
 
     private String coinMark;
+    
+    private String coinRateId;
 
     private Integer departmentId;
 
@@ -75,7 +77,21 @@ public class Process {
 
 	
 
-    public Integer getDepartmentId() {
+    /**
+	 * @return the coinRateId
+	 */
+	public String getCoinRateId() {
+		return coinRateId;
+	}
+
+	/**
+	 * @param coinRateId the coinRateId to set
+	 */
+	public void setCoinRateId(String coinRateId) {
+		this.coinRateId = coinRateId;
+	}
+
+	public Integer getDepartmentId() {
         return departmentId;
     }
 
