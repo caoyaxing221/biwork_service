@@ -41,7 +41,6 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "/v1", description = "获取比特币，以太坊和ERC20代币的手续费")
 public class TxFeeController{
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
 	@Autowired
 	TxFeeService txFeeService;
 	@ResponseBody
@@ -51,27 +50,38 @@ public class TxFeeController{
 			@ApiParam(name="获取估计值的gasLimit",value="传入json格式",required=true) com.biwork.po.request.TxFeeGasLimitPojo txFeeGasLimitPojo){
 		logger.info("---获取估计值的gasLimit---");
 		RespPojo resp=new RespPojo();
-		String formAddress = txFeeGasLimitPojo.getFormAddress();
-		String toAddress = txFeeGasLimitPojo.getToAddress();
+		String formAddress = txFeeGasLimitPojo.getFormAddress().replace(" ", "");
+		logger.info("formAddress = " + formAddress);
+		String toAddress = txFeeGasLimitPojo.getToAddress().replace(" ", "");
+		logger.info("toAddress = " + toAddress);
 		BigInteger value = txFeeGasLimitPojo.getValue();
+		logger.info("value = " + value);
 		BigInteger nonce = txFeeGasLimitPojo.getNonce();
+		logger.info("nonce = " + nonce);
 		BigInteger gasPrice = txFeeGasLimitPojo.getGasPrice();
-		String data = txFeeGasLimitPojo.getData();
+		logger.info("gasPrice = " + gasPrice);
+		String data = txFeeGasLimitPojo.getData().replace(" ", "");
+		logger.info("data = " + data);
 		BigInteger gas = txFeeGasLimitPojo.getGas();
-		BigInteger gasLimit;
+		logger.info("gas = " + gas);
+		BigInteger gasLimit; 
 		try {
 			gasLimit = txFeeService.getGasLimit(formAddress, toAddress, value, nonce, gasPrice, data, gas);
 		}catch(BusiException e){
-			 logger.error("获取估计值的gasLimit异常{}",e);
-			  resp.setRetCode(e.getCode());
-			  resp.setRetMsg(e.getMessage());
-			  return resp;
+			Object obj = new Object();
+			JSONParser parser = new JSONParser();
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(120000);
+			return resp;
 		}
 		catch (Exception e) {
-			  logger.error("获取估计值的gasLimit异常{}",e);
-			  resp.setRetCode(Constants.FAIL_CODE);
-			  resp.setRetMsg(Constants.FAIL_MESSAGE);
-			  return resp;
+			Object obj = new Object();
+			JSONParser parser = new JSONParser();
+			resp.setRetCode(Constants.SUCCESSFUL_CODE);
+			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+			resp.setData(120000);
+			return resp;
 		}
 		if(gasLimit != null){
 			Object obj = new Object();
@@ -113,7 +123,7 @@ public class TxFeeController{
 			BigInteger two = new BigInteger("2"); 
 			rtnMap.put("fastestFee", (fee.multiply(two)));
 			rtnMap.put("hourFee", fee);
-			rtnMap.put("halfHourFee", (fee.divide(two)));
+			rtnMap.put("halfHourFee", fee);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 			resp.setData(rtnMap);

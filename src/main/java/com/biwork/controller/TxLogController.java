@@ -1,5 +1,7 @@
 package com.biwork.controller;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,6 @@ import com.alibaba.fastjson.JSON;
 @Api(value = "/v1", description = "获取交易记录")
 public class TxLogController {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    
     public static Object GetResultJsonObject(String json) throws BusiException {
     	Object obj = new Object();
         JSONParser parser = new JSONParser();
@@ -72,9 +73,7 @@ public class TxLogController {
     })
 	public RespPojo getEthTxLog(HttpServletRequest request){
         logger.info("---获取以太坊账户交易记录方法---");
-        
         RespPojo resp=new RespPojo();
-        
 		String address = request.getParameter("address")==null?"":request.getParameter("address");
 		if (StringUtils.isBlank(address)) {
             resp.setRetCode(Constants.PARAMETER_CODE);
@@ -103,11 +102,11 @@ public class TxLogController {
 		if (txLog != null) {
 			txLog_pojo = new TxLogPojo();
 			txLog_pojo.setTxLog(txLog.getTxLog());
-			Map<String, Object> rtnMap = new HashMap<String, Object>();
-            rtnMap.put("txlogs", txLogsObj);
+			// Map<String, Object> rtnMap = new HashMap<String, Object>();
+            // rtnMap.put("txlogs", txLogsObj);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
-			resp.setData(rtnMap);
+			resp.setData(txLogsObj);
 			return resp;
 		}
 		return resp;
@@ -164,11 +163,11 @@ public class TxLogController {
 		if (txLog != null) {
 			txLog_pojo = new TxLogPojo();
 			txLog_pojo.setTxLog(txLog.getTxLog());
-			Map<String, Object> rtnMap = new HashMap<String, Object>();
-            rtnMap.put("txlogs", txLogsObj);
+			// Map<String, Object> rtnMap = new HashMap<String, Object>();
+            // rtnMap.put("txlogs", txLogsObj);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
-			resp.setData(rtnMap);
+			resp.setData(txLogsObj);
 			return resp;
 		}
 		return resp;
@@ -184,9 +183,7 @@ public class TxLogController {
     })
 	public RespPojo getBtcTxLog(HttpServletRequest request){
         logger.info("---获取BTC账户交易记录方法---");
-        
         RespPojo resp=new RespPojo();
-        
 		String address = request.getParameter("address")==null?"":request.getParameter("address");
 		if (StringUtils.isBlank(address)) {
             resp.setRetCode(Constants.PARAMETER_CODE);
@@ -215,7 +212,6 @@ public class TxLogController {
 			} else {
 				query = "https://blockchain.info/rawaddr/" + address;
 			}
-		
 			txLog = txLogService.getBtcTxLog(query);
 		}catch(BusiException e){
 			 logger.error("获取BTC账户交易记录异常{}",e);
@@ -233,7 +229,11 @@ public class TxLogController {
             List<Map> jsonObjects = new ArrayList<Map>();
 			String s = txLog.getTxLog();
 			com.alibaba.fastjson.JSONArray txLogsArr = JSON.parseArray(s);
-			int formAmount = 0, toAmount = 0;
+			
+			System.out.println("txLogsArr = " + txLogsArr);
+			
+			BigDecimal formAmount = null, toAmount = null;
+			BigDecimal HL = new BigDecimal("100000000"); 
             for(int i = 0; i < txLogsArr.size(); i++){
             	//交易Hash
                 Map<String, Object> txLogMap = new HashMap<String, Object>();
@@ -255,15 +255,14 @@ public class TxLogController {
                 String inputStr = txLogsArr.getJSONObject(i).get("inputs").toString();
                 com.alibaba.fastjson.JSONArray inputsArr = JSON.parseArray(inputStr);
                 List<Map> AddressObjects = new ArrayList<Map>();
-                
                 for(int j = 0; j < inputsArr.size(); j++) {
                     Map<String, Object> AddressMap = new HashMap<String, Object>();
                 	String prevOut = inputsArr.getJSONObject(j).get("prev_out").toString();
                 	com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(prevOut);
                 	String fromAddress = (String) jsonObject.get("addr");
-                	formAmount = (int) jsonObject.get("value");
+                	formAmount = new BigDecimal(jsonObject.get("value").toString());
                 	AddressMap.put("address", fromAddress);
-                	AddressMap.put("tansAmount", formAmount * 1e-8);
+                	AddressMap.put("tansAmount", formAmount.divide(HL));
                 	AddressObjects.add(AddressMap);
                 }
                 txLogMap.put("fromData", AddressObjects);
@@ -279,9 +278,9 @@ public class TxLogController {
                 	String Out = outArr.getJSONObject(k).toString();
                 	com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(Out);
                 	String toAddress = (String) jsonObject.get("addr");
-                	toAmount = (int) jsonObject.get("value");
+                	toAmount = new BigDecimal(jsonObject.get("value").toString());
                 	toAddressMap.put("address", toAddress);
-                	toAddressMap.put("tansAmount", toAmount * 1e-8);
+                	toAddressMap.put("tansAmount", toAmount.divide(HL));
                 	toAddressObjects.add(toAddressMap);
                 }
                 
@@ -289,10 +288,10 @@ public class TxLogController {
                 jsonObjects.add(txLogMap);
             
                 //===========转账金额度和手续费====================
-                int totalAmount = toAmount;
-                int sendFee = formAmount - toAmount;
-                txLogMap.put("tansAmount", totalAmount * 1e-8);
-                txLogMap.put("tansFee", sendFee * 1e-8);
+                BigDecimal totalAmount = toAmount;
+                BigDecimal sendFee = formAmount.subtract(toAmount);
+                txLogMap.put("tansAmount", totalAmount.multiply(HL));
+                txLogMap.put("tansFee", sendFee.multiply(HL));
                 
                 //转账类型
                 int ret = (int) txLogsArr.getJSONObject(i).get("result");

@@ -82,10 +82,16 @@ public class UTXOController {
 			utxo_pojo = new UTXOPojo();
 			utxo_pojo.setUtxo(utxo.getUtxo());
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
-			
 			String s = utxo.getUtxo();
+			logger.info("获取到的UTXO为 = " + s);
 			com.alibaba.fastjson.JSONArray utxoArr = JSON.parseArray(s);
-			
+			if (utxoArr.isEmpty()) {
+				rtnMap.put("unspent_outputs", utxoArr);
+				resp.setRetCode(Constants.UTXO_NULL_CODE);
+				resp.setRetMsg(Constants.UTXO_NULL);
+				resp.setData(rtnMap);
+				return resp;
+			}
             rtnMap.put("unspent_outputs", utxoArr);
 			resp.setRetCode(Constants.SUCCESSFUL_CODE);
 			resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);

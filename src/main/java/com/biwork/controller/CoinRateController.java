@@ -70,6 +70,7 @@ private Logger logger = LoggerFactory.getLogger(getClass());
 			resp.setRetMsg(Constants.FAIL_MESSAGE);
 			return resp;
 		}
+		System.out.println("coinRate = " + coinRate);
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(coinRate);

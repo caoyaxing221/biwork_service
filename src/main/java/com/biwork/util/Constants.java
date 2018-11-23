@@ -16,6 +16,7 @@ public class Constants {
   public final static String SESSION_TIMOUT_CODE = "8888";
   public final static String SESSION_TIMOUT_MESSAGE = "会话超时,请重新登录";
   public final static String NETWORK_CODE = "9999";
+  public final static String UTXO_NULL_CODE = "0006";
   public final static String NETWORK_MESSAGE = "网络异常，请重试...";
 
   public final static String MAX_TEAM_MESSAGE = "您创建的团队已达上限";
@@ -32,5 +33,6 @@ public class Constants {
   public static final String AIRDROP_ALREADY_EXISTS = "无法创建同名空投任务";
   public static final String ADDRESS_ALREADY_EXISTS = "无法提交相同地址";
   public static final String ALREADY_EXISTS = "无法重复提交";
+  public static final String UTXO_NULL = "当前地址没有输入输出";
   
 }

@@ -44,7 +44,7 @@ public class TxFeeServiceImpl implements TxFeeService {
 		txf.setTxFee(txf_bi.toString(10));
 		return txf;
 	}
-	
+	// 数据库密码: Mywp:hywT5:u
 	public String getBitCoinFee() throws Exception {
 		try {
 			System.out.println("开始获取比特币手续费");

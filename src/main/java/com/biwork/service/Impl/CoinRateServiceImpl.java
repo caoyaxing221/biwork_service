@@ -69,6 +69,7 @@ public class CoinRateServiceImpl implements CoinRateService {
 			Object rateObj = GetResultJsonObject(rsp);
 			JSONObject rateObject = (JSONObject) rateObj;
 			JSONObject data = (JSONObject) rateObject.get("data");
+			String coinName = (String) data.get("name");
 			String coinSymbol = (String) data.get("symbol");
 			JSONObject coinQuotes = (JSONObject) data.get("quotes");
             JSONObject coinUsd = (JSONObject) coinQuotes.get("USD");
