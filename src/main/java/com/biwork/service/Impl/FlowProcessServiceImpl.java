@@ -327,7 +327,10 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		fN1.setState(-1);
 		flowNodeMapper.updateByFlowIdSelective(fN1);
 		String cUserid="";
-		String []authArr=authList.split("\\|");
+		String []authArr = null;
+		if(Integer.parseInt(visibleAll)==0){
+			authArr=authList.split("\\|");
+		}
 		String []nodeArr=nodeList.split("\\|");
 		Flow flow =new Flow();
 		flow.setCreateUserId(Integer.parseInt(userId));
