@@ -17,4 +17,5 @@ public interface MyService {
 	List<TeamVo> getApprovalCategoryList(String teamId,String userId);
 	List<TeamVo> getDepartmentList(String teamId,String userId);
 	Version getCurrentVersion(String type);
+	 List<Version> getCurrentVersionBoth();
 }

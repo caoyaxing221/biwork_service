@@ -306,14 +306,20 @@ public class MyServiceController {
 		
 		RespPojo resp=new RespPojo();
 		String type=request.getParameter("type");
-		if(StringUtils.isBlank(type)){
-			  resp.setRetCode(Constants.PARAMETER_CODE);
-			  resp.setRetMsg("客户端类型不能为空");
-			  return resp;
-		}
+//		if(StringUtils.isBlank(type)){
+//			  resp.setRetCode(Constants.PARAMETER_CODE);
+//			  resp.setRetMsg("客户端类型不能为空");
+//			  return resp;
+//		}
 		Version version=null;
+		List<Version> versions=null;
 		try {
-			version = myService.getCurrentVersion(type);
+			
+			if(StringUtils.isBlank(type)){
+				versions=myService.getCurrentVersionBoth();
+			}else{
+				version = myService.getCurrentVersion(type);
+			}
 		}
 		catch(BusiException e){
 			  
@@ -332,12 +338,25 @@ public class MyServiceController {
 		
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		Map<String, Object> appVersion = new HashMap<String, Object>();
-		appVersion.put("type", version.getType());
-		appVersion.put("version",version.getNewversion());
-		appVersion.put("downloadUrl",version.getApkurl());
-		appVersion.put("updateDescription",version.getUpdatedescription());
-		appVersion.put("forceUpdate", version.getForceUpdate());
-		rtnMap.put("versionInfo", appVersion);
+		Map<String, Object> appVersionList = new HashMap<String, Object>();
+		if(StringUtils.isBlank(type)){
+			for(int i=0;i<versions.size();i++){
+				appVersion.put("type", versions.get(i).getType());
+				appVersion.put("version",versions.get(i).getNewversion());
+				appVersion.put("downloadUrl",versions.get(i).getApkurl());
+				appVersion.put("updateDescription",versions.get(i).getUpdatedescription());
+				appVersion.put("forceUpdate", versions.get(i).getForceUpdate());
+				appVersionList.put(versions.get(i).getType(), appVersion);
+			}
+			rtnMap.put("versionInfo", appVersionList);
+		}else{
+			appVersion.put("type", version.getType());
+			appVersion.put("version",version.getNewversion());
+			appVersion.put("downloadUrl",version.getApkurl());
+			appVersion.put("updateDescription",version.getUpdatedescription());
+			appVersion.put("forceUpdate", version.getForceUpdate());
+			rtnMap.put("versionInfo", appVersion);
+		}
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(rtnMap);

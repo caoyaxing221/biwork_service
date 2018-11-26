@@ -26,6 +26,12 @@
     from version
     where type = #{type,jdbcType=VARCHAR} and state=1
   </select>
+  <select id="selectBoth" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from version
+    where state=1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from version
     where id = #{id,jdbcType=INTEGER}

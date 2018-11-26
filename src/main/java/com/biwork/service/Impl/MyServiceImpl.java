@@ -95,4 +95,8 @@ public class MyServiceImpl implements MyService {
 		Version version = versionMapper.selectByType(type);
 		return version;
 	}
+	public List<Version> getCurrentVersionBoth() {
+		 List<Version> version = versionMapper.selectBoth();
+		return version;
+	}
 }
