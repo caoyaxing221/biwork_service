@@ -80,23 +80,23 @@ public class LoginInterceptor implements HandlerInterceptor{
 //        	logger.info("session非空,bye{}",session);
             return true;  
         }else{
-        	 Service service=myService.query();
-             if(service.getExpireDate().compareTo(new Date())<0){
-             	result.setRetCode(Constants.SERVICE_TIMOUT_CODE);
-                 result.setRetMsg(Constants.SERVICE_TIMOUT_MESSAGE);
-                 response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
-                 String str=JSON.toJSONString(result);
-                 try {  
-                     PrintWriter writer = response.getWriter();  
-                     writer.write(str);  
-                     writer.flush();  
-                     writer.close();  
-                     return false;
-                 } catch (Exception e) {  
-                     
-                     logger.error("会话处理异常{}"+e);
-                 }  
-             }
+//        	 Service service=myService.query();
+//             if(service.getExpireDate().compareTo(new Date())<0){
+//             	result.setRetCode(Constants.SERVICE_TIMOUT_CODE);
+//                 result.setRetMsg(Constants.SERVICE_TIMOUT_MESSAGE);
+//                 response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
+//                 String str=JSON.toJSONString(result);
+//                 try {  
+//                     PrintWriter writer = response.getWriter();  
+//                     writer.write(str);  
+//                     writer.flush();  
+//                     writer.close();  
+//                     return false;
+//                 } catch (Exception e) {  
+//                     
+//                     logger.error("会话处理异常{}"+e);
+//                 }  
+//             }
         	//JSONObject json=null;
 //        	try {  
 //        		
@@ -129,6 +129,25 @@ public class LoginInterceptor implements HandlerInterceptor{
         	                  
         	                  logger.error("会话处理异常{}"+e);
         	              }  
+        			}
+        			if(JwtUtil.getRoleID(token).toString().equals("0")){
+        				Service service=myService.getService(Integer.parseInt(JwtUtil.getAppUID(token).toString()));
+        	             if(service.getExpireDate().compareTo(new Date())<0){
+        	             	result.setRetCode(Constants.SERVICE_TIMOUT_CODE);
+        	                 result.setRetMsg(Constants.SERVICE_TIMOUT_MESSAGE);
+        	                 response.setContentType("text/html;charset=UTF-8");// 解决中文乱码  
+        	                 String str=JSON.toJSONString(result);
+        	                 try {  
+        	                     PrintWriter writer = response.getWriter();  
+        	                     writer.write(str);  
+        	                     writer.flush();  
+        	                     writer.close();  
+        	                     return false;
+        	                 } catch (Exception e) {  
+        	                     
+        	                     logger.error("会话处理异常{}"+e);
+        	                 }  
+        	             }
         			}
         			UserPojo up = new UserPojo();
         			
