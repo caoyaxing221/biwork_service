@@ -337,10 +337,11 @@ public class MyServiceController {
 		
 		
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		Map<String, Object> appVersion = new HashMap<String, Object>();
+		
 		Map<String, Object> appVersionList = new HashMap<String, Object>();
 		if(StringUtils.isBlank(type)){
 			for(int i=0;i<versions.size();i++){
+				Map<String, Object> appVersion = new HashMap<String, Object>();
 				appVersion.put("type", versions.get(i).getType());
 				appVersion.put("version",versions.get(i).getNewversion());
 				appVersion.put("downloadUrl",versions.get(i).getApkurl());
@@ -350,6 +351,7 @@ public class MyServiceController {
 			}
 			rtnMap.put("versionInfo", appVersionList);
 		}else{
+			Map<String, Object> appVersion = new HashMap<String, Object>();
 			appVersion.put("type", version.getType());
 			appVersion.put("version",version.getNewversion());
 			appVersion.put("downloadUrl",version.getApkurl());

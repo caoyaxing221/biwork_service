@@ -89,8 +89,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		}
 		VerifyCode vCode=verifyCodeMapper.selectByCode(phone,code,type,time);
 		if (vCode==null){
-//			return false;
-			return true;
+			return false;
+//			return true;
 		}
 		VerifyCode vCode1=new VerifyCode();
 		

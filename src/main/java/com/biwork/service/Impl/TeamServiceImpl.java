@@ -22,6 +22,7 @@ import com.biwork.po.TeamSeed;
 import com.biwork.service.TeamService;
 import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
+import com.biwork.util.DayuUtil;
 import com.biwork.util.PropertiesUtil;
 import com.biwork.vo.InviteVo;
 import com.biwork.vo.MemberVo;
@@ -139,6 +140,7 @@ public class TeamServiceImpl implements TeamService {
 		if(null!=mVo){
 			throw new BusiException(Constants.FAIL_CODE,Constants.INVITE_ALREADY_EXISTS);
 		}
+		DayuUtil.teamAddSms(name, userDb.getName(), teamDb.getName(), phone);
 		MemberInvite minvite=new MemberInvite();
 		minvite.setInviterId(Integer.parseInt(userId));
 		minvite.setName(name);
