@@ -106,6 +106,13 @@ public class TeamServiceImpl implements TeamService {
 		user.setName(adminName);
 		user.setUpdatetime(new Date());
 		userMapper.updateByPrimaryKeySelective(user);
+		//更新团队表中管理员姓名
+		MemberVo memberDb = memberMapper.selectByTeamIdUseId(teamDb.getId(), userId);
+		Member member=new Member();
+		member.setName(adminName);
+		member.setId(Integer.parseInt(memberDb.getId()));
+		member.setUpdatetime(new Date());
+		memberMapper.updateByPrimaryKeySelective(member);
 		return true;
 	}
 	@Override
