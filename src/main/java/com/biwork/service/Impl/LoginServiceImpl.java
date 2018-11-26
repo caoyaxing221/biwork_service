@@ -1,6 +1,7 @@
 package com.biwork.service.Impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.biwork.mapper.MemberInviteMapper;
 import com.biwork.mapper.MemberMapper;
+import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.UserMapper;
 import com.biwork.entity.Member;
 import com.biwork.entity.MemberInvite;
@@ -36,7 +38,8 @@ public class LoginServiceImpl implements LoginService {
 	MemberInviteMapper memberInviteMapper;
 	@Autowired
 	MemberMapper memberMapper;
-	
+	@Autowired
+	ServiceMapper serviceMapper;
 	@Override
 	public User login(String phone, String password) throws Exception{
 		
@@ -125,7 +128,8 @@ public class LoginServiceImpl implements LoginService {
 	   
 	   
 	    Date nowTime=new Date();
-	    
+	    com.biwork.entity.Service serviceDb=null;
+	    Integer userId;
 	    if(account==null){
 	    	User account_new=new User();  		  
 	    		  
@@ -134,6 +138,8 @@ public class LoginServiceImpl implements LoginService {
 	   	    account_new.setPhone(phone);
 	   	    account_new.setToken(UidUtil.getUUID());
 	   	    accoutMapper.insertSelective(account_new);
+	   	    serviceDb = serviceMapper.selectByUserId(account_new.getId());
+	   	    userId=account_new.getId();
 		   }else{
 			   User account_new=new User();  		  
 	    		  
@@ -142,9 +148,21 @@ public class LoginServiceImpl implements LoginService {
 		   	    account_new.setUpdatetime(nowTime);
 
 		   	    accoutMapper.updateByPrimaryKeySelective(account_new);
+		   	    serviceDb = serviceMapper.selectByUserId(account_new.getId());
+		   	    userId=account_new.getId();
 		   }
-	    
-	 
+	    if(null==serviceDb){
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.DATE, 30);
+
+	    	Date date = cal.getTime();
+	    	com.biwork.entity.Service serviceN=new com.biwork.entity.Service();	    
+	    	serviceN.setName("基础版");
+	    	serviceN.setMaxAccount(20);
+	    	serviceN.setExpireDate(date);
+	    	serviceN.setUserId(userId);
+	    	serviceMapper.insertSelective(serviceN);
+	    }
 	    return true;
 	}
 	

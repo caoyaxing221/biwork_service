@@ -11,6 +11,7 @@ import com.biwork.vo.TeamVo;
 
 public interface MyService {	 
 	Service query();
+	Service getService( Integer userId);
 	User getUser(String userId);
 	MeVo getMe(String userId);
 	List<Currency> getCurrency();

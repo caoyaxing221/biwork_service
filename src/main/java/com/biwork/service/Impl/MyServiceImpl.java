@@ -56,7 +56,10 @@ public class MyServiceImpl implements MyService {
 	    return service;
 	}
 
-
+	public com.biwork.entity.Service getService( Integer userId) {
+		com.biwork.entity.Service service = serviceMapper.selectByUserId(userId);  
+		return service;
+	}
 
 	@Override
 	public User getUser(String userId) {

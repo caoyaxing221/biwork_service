@@ -66,7 +66,7 @@ public class MyServiceController {
 		Service service=null;
 		
 		try {
-			 service = myService.query();
+			 service = myService.getService(Integer.parseInt(up.getUserid()));
 		}
 		catch (Exception e) {
 			  logger.error("查询服务异常{}",e);

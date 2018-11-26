@@ -16,6 +16,8 @@ public class Service {
     private Integer maxAccount;
 
     private Integer state;
+    
+    private Integer userId;
 
     public Integer getId() {
         return id;
@@ -72,4 +74,18 @@ public class Service {
     public void setState(Integer state) {
         this.state = state;
     }
+
+	/**
+	 * @return the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 }

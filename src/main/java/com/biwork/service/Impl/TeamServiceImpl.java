@@ -131,7 +131,8 @@ public class TeamServiceImpl implements TeamService {
 		if( phone.equals(userDb.getPhone())){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 		}
-		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);
+//		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);
+		com.biwork.entity.Service service = serviceMapper.selectByUserId(Integer.parseInt(userId));
 		List<MemberVo> inviteList=memberInviteMapper.selectByTeamId(Integer.parseInt(teamId),userId);
 		if(inviteList.size()>=service.getMaxAccount()){
 			throw new BusiException(Constants.FAIL_CODE,Constants.MAX_ACCOUNT_MESSAGE);
