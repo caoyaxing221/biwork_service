@@ -6,6 +6,32 @@ public class FlowListVo {
 	String isBatch;
 	String visibleAll;
 	String templateNo;
+	String disable;
+	String createUserId;
+	/**
+	 * @return the createUserId
+	 */
+	public String getCreateUserId() {
+		return createUserId;
+	}
+	/**
+	 * @param createUserId the createUserId to set
+	 */
+	public void setCreateUserId(String createUserId) {
+		this.createUserId = createUserId;
+	}
+	/**
+	 * @return the disable
+	 */
+	public String getDisable() {
+		return disable;
+	}
+	/**
+	 * @param disable the disable to set
+	 */
+	public void setDisable(String disable) {
+		this.disable = disable;
+	}
 	/**
 	 * @return the id
 	 */

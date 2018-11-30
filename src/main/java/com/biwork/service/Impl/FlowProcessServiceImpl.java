@@ -33,6 +33,7 @@ import com.biwork.mapper.FlowNodeMapper;
 import com.biwork.mapper.MemberMapper;
 import com.biwork.mapper.ProcessMapper;
 import com.biwork.mapper.ProcessNodeMapper;
+import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.TeamMapper;
 import com.biwork.po.request.ReceiverMsgPojo;
 import com.biwork.po.request.AddressTemplateMsgPojo;
@@ -77,6 +78,8 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	private AirdropTaskMapper airdropTaskMapper;
 	@Autowired
 	private AddressTemplateMapper addressTemplateMapper;
+	@Autowired
+	private ServiceMapper serviceMapper;
 	@Override
 	public AddressTemplateVo queryTempalteInfo(String templateId,String userId) {
 		AddressTemplateVo task=addressTemplateMapper.selectByTemplateId(Integer.parseInt(templateId),Integer.parseInt(userId));
@@ -115,6 +118,12 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	@Override
 	public int addFlow(String teamId, String name, String isBatch, String visibleAll, String authList, String nodeList,
 			String userId,String templateNo) {
+		if(isBatch.equals("1")){
+			com.biwork.entity.Service service=serviceMapper.selectByUserId(Integer.parseInt(userId));
+	        if(service.getExpireDate().compareTo(new Date())<0){
+	        	throw new BusiException(Constants.SERVICE_TIMOUT_CODE,Constants.SERVICE_TIMOUT_MESSAGE);
+	        }
+		}
 		int flowId=0;
 		Team teamDb = teamMapper.selectByPrimaryKey(Integer.parseInt(teamId));
 		if(null==teamDb){
@@ -193,6 +202,12 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 		Flow flowDb =flowMapper.selectByPrimaryKey(Integer.parseInt(flowId));
 		if(null==flowDb||flowDb.getState()!=0){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
+		}
+		if(flowDb.getIsBatchTranser()==1){
+			com.biwork.entity.Service service=serviceMapper.selectByUserId(flowDb.getCreateUserId());
+	        if(service.getExpireDate().compareTo(new Date())<0){
+	        	throw new BusiException(Constants.SERVICE_TIMOUT_CODE,Constants.SERVICE_TIMOUT_MESSAGE);
+	        }
 		}
 		Integer teamId=flowDb.getTeamId();
 		MemberVo memberDb = memberMapper.selectByTeamIdUseId(teamId, userId);
@@ -312,6 +327,12 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 	@Override
 	public boolean editFlow(String flowId, String name, String isBatch, String visibleAll, String authList,
 			String nodeList, String userId,String templateNo) {
+		if(isBatch.equals("1")){
+			com.biwork.entity.Service service=serviceMapper.selectByUserId(Integer.parseInt(userId));
+	        if(service.getExpireDate().compareTo(new Date())<0){
+	        	throw new BusiException(Constants.SERVICE_TIMOUT_CODE,Constants.SERVICE_TIMOUT_MESSAGE);
+	        }
+		}
 		Flow flowdb=flowMapper.selectByPrimaryKey(Integer.parseInt(flowId));
 		if(null==flowdb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
@@ -411,7 +432,24 @@ public class FlowProcessServiceImpl implements FlowProcessService {
 //			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 			return Collections.emptyList();
 		}
-		return flowMapper.getUseFlowList(Integer.parseInt(userId), Integer.parseInt(teamId));
+		List<FlowListVo> flowList = flowMapper.getUseFlowList(Integer.parseInt(userId), Integer.parseInt(teamId));
+		String disable="0";
+		if(flowList.size()>0){
+			com.biwork.entity.Service service=serviceMapper.selectByUserId(Integer.parseInt(flowList.get(0).getCreateUserId()));
+			if(service.getExpireDate().compareTo(new Date())<0){
+				disable="1";
+			}
+		}
+		
+		for(int i=0;i<flowList.size();i++){
+			if(flowList.get(i).getIsBatch().equals("1")){
+				
+				flowList.get(i).setDisable(disable);
+		        	
+		        }
+			
+		}
+		return flowList;
 	}
 	@Override
 	public FlowVo queryUseFlowById(String flowId, String userId) {

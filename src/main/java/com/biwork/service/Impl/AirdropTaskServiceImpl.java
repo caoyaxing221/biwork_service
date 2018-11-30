@@ -20,6 +20,7 @@ import com.biwork.entity.AirdropTask;
 import com.biwork.exception.BusiException;
 import com.biwork.mapper.AirdropAddressMapper;
 import com.biwork.mapper.AirdropTaskMapper;
+import com.biwork.mapper.ServiceMapper;
 import com.biwork.mapper.TeamMapper;
 import com.biwork.service.AirdropTaskService;
 import com.biwork.util.Constants;
@@ -42,8 +43,15 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 	private AirdropTaskMapper airdropTaskMapper;
 	@Autowired
 	private AirdropAddressMapper airdropAddressMapper;
+	@Autowired
+	private ServiceMapper serviceMapper;
 	@Override
 	public int addTask(String teamId,String userId, String name, String endTime, String title, String remark,String needAttach,String bannerUrl,String type) throws ParseException {
+		com.biwork.entity.Service service=serviceMapper.selectByUserId(Integer.parseInt(userId));
+        if(service.getExpireDate().compareTo(new Date())<0){
+        	throw new BusiException(Constants.SERVICE_TIMOUT_CODE,Constants.SERVICE_TIMOUT_MESSAGE);
+        }
+     
 		AirdropTask taskDb = airdropTaskMapper.selectByName(name, Integer.parseInt(teamId));
 		if(null!=taskDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.AIRDROP_ALREADY_EXISTS);
@@ -66,6 +74,10 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 	}
 	@Override
 	public boolean editTask(String taskId,String userId, String name, String endTime, String title, String remark,String needAttach,String bannerUrl) throws ParseException {
+		com.biwork.entity.Service service=serviceMapper.selectByUserId(Integer.parseInt(userId));
+        if(service.getExpireDate().compareTo(new Date())<0){
+        	throw new BusiException(Constants.SERVICE_TIMOUT_CODE,Constants.SERVICE_TIMOUT_MESSAGE);
+        }
 		AirdropTask taskDb = airdropTaskMapper.selectByPrimaryKey(Integer.parseInt(taskId));
 		if(null==taskDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);

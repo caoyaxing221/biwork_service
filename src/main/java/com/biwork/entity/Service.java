@@ -18,6 +18,8 @@ public class Service {
     private Integer state;
     
     private Integer userId;
+    
+    private Integer level;
 
     public Integer getId() {
         return id;
@@ -87,5 +89,19 @@ public class Service {
 	 */
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * @return the level
+	 */
+	public Integer getLevel() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(Integer level) {
+		this.level = level;
 	}
 }

@@ -10,9 +10,19 @@
     <result column="max_account" jdbcType="INTEGER" property="maxAccount" />
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="com.biwork.vo.ServiceVo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="expire_date" jdbcType="TIMESTAMP" property="expireDate" />
+    <result column="max_account" jdbcType="INTEGER" property="maxAccount" />
+    <result column="description" jdbcType="INTEGER" property="description" />
+    
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, expire_date, inserttime, updatetime, max_account, state,userId
+    id, name, expire_date, inserttime, updatetime, max_account, state,userId,level
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -20,7 +30,12 @@
     from service
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectListByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap2">
+    select b.name,a.expire_date,a.max_account
+	,b.description from service a join service_level b on a.level=b.id
+    where (a.userId = #{userId,jdbcType=INTEGER} or a.userId is null) and a.state=0 order by a.id desc
+  </select>
+    <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from service
@@ -65,6 +80,9 @@
       <if test="userId != null">
         userId,
       </if>
+      <if test="level != null">
+        level,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -91,6 +109,9 @@
         <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
+       <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.biwork.entity.Service">
@@ -116,6 +137,9 @@
       </if>
       <if test="userId != null">
         userId = #{userId,jdbcType=INTEGER},
+      </if>
+       <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

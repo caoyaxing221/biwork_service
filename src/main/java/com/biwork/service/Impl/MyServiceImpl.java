@@ -25,6 +25,7 @@ import com.biwork.service.MyService;
 import com.biwork.util.Constants;
 import com.biwork.vo.MeVo;
 import com.biwork.vo.MemberVo;
+import com.biwork.vo.ServiceVo;
 import com.biwork.vo.TeamVo;
 
 
@@ -56,11 +57,14 @@ public class MyServiceImpl implements MyService {
 	    return service;
 	}
 
-	public com.biwork.entity.Service getService( Integer userId) {
-		com.biwork.entity.Service service = serviceMapper.selectByUserId(userId);  
+	public List<ServiceVo> getServiceList( Integer userId) {
+		 List<ServiceVo> service = serviceMapper.selectListByUserId(userId);  
 		return service;
 	}
-
+	public  com.biwork.entity.Service getService( Integer userId) {
+		  com.biwork.entity.Service service = serviceMapper.selectByUserId(userId);  
+		return service;
+	}
 	@Override
 	public User getUser(String userId) {
 		

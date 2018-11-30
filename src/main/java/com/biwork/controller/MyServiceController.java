@@ -1,5 +1,6 @@
 package com.biwork.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import com.biwork.util.Constants;
 import com.biwork.util.IDWorker;
 import com.biwork.util.TimeUtils;
 import com.biwork.vo.MeVo;
+import com.biwork.vo.ServiceVo;
 import com.biwork.vo.TeamVo;
 
 import io.swagger.annotations.Api;
@@ -63,10 +65,10 @@ public class MyServiceController {
 		up=(UserPojo) request.getSession().getAttribute("User");
 		
 		RespPojo resp=new RespPojo();
-		Service service=null;
+		List<ServiceVo> service=null;
 		
 		try {
-			 service = myService.getService(Integer.parseInt(up.getUserid()));
+			 service = myService.getServiceList(Integer.parseInt(up.getUserid()));
 		}
 		catch (Exception e) {
 			  logger.error("查询服务异常{}",e);
@@ -78,9 +80,10 @@ public class MyServiceController {
 		
 		
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		rtnMap.put("name", service.getName());
-		rtnMap.put("expireDate", service.getExpireDate());
-		rtnMap.put("maxAccount", service.getMaxAccount());
+//		rtnMap.put("name", service.getName());
+//		rtnMap.put("expireDate", service.getExpireDate());
+//		rtnMap.put("maxAccount", service.getMaxAccount());
+		rtnMap.put("service", service);
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(rtnMap);
@@ -287,6 +290,14 @@ public class MyServiceController {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		rtnMap.put("userInfo", userInfo);
 		rtnMap.put("roleId", up.getRoleid());
+		if(up.getRoleid().equals("0")){
+			service=myService.getService(Integer.parseInt(up.getUserid()));
+			  if(service.getExpireDate().compareTo(new Date())<0){
+				  rtnMap.put("extraAuth", "false");
+			  }else{
+				  rtnMap.put("extraAuth", "true");
+			  }
+		}
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(rtnMap);

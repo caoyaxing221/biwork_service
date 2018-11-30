@@ -134,7 +134,7 @@ public class TeamServiceImpl implements TeamService {
 //		com.biwork.entity.Service service = serviceMapper.selectByPrimaryKey(1);
 		com.biwork.entity.Service service = serviceMapper.selectByUserId(Integer.parseInt(userId));
 		List<MemberVo> inviteList=memberInviteMapper.selectByTeamId(Integer.parseInt(teamId),userId);
-		if(inviteList.size()>=service.getMaxAccount()){
+		if(service.getLevel()!=3&&inviteList.size()>=service.getMaxAccount()){
 			throw new BusiException(Constants.FAIL_CODE,Constants.MAX_ACCOUNT_MESSAGE);
 		}
 		Team teamDb = teamMapper.selectByPrimaryKey(Integer.parseInt(teamId));

@@ -157,10 +157,11 @@ public class LoginServiceImpl implements LoginService {
 
 	    	Date date = cal.getTime();
 	    	com.biwork.entity.Service serviceN=new com.biwork.entity.Service();	    
-	    	serviceN.setName("基础版");
+	    	serviceN.setName("Biwork高级版");
 	    	serviceN.setMaxAccount(20);
 	    	serviceN.setExpireDate(date);
 	    	serviceN.setUserId(userId);
+	    	serviceN.setLevel(2);
 	    	serviceMapper.insertSelective(serviceN);
 	    }
 	    return true;
