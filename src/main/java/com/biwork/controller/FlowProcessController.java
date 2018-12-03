@@ -26,7 +26,9 @@ import com.biwork.po.request.DealProcessPojo;
 import com.biwork.po.request.EditFlowPojo;
 import com.biwork.po.request.ReceiverMsgPojo;
 import com.biwork.service.FlowProcessService;
+import com.biwork.util.AESUtil;
 import com.biwork.util.Constants;
+import com.biwork.util.PropertiesUtil;
 import com.biwork.vo.AddressTemplateListVo;
 import com.biwork.vo.AddressTemplateVo;
 import com.biwork.vo.FlowListVo;
@@ -747,7 +749,14 @@ public class FlowProcessController {
 			  resp.setRetMsg(Constants.FAIL_MESSAGE);
 			  return resp;
 		}
-		
+		if(!StringUtils.isBlank(process.getAirDropTaskId())){
+			try {
+				process.setAirDropTaskToken(AESUtil.AESEncode(PropertiesUtil.getProperty("aeskey"), String.valueOf(process.getAirDropTaskId())));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();

@@ -28,6 +28,19 @@ public class ProcessVo {
 	private String currentNode;
 	private String waitSeconds;
 	private String templateNo;
+	private String airDropTaskToken;
+	/**
+	 * @return the airDropTaskToken
+	 */
+	public String getAirDropTaskToken() {
+		return airDropTaskToken;
+	}
+	/**
+	 * @param airDropTaskToken the airDropTaskToken to set
+	 */
+	public void setAirDropTaskToken(String airDropTaskToken) {
+		this.airDropTaskToken = airDropTaskToken;
+	}
 	/**
 	 * @return the id
 	 */
