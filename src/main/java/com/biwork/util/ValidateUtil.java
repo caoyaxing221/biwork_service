@@ -1,6 +1,8 @@
 package com.biwork.util;
 
 import java.util.regex.Pattern;
+
+import org.web3j.utils.Numeric;
  
 /**
  * 校验器：利用正则表达式校验邮箱、手机号等
@@ -61,6 +63,16 @@ public class ValidateUtil {
      * 正则表达式：验证图片链接 
      */
     public static final String REGEX_IMG="(?i)\\.(gif|png|jpe?g)";
+//    以太坊和ERC20地址长度42个字节，前面2个字节是0x, 由大小字母(a-f/A-F)和数字(0-9)组合而成
+//    比特币地址长度是33字节， 由字母（a-z/A-Z)和数字（0-9）组成，目前biwork支持 1 开头的地址
+    /**
+     * 正则表达式：验证ERC20地址
+     */
+    public static final String ADDRESS_ERC20 = "^[a-fA-F0-9]{40}$";
+    /**
+     * 正则表达式：验证BTC地址
+     */
+    public static final String ADDRESS_BTC = "^[a-zA-Z0-9]{34}$";
     /**
      * 校验用户名
      * 
@@ -177,8 +189,10 @@ public class ValidateUtil {
     }
     public static void main(String[] args) {
         String username = "2018-09-02";
-        System.out.println(ValidateUtil.isIMG("http://10.23.1.99:8988/static/img/201811051139164848113.exe"));
+//        System.out.println(ValidateUtil.isIMG("http://10.23.1.99:8988/static/img/201811051139164848113.exe"));
        // System.out.println(ValidateUtil.isChinese(username));
+        System.out.println( ValidateUtil.isAddress("0xaa97824094faa3f47bc8da82d13880a015d3df1e"));
+        System.out.println(ValidateUtil.isAddress("1C6UYrmbtvdi8dHZNnZD3YoVwit2mccSgw"));
     }
   //金额验证  
     public static boolean isMoney(String str){   
@@ -202,5 +216,12 @@ public class ValidateUtil {
           }else{
         	  return false;
           }
+     } 
+    public static boolean isAddress(String str){   
+    	if((str.startsWith("1")&&Pattern.matches(ADDRESS_BTC,str))||(str.startsWith("0x")&&Pattern.matches(ADDRESS_ERC20,Numeric.cleanHexPrefix(str)))){
+    		return true;
+    	}else{
+    		return false;
+    	}
      } 
 }

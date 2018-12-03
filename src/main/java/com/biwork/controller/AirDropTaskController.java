@@ -354,6 +354,11 @@ public class AirDropTaskController {
 			  resp.setRetMsg("地址不能为空");
 			  return resp;
 		}
+		if(!ValidateUtil.isAddress(address)){
+			  resp.setRetCode(Constants.PARAMETER_CODE);
+			  resp.setRetMsg("地址格式错误");
+			  return resp;
+		}
 		try {
 			addressId= airDropTaskService.addAddress(taskId, address,attachUrl);
 			
