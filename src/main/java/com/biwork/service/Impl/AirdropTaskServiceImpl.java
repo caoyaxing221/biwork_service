@@ -124,6 +124,14 @@ public class AirdropTaskServiceImpl implements AirdropTaskService {
 		if(null==task){
 			throw new BusiException(Constants.FAIL_CODE,Constants.RECORDS_NOT_FOUND);
 		}
+		try {
+			if(!"0".equals(task.getState())||TimeUtils.getDateTime(task.getEndTime()).compareTo(new Date())<=0){
+				throw new BusiException(Constants.FAIL_CODE,Constants.AIRDROP_EXPIRES);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AirdropAddress addrDb = airdropAddressMapper.selectByAddress(Integer.parseInt(taskId), address);
 		if(null!=addrDb){
 			throw new BusiException(Constants.FAIL_CODE,Constants.ADDRESS_ALREADY_EXISTS);

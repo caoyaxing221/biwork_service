@@ -31,6 +31,7 @@ public class Constants {
   public static final String ACCOUNT_AlREAD_EXISTS="账户已存在";
   public static final String FLOW_ALREADY_EXISTS = "无法创建同名审批流程";
   public static final String AIRDROP_ALREADY_EXISTS = "无法创建同名空投任务";
+  public static final String AIRDROP_EXPIRES = "活动已失效";
   public static final String ADDRESS_ALREADY_EXISTS = "无法提交相同地址";
   public static final String ALREADY_EXISTS = "无法重复提交";
   public static final String UTXO_NULL = "当前地址没有输入输出";
