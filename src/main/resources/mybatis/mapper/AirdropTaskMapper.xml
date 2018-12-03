@@ -42,7 +42,7 @@
   </select>
   <select id="selectByTeamId"  resultType="com.biwork.vo.TaskListVo">
     select  (@rowNum:=@rowNum+1) rm ,t.* ,(select count(1) from airdrop_task where create_userid=#{userId,jdbcType=INTEGER}
-    AND state=0 
+    <!-- AND state=0  -->
     and team_id=#{teamId,jdbcType=INTEGER}
     <if test="type != null">
         and type=#{type,jdbcType=INTEGER}
