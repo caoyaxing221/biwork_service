@@ -49,43 +49,35 @@ public class RawTxController {
 	public RespPojo getBatchEthRawTx(HttpServletRequest request, @RequestBody 
 			@ApiParam(name="发送签名后交易对象",value="传入json格式",required=true) BatchRawTxFlowPojo batchRwatxFlowPojo){
 		logger.info("---批量发送签名后交易数据到以太坊区块链网络---");
-		RawTxPojo rawTx_pojo=new RawTxPojo();
 		RespPojo resp=new RespPojo();
 		String signCoin = batchRwatxFlowPojo.getSignCoin();
-		List<String> arrList = new ArrayList<>();
-		arrList = batchRwatxFlowPojo.getSignDataArr();
-		System.out.println("signCoin = " + signCoin);
-        System.out.println("sign = " + arrList.get(0));
-		
-		if(StringUtils.isBlank(signCoin) || arrList.size() == 0){
+		List<String> arrLists = batchRwatxFlowPojo.getSignDataArr();
+		if(StringUtils.isBlank(signCoin) || arrLists.size() == 0){
 			  resp.setRetCode(Constants.PARAMETER_CODE);
 			  resp.setRetMsg("批量签名后数据不能为空");
 			  return resp;
 		}
-	
-		RawTx rawTx;
-		List<String> hashArray = new ArrayList<>();
-		try {
-			for(int i = 0; i < arrList.size(); i++) {
-				rawTx = rawTxService.getEthRawTx(arrList.get(i));
-				hashArray.add(rawTx.getRawTx());
-			}
-		}catch(BusiException e){
-			 logger.error("批量发送签名后交易数据到以太坊区块链网络异常-业务异常{}",e);
-			  resp.setRetCode(e.getCode());
-			  resp.setRetMsg(e.getMessage());
-			  return resp;
-		}
-		catch (Exception e) {
-			  logger.error("批量发送签名后交易数据到以太坊区块链网络异常-普通异常{}",e);
-			  resp.setRetCode(Constants.FAIL_CODE);
-			  resp.setRetMsg(Constants.FAIL_MESSAGE);
-			  return resp;
-		}
-		resp.setRetCode(Constants.SUCCESSFUL_CODE);
+		
+	    Thread t=new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	List<String> arrList = new ArrayList<>();
+        		arrList = batchRwatxFlowPojo.getSignDataArr();
+                try {
+                	for(int i = 0; i < arrList.size(); i++) {
+                		logger.info("第"+ i + "签名串:" + arrList.get(i));
+                		rawTxService.getEthRawTx(arrList.get(i));
+            		}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+        
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
-		resp.setData(hashArray);
-		System.out.println("hashArray = " + hashArray);
+		resp.setData("发送交易成功，正在打包到区块链网络");
 		return resp;
 	}
 	
