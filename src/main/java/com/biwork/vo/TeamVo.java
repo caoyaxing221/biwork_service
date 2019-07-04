@@ -27,4 +27,14 @@ public class TeamVo {
 		this.name = name;
 	}
 	private String name;
+
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	private Integer isAdmin;
 }

@@ -29,6 +29,7 @@
  <resultMap id="TeamVoMap" type="com.biwork.vo.TeamVo">
       <id column="id" jdbcType="INTEGER" property="id" />
     	<result column="name" jdbcType="VARCHAR" property="name" />
+     <result column="isAdmin" jdbcType="INTEGER" property="isAdmin" />
   </resultMap>
   <sql id="Base_Column_List">
     id, name, email, stuff_num, admin_name, state, inserttime, updatetime, invite_code, 
@@ -64,7 +65,7 @@
   </select>
    <select id="selectByJoinUserId" parameterType="java.lang.Integer" resultMap="TeamVoMap">
     select 
-    a.id,a.name
+    a.id,a.name,IF(a.create_user_id=b.user_id,1,0) as isAdmin
     from team a
 	  join member b
     on a.id=b.team_id

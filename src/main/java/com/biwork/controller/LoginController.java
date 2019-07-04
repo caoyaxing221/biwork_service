@@ -165,7 +165,8 @@ public class LoginController {
 		
 	}
 	//去密码登录操作（输入手机号获取验证码直接登录）
-			
+	//2019.06.27 合并账号 只保留管理员登录 普通用户登录废弃
+	@Deprecated
 	@ResponseBody
 	@RequestMapping("/login")
 	@ApiOperation(value = "普通用户登录", notes = "普通用户登录",httpMethod = "POST")
@@ -350,7 +351,7 @@ public class LoginController {
 			
 			
 			up.setUserid(account.getId().toString());
-			up.setRoleid("0");
+			up.setRoleid(account.getRoleId());
 			request.getSession().setAttribute("User",up);
 			 Map<String, Object> rtnMap = new HashMap<String, Object>();
 			 String token="";

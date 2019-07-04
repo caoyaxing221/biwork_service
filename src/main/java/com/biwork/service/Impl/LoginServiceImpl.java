@@ -4,16 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.biwork.mapper.*;
+import com.biwork.service.TeamService;
+import com.biwork.vo.TeamInfoVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.biwork.mapper.MemberInviteMapper;
-import com.biwork.mapper.MemberMapper;
-import com.biwork.mapper.ServiceMapper;
-import com.biwork.mapper.UserMapper;
 import com.biwork.entity.Member;
 import com.biwork.entity.MemberInvite;
 import com.biwork.entity.User;
@@ -31,7 +30,7 @@ import com.biwork.vo.MemberVo;
 @Service("loginService")
 public class LoginServiceImpl implements LoginService {
 	static Logger log = LoggerFactory.getLogger(LoginService.class);
-	
+
 	@Autowired
 	private UserMapper accoutMapper;
 	@Autowired
@@ -40,6 +39,8 @@ public class LoginServiceImpl implements LoginService {
 	MemberMapper memberMapper;
 	@Autowired
 	ServiceMapper serviceMapper;
+	@Autowired
+	TeamMapper teamMapper;
 	@Override
 	public User login(String phone, String password) throws Exception{
 		
@@ -55,7 +56,18 @@ public class LoginServiceImpl implements LoginService {
 		if(!password.equals(account.getPassword())){
 	    	throw new BusiException(Constants.FAIL_CODE,Constants.PASSWORD_NOT_FOUND);
 	    }
-	   
+		//2019.06.28 账号合并
+		if(null==account.getDefaultTeamId()){
+			account.setRoleId("0");
+		}else {
+			TeamInfoVo teamDb = teamMapper.selectById(account.getDefaultTeamId());
+			if(null==teamDb){
+				account.setRoleId("0");
+			}else{
+				account.setRoleId(teamDb.getCreateUserId().equals(account.getId())?"0":"1");
+			}
+		}
+
 	    
 	    
 	   

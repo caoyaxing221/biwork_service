@@ -1,22 +1,25 @@
 package com.biwork.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.biwork.entity.*;
+import com.biwork.entity.Currency;
+import com.biwork.po.request.CommitOrderPojo;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.biwork.entity.Currency;
-import com.biwork.entity.Service;
-import com.biwork.entity.Version;
 import com.biwork.exception.BusiException;
 import com.biwork.po.RespPojo;
 import com.biwork.po.TeamSeed;
@@ -29,11 +32,6 @@ import com.biwork.util.TimeUtils;
 import com.biwork.vo.MeVo;
 import com.biwork.vo.ServiceVo;
 import com.biwork.vo.TeamVo;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 
 /**
  * 
@@ -262,6 +260,38 @@ public class MyServiceController {
 		return resp;
 		
 	}
+    @ResponseBody
+    @RequestMapping("/getOrderNo")
+    @ApiOperation(value = "生成订单号", notes = "生成订单号",httpMethod = "GET")
+    public RespPojo getOrderNo(HttpServletRequest request){
+
+        UserPojo up=new UserPojo();
+        up=(UserPojo) request.getSession().getAttribute("User");
+        String orderNo="";
+        RespPojo resp=new RespPojo();
+
+
+        try {
+            orderNo=IDWorker.nextID("");
+
+        }
+        catch (Exception e) {
+            logger.error("生成订单号{}",e);
+
+            resp.setRetCode(Constants.FAIL_CODE);
+            resp.setRetMsg(Constants.FAIL_MESSAGE);
+            return resp;
+        }
+
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("orderNo", orderNo);
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
+        resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+        resp.setData(rtnMap);
+
+        return resp;
+
+    }
 	@ResponseBody
 	@RequestMapping("/getMe")
 	@ApiOperation(value = "查询我的信息", notes = "查询我的信息",httpMethod = "GET")
@@ -290,14 +320,15 @@ public class MyServiceController {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		rtnMap.put("userInfo", userInfo);
 		rtnMap.put("roleId", up.getRoleid());
-		if(up.getRoleid().equals("0")){
+		//2019.06.28 去掉是否管理员身份判断，只保留了管理员登录
+//		if(up.getRoleid().equals("0")){
 			service=myService.getService(Integer.parseInt(up.getUserid()));
 			  if(service.getExpireDate().compareTo(new Date())<0){
 				  rtnMap.put("extraAuth", "false");
 			  }else{
 				  rtnMap.put("extraAuth", "true");
 			  }
-		}
+//		}
 		resp.setRetCode(Constants.SUCCESSFUL_CODE);
 		resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
 		resp.setData(rtnMap);
@@ -377,5 +408,196 @@ public class MyServiceController {
 		return resp;
 		
 	}
+
+	@ResponseBody
+    @RequestMapping("/getReceiveCoinAddress")
+    @ApiOperation(value = "获取收币地址", notes = "获取收币地址",httpMethod = "GET")
+    public RespPojo getReceiveCoinAddress(HttpServletRequest request){
+
+
+
+        RespPojo resp=new RespPojo();
+
+        String address="";
+        try {
+
+            address=myService.getConfiguration("receiveCoinAddress");
+        }
+        catch(BusiException e){
+
+            resp.setRetCode(e.getCode());
+            resp.setRetMsg(e.getMessage());
+            return resp;
+        }
+        catch (Exception e) {
+            logger.error("查询收币地址异常{}",e);
+
+            resp.setRetCode(Constants.FAIL_CODE);
+            resp.setRetMsg(Constants.FAIL_MESSAGE);
+            return resp;
+        }
+
+
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+
+        rtnMap.put("address", address);
+
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
+        resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+        resp.setData(rtnMap);
+
+        return resp;
+
+    }
+    @ResponseBody
+    @RequestMapping("/getPurchaseType")
+    @ApiOperation(value = "获取付费方式", notes = "获取付费方式",httpMethod = "GET")
+    public RespPojo getPurchaseType(HttpServletRequest request){
+
+
+
+        RespPojo resp=new RespPojo();
+
+        List<PaymentType> purchaseTypeList;
+        try {
+
+            purchaseTypeList=myService.getPurchaseType();
+        }
+        catch(BusiException e){
+
+            resp.setRetCode(e.getCode());
+            resp.setRetMsg(e.getMessage());
+            return resp;
+        }
+        catch (Exception e) {
+            logger.error("查询付费方式异常{}",e);
+
+            resp.setRetCode(Constants.FAIL_CODE);
+            resp.setRetMsg(Constants.FAIL_MESSAGE);
+            return resp;
+        }
+
+
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+
+        rtnMap.put("purchaseTypeList", purchaseTypeList);
+
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
+        resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+        resp.setData(rtnMap);
+
+        return resp;
+
+    }
+    @ResponseBody
+    @RequestMapping(value="/queryOrderList", method= RequestMethod.GET, produces="application/json;charset=utf-8;")
+    @ApiOperation(value = "查询付费列表", notes = "查询付费列表",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNo",value = "页码", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageSize",value = "每页条数", required = true, paramType = "query")
+    })
+    public RespPojo queryOrderList(HttpServletRequest request){
+        UserPojo up=new UserPojo();
+        up=(UserPojo) request.getSession().getAttribute("User");
+        List<PaymentOrder> orderList=null;
+        RespPojo resp=new RespPojo();
+        String pageNo=request.getParameter("pageNo");
+        String pageSize=request.getParameter("pageSize");
+
+
+        if(StringUtils.isBlank(pageNo)){
+            resp.setRetCode(Constants.PARAMETER_CODE);
+            resp.setRetMsg("页码不能为空");
+            return resp;
+        }
+
+
+        if(StringUtils.isBlank(pageSize)){
+            resp.setRetCode(Constants.PARAMETER_CODE);
+            resp.setRetMsg("每页条数不能为空");
+            return resp;
+        }
+        Integer offset =(Integer.parseInt(pageNo)-1)*Integer.parseInt(pageSize);
+        Integer totalCount;
+        try {
+            orderList=myService.queryOrderList(up.getUserid(),offset.toString(),pageSize);
+
+            totalCount=myService.queryOrderCount(up.getUserid());
+        }
+        catch(BusiException e){
+
+            resp.setRetCode(e.getCode());
+            resp.setRetMsg(e.getMessage());
+            return resp;
+        }
+        catch (Exception e) {
+            logger.error("查询付费列表异常{}",e);
+
+            resp.setRetCode(Constants.FAIL_CODE);
+            resp.setRetMsg(Constants.FAIL_MESSAGE);
+            return resp;
+        }
+
+
+
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+        rtnMap.put("orderList", orderList);
+        rtnMap.put("totalCount", totalCount);
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
+        resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+        resp.setData(rtnMap);
+
+        return resp;
+
+
+    }
+    @ResponseBody
+    @RequestMapping(value="/createOrder", method=RequestMethod.POST, produces="application/json;charset=utf-8;")
+    @ApiOperation(value = "购买服务", notes = "购买服务",httpMethod = "POST")
+//
+    public RespPojo commitProcess(HttpServletRequest request,@RequestBody
+    @ApiParam(name="付费",value="传入json格式",required=true) @Validated CommitOrderPojo req, BindingResult result){
+        RespPojo resp=new RespPojo();
+	    if(result.hasErrors()) {
+            resp.setRetCode(Constants.PARAMETER_CODE);
+            resp.setRetMsg(result.getFieldError().getDefaultMessage());
+            return resp;
+        }
+        UserPojo up=new UserPojo();
+        up=(UserPojo) request.getSession().getAttribute("User");
+
+
+        try {
+            myService.createOrder(up.getUserid(),req);
+        }
+        catch(BusiException e){
+
+            resp.setRetCode(e.getCode());
+            resp.setRetMsg(e.getMessage());
+            return resp;
+        }
+        catch (Exception e) {
+            logger.error("创建订单异常{}",e);
+
+            resp.setRetCode(Constants.FAIL_CODE);
+            resp.setRetMsg(Constants.FAIL_MESSAGE);
+            return resp;
+        }
+
+
+
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+        resp.setRetCode(Constants.SUCCESSFUL_CODE);
+        resp.setRetMsg(Constants.SUCCESSFUL_MESSAGE);
+        resp.setData(rtnMap);
+
+        return resp;
+
+
+    }
 	
 }

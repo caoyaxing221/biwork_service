@@ -21,6 +21,16 @@ public class User {
 
     private String token;
 
+    private String roleId;
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
     public Integer getId() {
         return id;
     }
